@@ -291,7 +291,7 @@ def sync_jira_with_launchpad(url, user, password, project, project_key=''):
 
     for Lbug in launchpad_bugs:
         if Lbug['status_code'] == 3:
-            break
+            continue
 
         sync = False
         duplicated = False
@@ -328,7 +328,7 @@ def sync_jira_with_launchpad(url, user, password, project, project_key=''):
 
     for Jbug in jira_bugs:
         if Jbug['status_code'] == 3:
-            break
+            continue
 
         sync = False
         duplicated = False
