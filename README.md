@@ -9,6 +9,7 @@ murano-tests
 How To Run Tests For Web UI
 ============
 
+
  The web UI tests allow to perform complex integrational testing with REST API service, REST API client, archestrator component and Murano dashboard component.
  The simplest way to execute webUI tests is to run tox.
 <br><br>
