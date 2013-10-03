@@ -1,13 +1,13 @@
 *** Settings ***
 Suite Setup
 Suite Teardown    Close All Browsers
-Test Setup        Open Browser    http://172.18.79.90/horizon
+Test Setup        Open Browser    http://172.18.79.84/dashboard
 Test Teardown     Close All Browsers
 Library           String
 Library           Boffin.WebUIlib    # Boffin framework library
 
 *** Variables ***
-${resources_path}    C:/Murano/WebUI/samples/Murano/Resources/
+${resources_path}    Resources/
 
 *** Test Cases ***
 Check Environments Tab
