@@ -1,0 +1,9 @@
+Change-Id: Iabf22bcf1b9ba300de4b8f8eb4fd3f68dca7abdd
+Verified+2: Jenkins
+Approved+1: Timur Nurlygayanov <tnurlygayanov@mirantis.com>
+Code-Review+2: Timur Nurlygayanov <tnurlygayanov@mirantis.com>
+Submitted-by: Jenkins
+Submitted-at: Fri, 04 Oct 2013 07:12:43 +0000
+Reviewed-on: https://review.openstack.org/49687
+Project: stackforge/murano-tests
+Branch: refs/heads/master
