@@ -7,7 +7,7 @@ Library           String
 Library           Boffin.WebUIlib    # Boffin framework library
 
 *** Variables ***
-${resources_path}    /Resources/
+${resources_path}    Resources/
 
 *** Test Cases ***
 Check Environments Tab
