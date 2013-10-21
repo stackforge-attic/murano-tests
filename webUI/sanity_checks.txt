@@ -1,32 +1,34 @@
 *** Settings ***
 Suite Setup
 Suite Teardown    Close All Browsers
-Test Setup        Open Browser    http://172.18.79.84/dashboard
+Test Setup        Open Browser    ${url}
 Test Teardown     Close All Browsers
 Library           String
 Library           Boffin.WebUIlib    # Boffin framework library
 
 *** Variables ***
 ${resources_path}    Resources/
+${url}            http://172.18.79.84/dashboard
 
 *** Test Cases ***
 Check Environments Tab
     [Tags]    forCommit
-    Log in WebUI by anastasia/swordfish
+    Log in WebUI by admin/swordfish
     Page should contain element "Environments"
     Log out
 
 Create environment
     [Tags]    forCommit
-    Log in WebUI by anastasia/swordfish
+    Log in WebUI by admin/swordfish
     User click on "Create Environment"
     User set value "env" for field Environment Name
     User click on "Create"
+    Reload Page
     Page should contain element "env"
 
 Edit environment
     [Tags]    forCommit
-    Log in WebUI by anastasia/swordfish
+    Log in WebUI by admin/swordfish
     User click on "Create Environment"
     User set value "env1" for field Environment Name
     User click on "Create"
@@ -38,7 +40,7 @@ Edit environment
 
 Delete Environment
     [Tags]    forCommit
-    Log in WebUI by anastasia/swordfish
+    Log in WebUI by admin/swordfish
     User click on "Create Environment"
     User set value "env2" for field Environment Name
     User click on "Create"
@@ -48,18 +50,20 @@ Delete Environment
     Page should not contain element "env2"
 
 Create image
+    [Tags]    forCommit    night
     Log in WebUI by anastasia/swordfish
-    User click on "Murano Images"
-    User click on "Add Image"
-    User set value "Windows Server 2012 Standard" for field Image Title
-    User select "ws-2012-std" from dropdown list "Images"
-    User select " Windows Server 2012 Desktop" from dropdown list "Murano Type"
-    User click on "Update Image"
+    User click on "Marked Image"
+    User click on "Mark Image"
+    User select "ws-2012-std" from dropdown list "Image"
+    User set value "Windows Server 2012 Standard" for field Title
+    Sleep    2s
+    User select " Windows Server 2012" from dropdown list "Type"
+    User click on "Mark"
     Page should contain element "Windows Server 2012 Standard"
 
 Create AD Service
     [Tags]    forCommit
-    Log in WebUI by anastasia/swordfish
+    Log in WebUI by admin/swordfish
     User click on "Create Environment"
     User set value "env_with_one_ad" for field Environment Name
     User click on "Create"
@@ -81,7 +85,7 @@ Create AD Service
 
 Create IIS service
     [Tags]    forCommit
-    Log in WebUI by anastasia/swordfish
+    Log in WebUI by admin/swordfish
     User click on "Create Environment"
     User set value "env_with_one_iis" for field Environment Name
     User click on "Create"
@@ -101,7 +105,7 @@ Create IIS service
 
 Create ASP.Net App
     [Tags]    forCommit
-    Log in WebUI by anastasia/swordfish
+    Log in WebUI by admin/swordfish
     User click on "Create Environment"
     User set value "env_with_one_asp" for field Environment Name
     User click on "Create"
@@ -122,7 +126,7 @@ Create ASP.Net App
 
 Create IIS Farm
     [Tags]    forCommit
-    Log in WebUI by anastasia/swordfish
+    Log in WebUI by admin/swordfish
     User click on "Create Environment"
     User set value "env_with_iis_farm" for field Environment Name
     User click on "Create"
@@ -142,7 +146,7 @@ Create IIS Farm
 
 Create ASP.NET Farm
     [Tags]    forCommit
-    Log in WebUI by anastasia/swordfish
+    Log in WebUI by admin/swordfish
     User click on "Create Environment"
     User set value "env_with_asp_farm" for field Environment Name
     User click on "Create"
@@ -163,7 +167,7 @@ Create ASP.NET Farm
 
 Create MS SQL Server
     [Tags]    forCommit
-    Log in WebUI by anastasia/swordfish
+    Log in WebUI by admin/swordfish
     User click on "Create Environment"
     User set value "env_with_one_mssql" for field Environment Name
     User click on "Create"
@@ -185,7 +189,7 @@ Create MS SQL Server
 
 Create MS SQL Cluster
     [Tags]    forCommit
-    Log in WebUI by anastasia/swordfish
+    Log in WebUI by admin/swordfish
     User click on "Create Environment"
     User set value "env_with_sqlcluster" for field Environment Name
     User click on "Create"
@@ -223,7 +227,7 @@ Create MS SQL Cluster
 
 Delete AD service
     [Tags]    forCommit
-    Log in WebUI by anastasia/swordfish
+    Log in WebUI by admin/swordfish
     User click on "Create Environment"
     User set value "delete_ad" for field Environment Name
     User click on "Create"
@@ -247,7 +251,7 @@ Delete AD service
 
 Delete IIS service
     [Tags]    forCommit
-    Log in WebUI by anastasia/swordfish
+    Log in WebUI by admin/swordfish
     User click on "Create Environment"
     User set value "delete_iis" for field Environment Name
     User click on "Create"
@@ -269,7 +273,7 @@ Delete IIS service
 
 Delete ASP.NET service
     [Tags]    forCommit
-    Log in WebUI by anastasia/swordfish
+    Log in WebUI by admin/swordfish
     User click on "Create Environment"
     User set value "delete_asp" for field Environment Name
     User click on "Create"
@@ -292,7 +296,7 @@ Delete ASP.NET service
 
 Delete IIS Farm service
     [Tags]    forCommit
-    Log in WebUI by anastasia/swordfish
+    Log in WebUI by admin/swordfish
     User click on "Create Environment"
     User set value "delete_iis_farm" for field Environment Name
     User click on "Create"
@@ -314,7 +318,7 @@ Delete IIS Farm service
 
 Delete ASP.NET Farm service
     [Tags]    forCommit
-    Log in WebUI by anastasia/swordfish
+    Log in WebUI by admin/swordfish
     User click on "Create Environment"
     User set value "delete_asp_farm" for field Environment Name
     User click on "Create"
@@ -337,7 +341,7 @@ Delete ASP.NET Farm service
 
 Delete MS SQL server
     [Tags]    forCommit
-    Log in WebUI by anastasia/swordfish
+    Log in WebUI by admin/swordfish
     User click on "Create Environment"
     User set value "delete_mssql" for field Environment Name
     User click on "Create"
@@ -361,7 +365,7 @@ Delete MS SQL server
 
 Delete MS SQL Cluster
     [Tags]    forCommit
-    Log in WebUI by anastasia/swordfish
+    Log in WebUI by admin/swordfish
     User click on "Create Environment"
     User set value "delete_sqlcluster" for field Environment Name
     User click on "Create"
@@ -399,7 +403,7 @@ Delete MS SQL Cluster
     Delete environment "delete_sqlcluster" after test
 
 Check opportunity to choose availability zone
-    [Tags]    forCommit
+    [Tags]
     Log in WebUI by anastasia/swordfish
     User click on "Create Environment"
     User set value "env_av_zone" for field Environment Name
@@ -439,7 +443,7 @@ Check opportunity to choose Instance Flavor
     Delete environment "env_inst_flavor" after test
 
 Check opportunity to choose Instance Image
-    [Tags]    forCommit
+    [Tags]
     Log in WebUI by anastasia/swordfish
     User click on "Create Environment"
     User set value "env_inst_image" for field Environment Name
@@ -457,8 +461,8 @@ Check opportunity to choose Instance Image
     Delete environment "env_inst_image" after test
 
 Deploy environment with AD Service
-    [Tags]    work
-    Log in WebUI by anastasia/swordfish
+    [Tags]    night
+    Log in WebUI by admin/swordfish
     User click on "Create Environment"
     User set value "deploy_one_ad" for field Environment Name
     User click on "Create"
@@ -482,8 +486,8 @@ Deploy environment with AD Service
     Delete environment "deploy_one_ad" after test
 
 Deploy environment with IIS Service
-    [Tags]    work
-    Log in WebUI by anastasia/swordfish
+    [Tags]    night
+    Log in WebUI by admin/swordfish
     User click on "Create Environment"
     User set value "deploy_iis" for field Environment Name
     User click on "Create"
@@ -505,8 +509,8 @@ Deploy environment with IIS Service
     Delete environment "deploy_iis" after test
 
 Deploy environment with ASP.NET Service
-    [Tags]    work
-    Log in WebUI by anastasia/swordfish
+    [Tags]    night
+    Log in WebUI by admin/swordfish
     User click on "Create Environment"
     User set value "deploy_asp" for field Environment Name
     User click on "Create"
@@ -529,7 +533,8 @@ Deploy environment with ASP.NET Service
     Delete environment "deploy_asp" after test
 
 Deploy environment with IIS Farm
-    Log in WebUI by anastasia/swordfish
+    [Tags]    night
+    Log in WebUI by admin/swordfish
     User click on "Create Environment"
     User set value "deploy_iis_farm" for field Environment Name
     User click on "Create"
@@ -548,10 +553,11 @@ Deploy environment with IIS Farm
     User click on "Deploy This Environment"
     Check the status of environment "deploy_iis_farm" (should be "Ready")
     Check that deploy "deploy_iis_farm" finished
-    Delete environment "delete_iis_farm" after test
+    Delete environment "deploy_iis_farm" after test
 
 Deploy environment with ASP.NET Farm
-    Log in WebUI by anastasia/swordfish
+    [Tags]    night
+    Log in WebUI by admin/swordfish
     User click on "Create Environment"
     User set value "deploy_asp_farm" for field Environment Name
     User click on "Create"
@@ -571,10 +577,11 @@ Deploy environment with ASP.NET Farm
     User click on "Deploy This Environment"
     Check the status of environment "deploy_asp_farm" (should be "Ready")
     Check that deploy "deploy_asp_farm" finished
-    Delete environment "delete_asp_farm" after test
+    Delete environment "deploy_asp_farm" after test
 
 Deploy environment with MS SQL server
-    Log in WebUI by anastasia/swordfish
+    [Tags]    night
+    Log in WebUI by admin/swordfish
     User click on "Create Environment"
     User set value "deploy_mssql" for field Environment Name
     User click on "Create"
@@ -598,7 +605,8 @@ Deploy environment with MS SQL server
     Delete environment "deploy_mssql" after test
 
 Deploy environment with MS SQL cluster
-    Log in WebUI by anastasia/swordfish
+    [Tags]    night
+    Log in WebUI by admin/swordfish
     User click on "Create Environment"
     User set value "deploy_sqlcluster" for field Environment Name
     User click on "Create"
@@ -638,7 +646,8 @@ Deploy environment with MS SQL cluster
     Delete environment "deploy_sqlcluster" after test
 
 Deploy AD with 2 instances
-    Log in WebUI by anastasia/swordfish
+    [Tags]    night
+    Log in WebUI by admin/swordfish
     User click on "Create Environment"
     User set value "deploy_ad_2_inst" for field Environment Name
     User click on "Create"
@@ -663,7 +672,7 @@ Deploy AD with 2 instances
     Delete environment "deploy_ad_2_inst" after test
 
 Create IIS and IIS Farm in domain
-    [Tags]    work
+    [Tags]    night
     Log in WebUI by anastasia/swordfish
     User click on "Create Environment"
     User set value "iis_iisfarm_in_domain" for field Environment Name
@@ -681,7 +690,7 @@ Create IIS and IIS Farm in domain
     Delete environment "iis_iisfarm_in_domain" after test
 
 Create ASP.Net and ASP.Net Farm in domain
-    [Tags]    work
+    [Tags]    night
     Log in WebUI by anastasia/swordfish
     User click on "Create Environment"
     User set value "asp_aspfarm_in_domain" for field Environment Name
@@ -721,6 +730,7 @@ Deploy IIS Farm and ASP.NET Farm in 2 domains
     Check that deploy "farms_in_domains" finished
 
 Deploy MS SQL server and IIS in domain
+    [Tags]    night
     Log in WebUI by anastasia/swordfish
     User click on "Create Environment"
     User set value "iis_sqlserver_in_domain" for field Environment Name
@@ -744,7 +754,7 @@ Deploy MS SQL server and IIS in domain
 Deploy MS SQL server and ASP.NET in domain
 
 Create IIS+ ASP Farm + AD + IIS
-    [Tags]    work
+    [Tags]    night
     Log in WebUI by anastasia/swordfish
     User click on "Create Environment"
     User set value "complex_env" for field Environment Name
@@ -761,7 +771,7 @@ Create IIS+ ASP Farm + AD + IIS
     Delete environment "complex_env" after test
 
 Create ASP.FARM + SQL Cluster + SQL + AD
-    [Tags]    work
+    [Tags]    night
     Log in WebUI by anastasia/swordfish
     User click on "Create Environment"
     User set value "ASP.FARM + SQL Cluster + SQL + AD" for field Environment Name
@@ -776,7 +786,7 @@ Create ASP.FARM + SQL Cluster + SQL + AD
     Delete environment "ASP.FARM + SQL Cluster + SQL + AD" after test
 
 Create IIS + AD + SQL + SQL Cluster + ASP.FARM
-    [Tags]    work
+    [Tags]    night
     Log in WebUI by anastasia/swordfish
     User click on "Create Environment"
     User set value "IIS + AD + SQL + SQL Cluster + ASP.FARM" for field Environment Name
@@ -795,7 +805,7 @@ Create IIS + AD + SQL + SQL Cluster + ASP.FARM
     Delete environment "IIS + AD + SQL + SQL Cluster + ASP.FARM" after test
 
 Create 4 MS SQL clusters
-    [Tags]    work
+    [Tags]    night
     Log in WebUI by anastasia/swordfish
     User click on "Create Environment"
     User set value "4 SQL Clusters" for field Environment Name
@@ -812,7 +822,7 @@ Create 4 MS SQL clusters
     Delete environment "4 SQL Clusters" after test
 
 Create IIS + SQL + ASP.FARM delete IIS
-    [Tags]    work
+    [Tags]    night
     Log in WebUI by anastasia/swordfish
     User click on "Create Environment"
     User set value "IIS + SQL + ASP.FARM" for field Environment Name
@@ -830,6 +840,7 @@ Create IIS + SQL + ASP.FARM delete IIS
     Delete environment "IIS + SQL + ASP.FARM" after test
 
 Delete AD after deploy
+    [Tags]
     Log in WebUI by anastasia/swordfish
     User click on "Create Environment"
     User set value "delete_ad_after_deploy" for field Environment Name
@@ -864,6 +875,7 @@ Delete AD after deploy
     Delete environment "delete_ad_after_deploy" after test
 
 Delete IIS after deploy
+    [Tags]
     Log in WebUI by anastasia/swordfish
     User click on "Create Environment"
     User set value "delete_iis_after_deploy" for field Environment Name
@@ -1071,10 +1083,9 @@ Check that service "${service}" was joined in domain "${domain}"
     Page should contain element "${domain}"
 
 Delete environment "${name}" after test
-    Navigate To     Project>Environments
+    Navigate To    Project>Environments
     Sleep    3s
     Select "More" for chosen environment "${name}"
     Select "Delete Environment" for chosen environment "${name}"
     User confirms deletion
     Page should not contain element "${name}"
-
