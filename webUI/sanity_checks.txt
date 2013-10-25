@@ -2,7 +2,7 @@
 Suite Setup
 Suite Teardown    Close All Browsers
 Test Setup        Open Browser    ${url}
-Test Teardown     Close All Browsers
+Test Teardown     End Test
 Library           String
 Library           Boffin.WebUIlib    # Boffin framework library
 
@@ -1089,3 +1089,7 @@ Delete environment "${name}" after test
     Select "Delete Environment" for chosen environment "${name}"
     User confirms deletion
     Page should not contain element "${name}"
+
+End Test
+    Run Keyword If Test Failed    Capture Page Screenshot
+    Close All Browsers

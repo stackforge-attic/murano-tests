@@ -199,7 +199,6 @@ class _Utils(object):
                 _objRepoPath = join(getcwd(), 'resources', 'objrepo')
 
             element_name = element_name.lower().replace(' ', '')
-            print "Element Name: " + element_name 
             inputElement = element_name.split('.')
 
             if len(inputElement) == 1:
@@ -211,15 +210,10 @@ class _Utils(object):
                 name = inputElement[1]
 
             fullFileName = join(_objRepoPath, fileName)
-            print "fullFileName " + fullFileName
             conf = ConfigParser()
             conf.read(fullFileName)
 
-            print "A: " + conf.get(str(name), 'type')
-            print "A: " + conf.get(name, 'type')
-
             if not conf.has_section(name):
-                print name
                 return ['', None, '']
             element_type = conf.get(name, 'type')
 
