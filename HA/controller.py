@@ -16,10 +16,10 @@
 import xmlrpclib
 import ConfigParser
 import time
+from bottle import route, run
 
 
 class ControllerNode():
-
     def __init__(self, status='on', host='', port='7007', file1='', file2='',
                  activate_cmd='', diactivate_cmd='', agent=None):
         self.status = status
@@ -34,24 +34,26 @@ class ControllerNode():
 
     def check_files(self, access):
         self.checks_timeout -= 1
-	if self.checks_timeout == 0:
+        if self.checks_timeout == 0:
             self.activate()
             return 1
 
         if self.agent.check_diff_files(self.file1, self.file2) and access:
-            self.diactivate()
+            self.deactivate()
             return -1
 
         return 0
 
     def activate(self, timeout=5):
         print 'Start to activate node ' + self.host
-        init_cmd = 'cp %s %s' % (self.file1, self.file2)
         self.agent.run_bash_command(self.activate_cmd)
-        time.sleep(timeout)
-        self.agent.run_bash_command(init_cmd)
 
-    def diactivate(self, timeout=5):
+        if self.file1 and self.file2:
+            init_cmd = 'cp %s %s' % (self.file1, self.file2)
+            time.sleep(timeout)
+            self.agent.run_bash_command(init_cmd)
+
+    def deactivate(self, timeout=5):
         print 'Start to diactivate node ' + self.host
         time.sleep(timeout)
         self.agent.run_bash_command(self.diactivate_cmd)
@@ -59,7 +61,6 @@ class ControllerNode():
 
 
 class Controller():
-
     nodes = []
 
     def __init__(self, config_file='controller.conf'):
@@ -124,3 +125,32 @@ class Controller():
 
 ctrl = Controller()
 ctrl.execute()
+
+@route('/HA/nodes', method='GET')
+def get_nodes():
+    result = []
+    for node in ctrl.nodes:
+        result.append({'name': node.host, 'status': node.status})
+
+    return result
+
+@route('/HA/activate/<activate_nodes>', method='PUT')
+def activate(activate_nodes=[]):
+    for node in ctrl.nodes:
+        if node.name in activate_nodes:
+            node.activate()
+            ctrl.active_nodes += 1
+
+    return ctrl.active_nodes
+
+@route('/HA/diactivate/<diactivate_nodes>', method='PUT')
+def activate(diactivate_nodes=[]):
+    for node in ctrl.nodes:
+        if node.name in diactivate_nodes:
+            if int(self.active_nodes) > int(self.min_active_nodes):
+                node.diactivate()
+                ctrl.active_nodes -= 1
+
+    return ctrl.active_nodes
+
+run(host='0.0.0.0', port=7007, debug=False)
