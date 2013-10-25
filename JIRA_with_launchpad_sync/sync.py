@@ -317,7 +317,7 @@ def sync_jira_with_launchpad(url, user, password, project, project_key=''):
             new_issue = create_jira_bug(jira, project_key, new_title,
                                         Lbug['description'])
             if new_issue:
-                update_jira_bug(new_issue.key,
+                update_jira_bug(jira, new_issue.key,
                                 new_title, Lbug['description'],
                                 Lbug['priority']['jira'],
                                 Lbug['status']['jira'])
@@ -354,6 +354,23 @@ def sync_jira_with_launchpad(url, user, password, project, project_key=''):
                               Jbug['title'], Jbug['description'],
                               Jbug['priority']['launchpad'],
                               Jbug['status']['launchpad'])
+
+    for Jbug in jira_bugs:
+        if Jbug['status_code'] == 3:
+            continue
+
+        for Lbug in launchpad_bugs:
+            if Lbug['title'] in Jbug['title']:
+                if Lbug['key'] in Jbug['title'] and \
+                   'Launchpad Bug' in Jbug['title']):
+                    next
+
+                new_title = template.format(Lbug['key']) + Lbug['title']
+                update_jira_bug(jira, Jbug['key'],
+                                new_title, Jbug['description'],
+                                Jbug['priority']['jira'],
+                                Jbug['status']['jira'])
+
 
 
 config = ConfigParser.RawConfigParser()
