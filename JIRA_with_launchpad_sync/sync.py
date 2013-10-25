@@ -362,7 +362,7 @@ def sync_jira_with_launchpad(url, user, password, project, project_key=''):
         for Lbug in launchpad_bugs:
             if Lbug['title'] in Jbug['title']:
                 if Lbug['key'] in Jbug['title'] and \
-                   'Launchpad Bug' in Jbug['title']):
+                   'Launchpad Bug' in Jbug['title']:
                     next
 
                 new_title = template.format(Lbug['key']) + Lbug['title']

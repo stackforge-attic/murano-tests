@@ -16,50 +16,51 @@
 import xmlrpclib
 import ConfigParser
 import time
+from bottle import route, run
 
 
 class ControllerNode():
-
     def __init__(self, status='on', host='', port='7007', file1='', file2='',
-                 activate_cmd='', diactivate_cmd='', agent=None):
+                 activate_cmd='', deactivate_cmd='', agent=None):
         self.status = status
         self.host = host
         self.port = port
         self.file1 = file1
         self.file2 = file2
         self.activate_cmd = activate_cmd
-        self.diactivate_cmd = diactivate_cmd
+        self.deactivate_cmd = deactivate_cmd
         self.agent = agent
         self.checks_timeout = -1
 
     def check_files(self, access):
         self.checks_timeout -= 1
-	if self.checks_timeout == 0:
+        if self.checks_timeout == 0:
             self.activate()
             return 1
 
         if self.agent.check_diff_files(self.file1, self.file2) and access:
-            self.diactivate()
+            self.deactivate()
             return -1
 
         return 0
 
     def activate(self, timeout=5):
         print 'Start to activate node ' + self.host
-        init_cmd = 'cp %s %s' % (self.file1, self.file2)
         self.agent.run_bash_command(self.activate_cmd)
-        time.sleep(timeout)
-        self.agent.run_bash_command(init_cmd)
 
-    def diactivate(self, timeout=5):
+        if self.file1 and self.file2:
+            init_cmd = 'cp %s %s' % (self.file1, self.file2)
+            time.sleep(timeout)
+            self.agent.run_bash_command(init_cmd)
+
+    def deactivate(self, timeout=5):
         print 'Start to diactivate node ' + self.host
         time.sleep(timeout)
-        self.agent.run_bash_command(self.diactivate_cmd)
+        self.agent.run_bash_command(self.deactivate_cmd)
         self.checks_timeout = 10
 
 
 class Controller():
-
     nodes = []
 
     def __init__(self, config_file='controller.conf'):
@@ -70,7 +71,7 @@ class Controller():
         self.port = self.get_from_cfg('HA_Testing', 'port', '7007')
 
         self.activate_cmd = self.get_from_cfg('HA_Testing', 'activate_cmd')
-        self.diactivate_cmd = self.get_from_cfg('HA_Testing', 'diactivate_cmd')
+        self.deactivate_cmd = self.get_from_cfg('HA_Testing', 'deactivate_cmd')
 
         self.mode = self.get_from_cfg('HA_Testing', 'mode', 'compare_files')
         self.file1 = self.get_from_cfg('HA_Testing', 'file1')
@@ -87,8 +88,8 @@ class Controller():
             file2 = self.get_from_cfg(agent, 'file2', self.file2)
             activate_cmd = self.get_from_cfg(agent, 'activate_cmd',
                                              self.activate_cmd)
-            diactivate_cmd = self.get_from_cfg(agent, 'diactivate_cmd',
-                                               self.diactivate_cmd)
+            deactivate_cmd = self.get_from_cfg(agent, 'deactivate_cmd',
+                                               self.deactivate_cmd)
 
             new_agent = xmlrpclib.ServerProxy("http://%s:%s"
                                               % (host, port), allow_none=True)
@@ -124,3 +125,32 @@ class Controller():
 
 ctrl = Controller()
 ctrl.execute()
+
+@route('/HA/nodes', method='GET')
+def get_nodes():
+    result = []
+    for node in ctrl.nodes:
+        result.append({'name': node.host, 'status': node.status})
+
+    return result
+
+@route('/HA/activate/<activate_nodes>', method='PUT')
+def activate(activate_nodes=[]):
+    for node in ctrl.nodes:
+        if node.name in activate_nodes:
+            node.activate()
+            ctrl.active_nodes += 1
+
+    return ctrl.active_nodes
+
+@route('/HA/deactivate/<deactivate_nodes>', method='PUT')
+def activate(deactivate_nodes=[]):
+    for node in ctrl.nodes:
+        if node.name in deactivate_nodes:
+            if int(self.active_nodes) > int(self.min_active_nodes):
+                node.deactivate()
+                ctrl.active_nodes -= 1
+
+    return ctrl.active_nodes
+
+run(host='0.0.0.0', port=7007, debug=False)
