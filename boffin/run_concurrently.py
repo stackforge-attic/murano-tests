@@ -12,7 +12,7 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-# Please, install python and puppet before run this script.
+# Please, install python before run this script.
 # Also, please, do not forget to install the following packages for tests:
 # robotframework, robotframework-selenium2library, BeautifulSoup4
 
@@ -21,7 +21,7 @@ from argparse import ArgumentParser
 from time import sleep
 from os import listdir
 from os.path import join, split
-
+from xvfbwrapper import Xvfb
 
 def wait_for_finished(threads):
     """
@@ -72,58 +72,14 @@ parser.add_argument('-r', action='store', dest='reports_dir',
 args = parser.parse_args()
 
 
-# Generate puppet manifest:
-content = """package { ['xvfb',
-                        'x11-xkb-utils',
-                        'xfonts-100dpi',
-                        'xfonts-75dpi',
-                        'xfonts-scalable',
-                        'xfonts-cyrillic',
-                        'xserver-xorg-core']:
-             ensure  => latest,
-}\n"""
-for i in xrange(args.processes_count):
-    content += """exec {'Create new virtual desktop%s':
-                         require  => [ Package['xvfb'],
-                                      Package['x11-xkb-utils'],
-                                      Package['xfonts-100dpi'],
-                                      Package['xfonts-75dpi'],
-                                      Package['xfonts-scalable'],
-                                      Package['xfonts-cyrillic'],
-                                      Package['xserver-xorg-core'] ],
-                         command  => 'Xvfb -fp /usr/share/fonts/X11/misc/ :2%s
-                          -screen %s 1024x768x16 2>&1; echo "ok"',
-                         user     => 'root',
-                         provider => shell,
-                         path     => '/usr/bin',
-}\n""" % (i + 1, i, i)
-
-f = open('make_virtual_displays.pp', 'w')
-f.write(content)
-f.close()
-
-# Deploy puppet manifest to create a few virtual displays:
-cmd = 'sudo puppet apply make_virtual_displays.pp'
-make_displays = Popen(cmd, shell=True)
-
-print "Start to make a new virtual displays"
+make_displays = Popen('sudo pkill Xvfb; rm -rf /tmp/.X*-lock', shell=True)
 while make_displays.poll() is None:
     sleep(1)
 
-if make_displays.poll() == 0:
-    print "Virtual Displays are ready."
-else:
-    print "Can not create virtual displays: error code: " +\
-          str(make_displays.poll())
-    exit(1)
-
-
 # Generate the command for executing tests.
-cmd = "export DISPLAY=:%s; pybot -C off -K off -r %s.report.html " \
-      "-l %s.log.html -o %s.output.xml -d " + args.reports_dir + " "
+cmd = "export DISPLAY=:%s; pybot -C off -K off -d " + args.reports_dir + "/%s"
 if args.resources_dir:
     cmd += " -v resources_path:" + args.resources_dir + " "
-
 
 # Start all threads with tests.
 if args.tags_list and args.script_name:
@@ -131,9 +87,9 @@ if args.tags_list and args.script_name:
     # Start all threads with tests and ignore empty threads.
     threads = []
     for i, tag in enumerate(args.tags_list):
-        f_name = args.script_name.split('.')[0]
-        values = ("2%s" % i, f_name, f_name, f_name, tag)
-        print "Execute command:\n", cmd % values
+        xvfb = Xvfb()
+        xvfb.start()
+        values = (xvfb.vdisplay_num, i, tag)
         threads.append(Popen(cmd % values, shell=True))
         while len(threads) == args.processes_count:
             wait_for_finished(threads)
@@ -167,5 +123,3 @@ else:
 # Wait for all threads finish.
 while len(threads) > 0:
     wait_for_finished(threads)
-print "\nFinished."
-exit(0)
