@@ -174,21 +174,22 @@ def get_launchpad_bugs(project):
 
 def update_jira_bug(jira, issue, title, description, priority, status):
     print "Udating JIRA bug ", title
-
     print "Description & Title & Priority updating..."
     try:
         issue.update(summary=title, description=description,
                      priority={'name': priority})
         print "... updated: OK"
-    except:
+    except Exception as ex:
         print "... updated: FAIL (not possible)"
+        print type(ex), ex
 
     print "Status updating..."
     try:
         update_status_of_jira_issue(jira, get_str(issue.key), status)
         print "... updated: OK"
-    except:
+    except Exception as ex:
         print "... updated: FAIL (not possible)"
+        print type(ex), ex
 
 
 def update_lp_bug(bug, title, description, priority, status):
@@ -202,8 +203,9 @@ def update_lp_bug(bug, title, description, priority, status):
         bug.description = description
         bug.lp_save()
         print "... updated: OK"
-    except:
+    except Exception as ex:
         print "... updated: FAIL (not possible)"
+        print type(ex), ex
 
     print "Status & Priority updating..."
     try:
@@ -212,8 +214,9 @@ def update_lp_bug(bug, title, description, priority, status):
         bug_task.importance = priority
         bug_task.lp_save()
         print "... updated: OK"
-    except:
+    except Exception as ex:
         print "... updated: FAIL (not possible)"
+        print type(ex), ex
 
 
 def create_jira_bug(jira, project_key, title, description):
@@ -221,26 +224,28 @@ def create_jira_bug(jira, project_key, title, description):
     fields = {'project': { 'key': project_key }, 'summary': title,
               'description': description, 'issuetype': { 'name': 'Bug' }}
 
-    print "Creating new bug desciption in JIRA... ", title
+    print "Creating the new bug desciption in JIRA... ", title
     try:
         new_issue = jira.create_issue(fields=fields)
-        print "New bug was successfully created in JIRA"
-    except:
+        print "The new bug description was successfully created in JIRA"
+    except Exception as ex:
         print "Can not create new bug in JIRA"
+        print type(ex), ex
 
     return new_issue
 
 
 def create_lp_bug(launchpad, project, title, description):
     new_bug = None
-    print "Creating new bug desciption on launchpad... ", title
+    print "Creating the bug desciption on launchpad... ", title
     try:
         new_bug = launchpad.bugs.createBug(target=project.self_link,
                                            title=title,
                                            description=description)
-        print "New bug was successfully created on launchpad"
-    except:
+        print "The bug description was successfully created on launchpad"
+    except Exception as ex:
         print "Can not create new bug on launchpad"
+        print type(ex), ex
 
     return new_bug
 
@@ -286,9 +291,6 @@ def sync_jira_with_launchpad(url, user, password, project, project_key=''):
                 break
 
     " Move new bugs from launchpad to JIRA "
-    jira_bugs = get_jira_bugs(url, user, password, project)
-    launchpad_bugs = get_launchpad_bugs(project)
-
     for Lbug in launchpad_bugs:
         if Lbug['status_code'] == 3:
             continue
@@ -317,15 +319,12 @@ def sync_jira_with_launchpad(url, user, password, project, project_key=''):
             new_issue = create_jira_bug(jira, project_key, new_title,
                                         Lbug['description'])
             if new_issue:
-                update_jira_bug(jira, new_issue.key,
+                update_jira_bug(jira, jira.issue(new_issue.key),
                                 new_title, Lbug['description'],
                                 Lbug['priority']['jira'],
                                 Lbug['status']['jira'])
 
     " Move new bugs from JIRA to launchpad "
-    jira_bugs = get_jira_bugs(url, user, password, project)
-    launchpad_bugs = get_launchpad_bugs(project)
-
     for Jbug in jira_bugs:
         if Jbug['status_code'] == 3:
             continue
@@ -363,10 +362,10 @@ def sync_jira_with_launchpad(url, user, password, project, project_key=''):
             if Lbug['title'] in Jbug['title']:
                 if Lbug['key'] in Jbug['title'] and \
                    'Launchpad Bug' in Jbug['title']:
-                    next
+                    continue
 
                 new_title = template.format(Lbug['key']) + Lbug['title']
-                update_jira_bug(jira, Jbug['key'],
+                update_jira_bug(jira, jira.issue(Jbug['key']),
                                 new_title, Jbug['description'],
                                 Jbug['priority']['jira'],
                                 Jbug['status']['jira'])
