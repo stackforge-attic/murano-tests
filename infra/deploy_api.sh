@@ -15,11 +15,11 @@ expect "*root@A1box*"
 send -- "yum install python-memcached -y\n"
 expect "*root@A1box*"
 
-send -- "sed -i \"s/LAB_HOST=''/LAB_HOST='\""
+send -- "sed -i \"s/LAB_HOST=''/LAB_HOST='"
 send -- [lindex $argv 4]
 send -- "'/\" /etc/murano-deployment/lab-binding.rc\n"
 expect "*root@A1box*"
-send -- "sed -i \"s/BRANCH_NAME=''/BRANCH_NAME='\""
+send -- "sed -i \"s/BRANCH_NAME=''/BRANCH_NAME='"
 send -- [lindex $argv 5]
 send -- "'/\" /etc/murano-deployment/lab-binding.rc\n"
 expect "*root@A1box*"
