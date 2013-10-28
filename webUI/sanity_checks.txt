@@ -2,24 +2,16 @@
 Suite Setup
 Suite Teardown    Close All Browsers
 Test Setup        Open Browser    ${url}
-Test Teardown     End Test
+Test Teardown     Close All Browsers
 Library           String
 Library           Boffin.WebUIlib    # Boffin framework library
 
 *** Variables ***
-${resources_path}    Resources/
-${url}            http://172.18.79.84/dashboard
 
 *** Test Cases ***
-Check Environments Tab
-    [Tags]    forCommit
-    Log in WebUI by admin/swordfish
-    Page should contain element "Environments"
-    Log out
-
 Create environment
-    [Tags]    forCommit
-    Log in WebUI by admin/swordfish
+    [Tags]    commit    thread 3
+    Log in WebUI by anastasia/swordfish
     User click on "Create Environment"
     User set value "env" for field Environment Name
     User click on "Create"
@@ -27,8 +19,8 @@ Create environment
     Page should contain element "env"
 
 Edit environment
-    [Tags]    forCommit
-    Log in WebUI by admin/swordfish
+    [Tags]    commit    thread 4
+    Log in WebUI by anastasia/swordfish
     User click on "Create Environment"
     User set value "env1" for field Environment Name
     User click on "Create"
@@ -39,8 +31,8 @@ Edit environment
     Page should contain element "edited_env"
 
 Delete Environment
-    [Tags]    forCommit
-    Log in WebUI by admin/swordfish
+    [Tags]    commit    thread 5
+    Log in WebUI by anastasia/swordfish
     User click on "Create Environment"
     User set value "env2" for field Environment Name
     User click on "Create"
@@ -49,8 +41,8 @@ Delete Environment
     User confirms deletion
     Page should not contain element "env2"
 
-Create image
-    [Tags]    forCommit    night
+Rename Windows image
+    [Tags]    night    commit    thread 1
     Log in WebUI by anastasia/swordfish
     User click on "Marked Image"
     User click on "Mark Image"
@@ -61,9 +53,21 @@ Create image
     User click on "Mark"
     Page should contain element "Windows Server 2012 Standard"
 
+Rename Linux image
+    [Tags]    night    commit    thread 2
+    Log in WebUI by anastasia/swordfish
+    User click on "Marked Image"
+    User click on "Mark Image"
+    User select "F18-x86_64-cfntools-MURANO" from dropdown list "Image"
+    User set value "Linux Image" for field Title
+    Sleep    2s
+    User select "Generic Linux" from dropdown list "Type"
+    User click on "Mark"
+    Page should contain element "Linux Image"
+
 Create AD Service
-    [Tags]    forCommit
-    Log in WebUI by admin/swordfish
+    [Tags]
+    Log in WebUI by anastasia/swordfish
     User click on "Create Environment"
     User set value "env_with_one_ad" for field Environment Name
     User click on "Create"
@@ -84,8 +88,8 @@ Create AD Service
     Delete environment "env_with_one_ad" after test
 
 Create IIS service
-    [Tags]    forCommit
-    Log in WebUI by admin/swordfish
+    [Tags]
+    Log in WebUI by anastasia/swordfish
     User click on "Create Environment"
     User set value "env_with_one_iis" for field Environment Name
     User click on "Create"
@@ -104,8 +108,8 @@ Create IIS service
     Delete environment "env_with_one_iis" after test
 
 Create ASP.Net App
-    [Tags]    forCommit
-    Log in WebUI by admin/swordfish
+    [Tags]
+    Log in WebUI by anastasia/swordfish
     User click on "Create Environment"
     User set value "env_with_one_asp" for field Environment Name
     User click on "Create"
@@ -125,8 +129,8 @@ Create ASP.Net App
     Delete environment "env_with_one_asp" after test
 
 Create IIS Farm
-    [Tags]    forCommit
-    Log in WebUI by admin/swordfish
+    [Tags]
+    Log in WebUI by anastasia/swordfish
     User click on "Create Environment"
     User set value "env_with_iis_farm" for field Environment Name
     User click on "Create"
@@ -145,8 +149,8 @@ Create IIS Farm
     Delete environment "env_with_iis_farm" after test
 
 Create ASP.NET Farm
-    [Tags]    forCommit
-    Log in WebUI by admin/swordfish
+    [Tags]
+    Log in WebUI by anastasia/swordfish
     User click on "Create Environment"
     User set value "env_with_asp_farm" for field Environment Name
     User click on "Create"
@@ -166,8 +170,8 @@ Create ASP.NET Farm
     Delete environment "env_with_asp_farm" after test
 
 Create MS SQL Server
-    [Tags]    forCommit
-    Log in WebUI by admin/swordfish
+    [Tags]
+    Log in WebUI by anastasia/swordfish
     User click on "Create Environment"
     User set value "env_with_one_mssql" for field Environment Name
     User click on "Create"
@@ -188,8 +192,8 @@ Create MS SQL Server
     Delete environment "env_with_one_mssql" after test
 
 Create MS SQL Cluster
-    [Tags]    forCommit
-    Log in WebUI by admin/swordfish
+    [Tags]
+    Log in WebUI by anastasia/swordfish
     User click on "Create Environment"
     User set value "env_with_sqlcluster" for field Environment Name
     User click on "Create"
@@ -225,9 +229,11 @@ Create MS SQL Cluster
     Page should contain element "sql_cluster"
     Delete environment "env_with_sqlcluster" after test
 
-Delete AD service
-    [Tags]    forCommit
-    Log in WebUI by admin/swordfish
+Create Telnet Service
+
+Create and Delete AD service
+    [Tags]    commit    thread 1
+    Log in WebUI by anastasia/swordfish
     User click on "Create Environment"
     User set value "delete_ad" for field Environment Name
     User click on "Create"
@@ -249,9 +255,9 @@ Delete AD service
     Page should not contain element "ad.nastya"
     Delete environment "delete_ad" after test
 
-Delete IIS service
-    [Tags]    forCommit
-    Log in WebUI by admin/swordfish
+Create and Delete IIS service
+    [Tags]    commit    thread 2
+    Log in WebUI by anastasia/swordfish
     User click on "Create Environment"
     User set value "delete_iis" for field Environment Name
     User click on "Create"
@@ -271,9 +277,9 @@ Delete IIS service
     Page should not contain element "iis_service"
     Delete environment "delete_iis" after test
 
-Delete ASP.NET service
-    [Tags]    forCommit
-    Log in WebUI by admin/swordfish
+Create and Delete ASP.NET service
+    [Tags]    commit    thread 3
+    Log in WebUI by anastasia/swordfish
     User click on "Create Environment"
     User set value "delete_asp" for field Environment Name
     User click on "Create"
@@ -294,9 +300,9 @@ Delete ASP.NET service
     Page should not contain element "asp-service"
     Delete environment "delete_asp" after test
 
-Delete IIS Farm service
-    [Tags]    forCommit
-    Log in WebUI by admin/swordfish
+Create and Delete IIS Farm service
+    [Tags]    commit    thread 4
+    Log in WebUI by anastasia/swordfish
     User click on "Create Environment"
     User set value "delete_iis_farm" for field Environment Name
     User click on "Create"
@@ -316,9 +322,9 @@ Delete IIS Farm service
     Page should not contain element "iis-farm"
     Delete environment "delete_iis_farm" after test
 
-Delete ASP.NET Farm service
-    [Tags]    forCommit
-    Log in WebUI by admin/swordfish
+Create and Delete ASP.NET Farm service
+    [Tags]    commit    thread 5
+    Log in WebUI by anastasia/swordfish
     User click on "Create Environment"
     User set value "delete_asp_farm" for field Environment Name
     User click on "Create"
@@ -339,9 +345,9 @@ Delete ASP.NET Farm service
     Page should not contain element "asp-farm"
     Delete environment "delete_asp_farm" after test
 
-Delete MS SQL server
-    [Tags]    forCommit
-    Log in WebUI by admin/swordfish
+Create and Delete MS SQL server
+    [Tags]    commit    thread 1
+    Log in WebUI by anastasia/swordfish
     User click on "Create Environment"
     User set value "delete_mssql" for field Environment Name
     User click on "Create"
@@ -363,9 +369,9 @@ Delete MS SQL server
     Page should not contain element "ms_sql"
     Delete environment "delete_mssql" after test
 
-Delete MS SQL Cluster
-    [Tags]    forCommit
-    Log in WebUI by admin/swordfish
+Create and Delete MS SQL Cluster
+    [Tags]    commit    thread 2
+    Log in WebUI by anastasia/swordfish
     User click on "Create Environment"
     User set value "delete_sqlcluster" for field Environment Name
     User click on "Create"
@@ -402,6 +408,26 @@ Delete MS SQL Cluster
     Page should not contain element "sql_cluster"
     Delete environment "delete_sqlcluster" after test
 
+Create and Delete Telnet Service
+    [Tags]    commit    thread 3
+    Log in WebUI by anastasia/swordfish
+    User click on "Create Environment"
+    User set value "env_with_telnet" for field Environment Name
+    User click on "Create"
+    User click on "env_with_telnet"
+    User click on "Create Service"
+    User select "Linux Telnet" from dropdown list "Service Type"
+    User click on "Next"
+    User set value "telnet-service" for field Service Name
+    User set value "telnet" for field Hostname
+    User click on "Next"
+    User select "Linux Image" from dropdown list "Instance image"
+    User click on "Create"
+    User click on "Delete Service"
+    User confirms deletion
+    Page should not contain element "telnet-service"
+    Delete environment "env_with_telnet" after test
+
 Check opportunity to choose availability zone
     [Tags]
     Log in WebUI by anastasia/swordfish
@@ -422,7 +448,7 @@ Check opportunity to choose availability zone
     Delete environment "env_av_zone" after test
 
 Check opportunity to choose Instance Flavor
-    [Tags]    forCommit
+    [Tags]    commit
     Log in WebUI by anastasia/swordfish
     User click on "Create Environment"
     User set value "env_inst_flavor" for field Environment Name
@@ -462,7 +488,7 @@ Check opportunity to choose Instance Image
 
 Deploy environment with AD Service
     [Tags]    night
-    Log in WebUI by admin/swordfish
+    Log in WebUI by anastasia/swordfish
     User click on "Create Environment"
     User set value "deploy_one_ad" for field Environment Name
     User click on "Create"
@@ -487,7 +513,7 @@ Deploy environment with AD Service
 
 Deploy environment with IIS Service
     [Tags]    night
-    Log in WebUI by admin/swordfish
+    Log in WebUI by anastasia/swordfish
     User click on "Create Environment"
     User set value "deploy_iis" for field Environment Name
     User click on "Create"
@@ -510,7 +536,7 @@ Deploy environment with IIS Service
 
 Deploy environment with ASP.NET Service
     [Tags]    night
-    Log in WebUI by admin/swordfish
+    Log in WebUI by anastasia/swordfish
     User click on "Create Environment"
     User set value "deploy_asp" for field Environment Name
     User click on "Create"
@@ -534,7 +560,7 @@ Deploy environment with ASP.NET Service
 
 Deploy environment with IIS Farm
     [Tags]    night
-    Log in WebUI by admin/swordfish
+    Log in WebUI by anastasia/swordfish
     User click on "Create Environment"
     User set value "deploy_iis_farm" for field Environment Name
     User click on "Create"
@@ -557,7 +583,7 @@ Deploy environment with IIS Farm
 
 Deploy environment with ASP.NET Farm
     [Tags]    night
-    Log in WebUI by admin/swordfish
+    Log in WebUI by anastasia/swordfish
     User click on "Create Environment"
     User set value "deploy_asp_farm" for field Environment Name
     User click on "Create"
@@ -581,7 +607,7 @@ Deploy environment with ASP.NET Farm
 
 Deploy environment with MS SQL server
     [Tags]    night
-    Log in WebUI by admin/swordfish
+    Log in WebUI by anastasia/swordfish
     User click on "Create Environment"
     User set value "deploy_mssql" for field Environment Name
     User click on "Create"
@@ -606,7 +632,7 @@ Deploy environment with MS SQL server
 
 Deploy environment with MS SQL cluster
     [Tags]    night
-    Log in WebUI by admin/swordfish
+    Log in WebUI by anastasia/swordfish
     User click on "Create Environment"
     User set value "deploy_sqlcluster" for field Environment Name
     User click on "Create"
@@ -645,9 +671,28 @@ Deploy environment with MS SQL cluster
     Check that deploy "deploy_sqlcluster" finished
     Delete environment "deploy_sqlcluster" after test
 
+Deploy Telnet Service
+    Log in WebUI by anastasia/swordfish
+    User click on "Create Environment"
+    User set value "deploy_telnet" for field Environment Name
+    User click on "Create"
+    User click on "deploy_telnet"
+    User click on "Create Service"
+    User select "Linux Telnet" from dropdown list "Service Type"
+    User click on "Next"
+    User set value "telnet-service" for field Service Name
+    User set value "telnet" for field Hostname
+    User click on "Next"
+    User select "Linux Image" from dropdown list "Instance image"
+    User click on "Create"
+    User click on "Deploy This Environment"
+    Check the status of environment "deploy_telnet" (should be "Ready")
+    Check that deploy "deploy_telnet" finished
+    Delete environment "deploy_telnet" after test
+
 Deploy AD with 2 instances
     [Tags]    night
-    Log in WebUI by admin/swordfish
+    Log in WebUI by anastasia/swordfish
     User click on "Create Environment"
     User set value "deploy_ad_2_inst" for field Environment Name
     User click on "Create"
@@ -1089,7 +1134,4 @@ Delete environment "${name}" after test
     Select "Delete Environment" for chosen environment "${name}"
     User confirms deletion
     Page should not contain element "${name}"
-
-End Test
-    Run Keyword If Test Failed    Capture Page Screenshot
-    Close All Browsers
+>>>>>>> 5ec34db... Update tags and added new cases for WebUI
