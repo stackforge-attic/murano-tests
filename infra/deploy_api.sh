@@ -15,7 +15,13 @@ expect "*root@A1box*"
 send -- "yum install python-memcached -y\n"
 expect "*root@A1box*"
 
-send -- "echo 'RABBITMQ_HOST = \'172.18.124.201\'' >> /etc/murano-deployment/lab-binding.rc\n"
+send -- "sed -i \"s/LAB_HOST=''/LAB_HOST='\""
+send -- [lindex $argv 4]
+send -- "'/\" /etc/murano-deployment/lab-binding.rc\n"
+expect "*root@A1box*"
+send -- "sed -i \"s/BRANCH_NAME=''/BRANCH_NAME='\""
+send -- [lindex $argv 5]
+send -- "'/\" /etc/murano-deployment/lab-binding.rc\n"
 expect "*root@A1box*"
 send -- "rm -rf /opt/git\n"
 expect "*root@A1box*"
@@ -23,7 +29,9 @@ send -- "mkdir -p /opt/git\n"
 expect "*root@A1box*"
 send -- "cd /opt/git\n"
 expect "*root@A1box*"
-send -- "git clone https://github.com/stackforge/murano-deployment -b release-0.2\n"
+send -- "git clone https://github.com/stackforge/murano-deployment -b "
+send -- [lindex $argv 5]
+send -- "\n"
 expect "*root@A1box*"
 
 send -- "cd murano-deployment/devbox-scripts/\n"
@@ -31,6 +39,9 @@ expect "*root@A1box*"
 send -- "./murano-git-install.sh prerequisites\n"
 expect "*root@A1box*"
 send -- "./murano-git-install.sh install\n"
+expect "*root@A1box*"
+
+send -- "sed -i \"s/connection = sqlite:///murano.sqlite/connection = mysql://murano:swordfish@localhost:3306/murano/\" /etc/murano-api/murano-api.conf\n"
 expect "*root@A1box*"
 
 send -- "cd /opt/git/murano-api\n"
@@ -43,3 +54,4 @@ send -- "sh setup-centos.sh install\n"
 expect "*root@A1box*"
 
 send -- "exit\n"
+
