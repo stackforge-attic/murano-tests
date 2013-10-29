@@ -6,7 +6,7 @@ spawn /usr/bin/ssh  [lindex $argv 0]@[lindex $argv 1]
 expect "password"
 send -- [lindex $argv 2]
 send -- "\n"
-expect "*root@A1box*"
+expect -re "*root@A[0-9]+box*"
 
 send -- "yum makecache -y\n"
 expect "*root@A1box*"
