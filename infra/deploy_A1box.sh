@@ -39,9 +39,9 @@ expect "*root@A1box*"
 send -- "./murano-git-install.sh install\n"
 expect "*root@A1box*"
 
-send -- "sed -i \"s/connection = sqlite:\/\/\/murano.sqlite/connection = mysql:\/\/murano:swordfish@localhost:3306\/murano\/\" /etc/murano-api/murano-api.conf\n"
+send -- "sed -i \"s/connection = sqlite:\\/\\/\\/murano.sqlite/connection = mysql:\\/\\/murano:swordfish@localhost:3306\\/murano/\" /etc/murano-api/murano-api.conf\n"
 expect "*root@A1box*"
-send -- "service murano-api restart\n"
+send -- "restart murano-api\n"
 expect "*root@A1box*"
 
 send -- "exit\n"
