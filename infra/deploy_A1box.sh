@@ -12,8 +12,6 @@ send -- "yum makecache -y\n"
 expect "*root@A1box*"
 send -- "yum update -y\n"
 expect "*root@A1box*"
-send -- "yum install python-memcached -y\n"
-expect "*root@A1box*"
 
 send -- "sed -i \"s/LAB_HOST=''/LAB_HOST='"
 send -- [lindex $argv 3]
@@ -45,3 +43,5 @@ send -- "sed -i \"s/connection = sqlite:///murano.sqlite/connection = mysql://mu
 expect "*root@A1box*"
 send -- "/etc/init.d/murano-api restart\n"
 expect "*root@A1box*"
+
+send -- "exit\n"
