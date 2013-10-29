@@ -41,7 +41,18 @@ expect "*root@A1box*"
 
 send -- "sed -i \"s/connection = sqlite:\\/\\/\\/murano.sqlite/connection = mysql:\\/\\/murano:swordfish@localhost:3306\\/murano/\" /etc/murano-api/murano-api.conf\n"
 expect "*root@A1box*"
+send -- "sed -i \"s/port = 5672/port = "
+send -- [lindex $argv 5]
+send -- "/\" /etc/murano-api/murano-api.conf\n"
+expect "*root@A1box*"
+send -- "sed -i \"s/port = 5672/port = "
+send -- [lindex $argv 5]
+send -- "/\" /etc/murano-conductor/conductor.conf\n"
+expect "*root@A1box*"
+
 send -- "restart murano-api\n"
+expect "*root@A1box*"
+send -- "restart murano-conductor\n"
 expect "*root@A1box*"
 
 send -- "exit\n"
