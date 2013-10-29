@@ -7,6 +7,8 @@ Library           String
 Library           Boffin.WebUIlib    # Boffin framework library
 
 *** Variables ***
+${resources_path}    Resources/
+${url}    http://172.18.79.84/dashboard
 
 *** Test Cases ***
 Create environment
