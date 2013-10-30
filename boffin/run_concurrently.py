@@ -91,10 +91,9 @@ if args.tags_list and args.script_name:
         xvfb.start()
         values = (i, xvfb.vdisplay_num, args.reports_dir, i, tag)
         threads.append(Popen(cmd % values, shell=True))
-        while len(threads) == args.processes_count:
-            wait_for_finished(threads)
+    while len(threads) == args.processes_count:
+        wait_for_finished(threads)
         sleep(1)
-
 else:
     if args.tests_dir:
         files = listdir(args.tests_dir)
