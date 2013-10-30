@@ -77,13 +77,13 @@ while clear_displays.poll() is None:
     sleep(1)
 
 # Generate the command for executing tests.
-cmd = 'sudo su thread%s -c "export DISPLAY=:%s; pybot -C off -K off -d %s/%s"'
+cmd = 'sudo su thread%s -c "export DISPLAY=:%s; pybot -C off -K off -d %s/%s'
 if args.resources_dir:
     cmd += " -v resources_path:" + args.resources_dir + " "
 
 # Start all threads with tests.
 if args.tags_list and args.script_name:
-    cmd += " -i %s " + args.script_name + " 2>/dev/null"
+    cmd += ' -i %s ' + args.script_name + '" 2>/dev/null'
     # Start all threads with tests and ignore empty threads.
     threads = []
     for i, tag in enumerate(args.tags_list):
