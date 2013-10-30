@@ -72,8 +72,8 @@ parser.add_argument('-r', action='store', dest='reports_dir',
 args = parser.parse_args()
 
 
-make_displays = Popen('sudo pkill Xvfb; rm -rf /tmp/.X*-lock', shell=True)
-while make_displays.poll() is None:
+clear_displays = Popen('sudo pkill Xvfb; rm -rf /tmp/.X*-lock', shell=True)
+while clear_displays.poll() is None:
     sleep(1)
 
 # Generate the command for executing tests.
@@ -123,3 +123,7 @@ else:
 # Wait for all threads finish.
 while len(threads) > 0:
     wait_for_finished(threads)
+
+clear_displays = Popen('sudo pkill Xvfb; rm -rf /tmp/.X*-lock', shell=True)
+while clear_displays.poll() is None:
+    sleep(1)

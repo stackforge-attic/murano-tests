@@ -12,8 +12,8 @@
 #    License for the specific language governing permissions and limitations
 #    under the License
 
-from time import sleep
-
+import time
+import os
 from robot.libraries.BuiltIn import BuiltIn
 
 from _Utils import _Utils
@@ -87,7 +87,7 @@ class _WebUIlib(_Utils):
         | Click on submenu | Settings | Profile |
         """
         self.put_mouse_over(over_element_name)
-        sleep(1)
+        time.sleep(1)
         self.click_on(name)
         self.wait_for_page_loaded(dont_wait)
 
@@ -433,10 +433,12 @@ class _WebUIlib(_Utils):
             if selector:
                 break
 
-            sleep(1)
+            time.sleep(1)
 
         if not selector:
-            BuiltIn().run_keyword('Capture Page Screenshot')
+            path = os.environ('WORKSPACE')
+            path += str(time.time())
+            BuiltIn().run_keyword('Capture Page Screenshot', path)
             raise AssertionError('Web element "%s" was not found in object '
                                  'repository and on page.' % element_name)
 
