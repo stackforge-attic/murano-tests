@@ -77,7 +77,8 @@ while clear_displays.poll() is None:
     sleep(1)
 
 # Generate the command for executing tests.
-cmd = "export DISPLAY=:%s; pybot -C off -K off -d " + args.reports_dir + "/%s"
+cmd = ("sudo su - thread%s; export DISPLAY=:%s; pybot -C off -K off -d "
+       args.reports_dir + "/%s; exit")
 if args.resources_dir:
     cmd += " -v resources_path:" + args.resources_dir + " "
 
@@ -89,7 +90,7 @@ if args.tags_list and args.script_name:
     for i, tag in enumerate(args.tags_list):
         xvfb = Xvfb()
         xvfb.start()
-        values = (xvfb.vdisplay_num, i, tag)
+        values = (i, xvfb.vdisplay_num, i, tag)
         threads.append(Popen(cmd % values, shell=True))
         while len(threads) == args.processes_count:
             wait_for_finished(threads)
