@@ -39,7 +39,7 @@ expect "*root@??box*"
 send -- "./murano-git-install.sh install\n"
 expect "*root@??box*"
 
-send -- "sed -i \"s/connection = sqlite:\\/\\/\\/murano.sqlite/connection = mysql:\\/\\/murano@localhost:3306\\/murano/\" /etc/murano-api/murano-api.conf\n"
+send -- "sed -i \"s/connection = sqlite:\\/\\/\\/murano.sqlite/connection = mysql:\\/\\/murano:swordfish@localhost:3306\\/murano/\" /etc/murano-api/murano-api.conf\n"
 expect "*root@??box*"
 send -- "sed -i \"s/port = 5672/port = "
 send -- [lindex $argv 5]
