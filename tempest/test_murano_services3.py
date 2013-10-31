@@ -22,328 +22,337 @@ from tempest.tests.murano import base
 
 class SanityMuranoTest(base.MuranoTest):
 
-    @attr(type='smoke')
-    def test_create_and_delete_AD(self):
-        """ Create and delete AD
-        Target component: Murano
-
-        Scenario:
-            1. Send request to create environment
-            2. Send request to create session
-            3. Send request to add AD
-            4. Send request to remove AD
-            5. Send request to delete environment
-        """
-        resp, env = self.create_environment('test')
-        self.environments.append(env)
-        resp, sess = self.create_session(env['id'])
-        resp, serv = self.create_AD(env['id'], sess['id'])
-        resp = self.delete_service(env['id'], sess['id'], serv['id'])
-        resp = self.delete_environment(env['id'])
-        self.environments.pop(self.environments.index(env))
-
-    @testtools.skip('It is look as a bug')
     @attr(type='negative')
-    def test_create_AD_wo_env_id(self):
-        """ Try create AD without env_id
+    def test_create_SQL_wo_sess_id(self):
+        """ Try to create SQL without session id
         Target component: Murano
 
         Scenario:
             1. Send request to create environment
             2. Send request to create session
-            3. Send request to add AD using wrong env_id
+            3. Send request to create SQL using wrong session id
             4. Send request to delete environment
         """
         resp, env = self.create_environment('test')
         self.environments.append(env)
         resp, sess = self.create_session(env['id'])
-        self.assertRaises(Exception, self.create_AD,
-                          None, sess['id'])
-        resp = self.delete_environment(env['id'])
-        self.environments.pop(self.environments.index(env))
-
-    @attr(type='negative')
-    def test_create_AD_wo_sess_id(self):
-        """ Try to create AD without session id
-        Target component: Murano
-
-        Scenario:
-            1. Send request to create environment
-            2. Send request to create session
-            3. Send request to add AD using uncorrect session id
-            5. Send request to delete environment
-        """
-        resp, env = self.create_environment('test')
-        self.environments.append(env)
-        resp, sess = self.create_session(env['id'])
-        self.assertRaises(Exception, self.create_AD,
+        self.assertRaises(Exception, self.create_SQL,
                           env['id'], "")
         resp = self.delete_environment(env['id'])
         self.environments.pop(self.environments.index(env))
 
     @testtools.skip("It is look like a bug")
     @attr(type='negative')
-    def test_delete_AD_wo_env_id(self):
-        """ Try to delete AD without environment id
+    def test_delete_SQL_wo_env_id(self):
+        """ Try to delete SQL without env id
         Target component: Murano
 
         Scenario:
             1. Send request to create environment
             2. Send request to create session
-            3. Send request to add AD
-            4. Send request to remove AD using uncorrect environment id
+            3. Send request to add SQL
+            4. Send request to delete SQL using wrong environment id
             5. Send request to delete environment
         """
         resp, env = self.create_environment('test')
         self.environments.append(env)
         resp, sess = self.create_session(env['id'])
-        resp, serv = self.create_AD(env['id'], sess['id'])
+        resp, serv = self.create_SQL(env['id'], sess['id'])
         self.assertRaises(Exception, self.delete_service,
                           None, sess['id'], serv['id'])
         resp = self.delete_environment(env['id'])
         self.environments.pop(self.environments.index(env))
 
     @attr(type='negative')
-    def test_delete_AD_wo_session_id(self):
-        """ Try to delete AD without session id
+    def test_delete_SQL_wo_session_id(self):
+        """ Try to delete SQL without session id
         Target component: Murano
 
         Scenario:
             1. Send request to create environment
             2. Send request to create session
-            3. Send request to add AD
-            4. Send request to remove AD using wrong session id
+            3. Send request to add SQL
+            4. Send request to delete SQL using wrong session id
             5. Send request to delete environment
         """
         resp, env = self.create_environment('test')
         self.environments.append(env)
         resp, sess = self.create_session(env['id'])
-        resp, serv = self.create_AD(env['id'], sess['id'])
+        resp, serv = self.create_SQL(env['id'], sess['id'])
         self.assertRaises(Exception, self.delete_service,
                           env['id'], "", serv['id'])
         resp = self.delete_environment(env['id'])
         self.environments.pop(self.environments.index(env))
 
     @attr(type='smoke')
-    def test_create_and_delete_IIS(self):
-        """ Create and delete IIS
+    def test_create_and_delete_SQL_cluster(self):
+        """ Create and delete SQL
         Target component: Murano
 
         Scenario:
             1. Send request to create environment
             2. Send request to create session
-            3. Send request to add IIS
-            4. Send request to remove IIS
+            3. Send request to add SQL
+            4. Send request to delete SQL
             5. Send request to delete environment
         """
         resp, env = self.create_environment('test')
         self.environments.append(env)
         resp, sess = self.create_session(env['id'])
-        resp, serv = self.create_IIS(env['id'], sess['id'])
+        resp, serv = self.create_SQL_cluster(env['id'], sess['id'])
+        resp = self.delete_service(env['id'], sess['id'], serv['id'])
+        resp = self.delete_environment(env['id'])
+        self.environments.pop(self.environments.index(env))
+
+    @attr(type='smoke')
+    def test_create_and_delete_linux_agent(self):
+        """ Create and delete Linux Agent
+        Target component: Murano
+
+        Scenario:
+            1. Send request to create environment
+            2. Send request to create session
+            3. Send request to add linux agent
+            4. Send request to delete linux agent
+            5. Send request to delete environment
+        """
+        resp, env = self.create_environment('test')
+        self.environments.append(env)
+        resp, sess = self.create_session(env['id'])
+        resp, serv = self.create_linux_agent(env['id'], sess['id'])
         resp = self.delete_service(env['id'], sess['id'], serv['id'])
         resp = self.delete_environment(env['id'])
         self.environments.pop(self.environments.index(env))
 
     @testtools.skip('It is look as a bug')
     @attr(type='negative')
-    def test_create_IIS_wo_env_id(self):
-        """ Try to create IIS without env id
+    def test_create_linux_agent_wo_env_id(self):
+        """ Try create Linux Agent without env_id
         Target component: Murano
 
         Scenario:
             1. Send request to create environment
             2. Send request to create session
-            3. Send request to add IIS using wrong environment id
+            3. Send request to add linux agent using wrong env_id
             4. Send request to delete environment
         """
         resp, env = self.create_environment('test')
         self.environments.append(env)
         resp, sess = self.create_session(env['id'])
-        self.assertRaises(Exception, self.create_IIS,
+        self.assertRaises(Exception, self.create_linux_agent,
                           None, sess['id'])
         resp = self.delete_environment(env['id'])
         self.environments.pop(self.environments.index(env))
 
     @attr(type='negative')
-    def test_create_IIS_wo_sess_id(self):
-        """ Try to create IIS without session id
+    def test_create_linux_agent_wo_sess_id(self):
+        """ Try to create Linux Agent without session id
         Target component: Murano
 
         Scenario:
             1. Send request to create environment
             2. Send request to create session
-            3. Send request to add IIS using wrong session id
-            4. Send request to delete environment
+            3. Send request to add linux agent using uncorrect session id
+            5. Send request to delete environment
         """
         resp, env = self.create_environment('test')
         self.environments.append(env)
         resp, sess = self.create_session(env['id'])
-        self.assertRaises(Exception, self.create_IIS,
+        self.assertRaises(Exception, self.create_linux_agent,
                           env['id'], "")
         resp = self.delete_environment(env['id'])
         self.environments.pop(self.environments.index(env))
 
     @testtools.skip("It is look like a bug")
     @attr(type='negative')
-    def test_delete_IIS_wo_env_id(self):
-        """ Try to delete IIS without env id
+    def test_delete_linux_agent_wo_env_id(self):
+        """ Try to delete Linux Agent without environment id
         Target component: Murano
 
         Scenario:
             1. Send request to create environment
             2. Send request to create session
-            3. Send request to add IIS
-            4. Send request to delete IIS using wrong environment id
+            3. Send request to add linux agent
+            4. Send request to remove linux agent using uncorrect
+               environment id
             5. Send request to delete environment
         """
         resp, env = self.create_environment('test')
         self.environments.append(env)
         resp, sess = self.create_session(env['id'])
-        resp, serv = self.create_IIS(env['id'], sess['id'])
+        resp, serv = self.create_linux_agent(env['id'], sess['id'])
         self.assertRaises(Exception, self.delete_service,
                           None, sess['id'], serv['id'])
         resp = self.delete_environment(env['id'])
         self.environments.pop(self.environments.index(env))
 
     @attr(type='negative')
-    def test_delete_IIS_wo_session_id(self):
-        """ Try to delete IIS without session id
+    def test_delete_linux_agent_wo_session_id(self):
+        """ Try to delete linux agent without session id
         Target component: Murano
 
         Scenario:
             1. Send request to create environment
             2. Send request to create session
-            3. Send request to add IIS
-            4. Send request to delete IIS using wrong session id
+            3. Send request to add linux agent
+            4. Send request to remove linux agent using wrong session id
             5. Send request to delete environment
         """
         resp, env = self.create_environment('test')
         self.environments.append(env)
         resp, sess = self.create_session(env['id'])
-        resp, serv = self.create_IIS(env['id'], sess['id'])
+        resp, serv = self.create_linux_agent(env['id'], sess['id'])
         self.assertRaises(Exception, self.delete_service,
                           env['id'], "", serv['id'])
         resp = self.delete_environment(env['id'])
         self.environments.pop(self.environments.index(env))
 
     @attr(type='smoke')
-    def test_create_and_delete_apsnet(self):
-        """ Create and delete apsnet
+    def test_get_list_services(self):
+        """ Get a list of services
         Target component: Murano
 
         Scenario:
             1. Send request to create environment
             2. Send request to create session
-            3. Send request to add apsnet
-            4. Send request to remove apsnet
+            3. Send request to add AD
+            4. Send request to get list of services
             5. Send request to delete environment
         """
         resp, env = self.create_environment('test')
         self.environments.append(env)
         resp, sess = self.create_session(env['id'])
-        resp, serv = self.create_apsnet(env['id'], sess['id'])
-        resp = self.delete_service(env['id'], sess['id'], serv['id'])
+        resp, serv = self.create_AD(env['id'], sess['id'])
+        resp, somelist = self.get_list_services(env['id'], sess['id'])
         resp = self.delete_environment(env['id'])
         self.environments.pop(self.environments.index(env))
 
-    @testtools.skip('It is look as a bug')
     @attr(type='negative')
-    def test_create_apsnet_wo_env_id(self):
-        """ Try to create aspnet without env id
+    def test_get_list_of_services_wo_env_id(self):
+        """ Try to get services list withoun env id
         Target component: Murano
 
         Scenario:
             1. Send request to create environment
             2. Send request to create session
-            3. Send request to add aspnet using wrong environment id
-            4. Send request to delete environment
+            3. Send request to add AD
+            4. Send request to get services list using wrong environment id
+            5. Send request to delete environment
         """
         resp, env = self.create_environment('test')
         self.environments.append(env)
         resp, sess = self.create_session(env['id'])
-        self.assertRaises(Exception, self.create_apsnet,
+        resp, serv = self.create_AD(env['id'], sess['id'])
+        self.assertRaises(Exception, self.get_list_services,
                           None, sess['id'])
         resp = self.delete_environment(env['id'])
         self.environments.pop(self.environments.index(env))
 
     @attr(type='negative')
-    def test_create_apsnet_wo_sess_id(self):
-        """ Try to create aspnet without session id
+    def test_get_list_of_services_wo_sess_id(self):
+        """ Try to get services list withoun session id
         Target component: Murano
 
         Scenario:
             1. Send request to create environment
             2. Send request to create session
-            3. Send request to add aspnet using wrong session id
+            3. Send request to add AD
+            4. Send request to get services list using wrong session id
+            5. Send request to delete environment
+        """
+        resp, env = self.create_environment('test')
+        self.environments.append(env)
+        resp, sess = self.create_session(env['id'])
+        resp, serv = self.create_AD(env['id'], sess['id'])
+        resp, somelist = self.get_list_services(env['id'], "")
+        assert somelist == []
+        resp = self.delete_environment(env['id'])
+        self.environments.pop(self.environments.index(env))
+
+    @attr(type='negative')
+    def test_get_list_of_services_after_delete_env(self):
+        """ Try to get services list after deleting env
+        Target component: Murano
+
+        Scenario:
+            1. Send request to create environment
+            2. Send request to create session
+            3. Send request to add AD
             4. Send request to delete environment
+            5. Send request to get services list
         """
         resp, env = self.create_environment('test')
         self.environments.append(env)
         resp, sess = self.create_session(env['id'])
-        self.assertRaises(Exception, self.create_apsnet,
-                          env['id'], "")
+        resp, serv = self.create_AD(env['id'], sess['id'])
         resp = self.delete_environment(env['id'])
+        self.assertRaises(Exception, self.get_list_services,
+                          env['id'], sess['id'])
         self.environments.pop(self.environments.index(env))
 
-    @testtools.skip("It is look like a bug")
     @attr(type='negative')
-    def test_delete_apsnet_wo_env_id(self):
-        """ Try to delete aspnet without env id
+    def test_get_list_of_services_after_delete_session(self):
+        """ Try to get services list after deleting session
         Target component: Murano
 
         Scenario:
             1. Send request to create environment
             2. Send request to create session
-            3. Send request to add aspnet
-            4. Send request to delete aspnet using wrong environment id
-            5. Send request to delete environment
+            3. Send request to add AD
+            4. Send request to delete session
+            5. Send request to get services list
+            6. Send request to delete environment
         """
         resp, env = self.create_environment('test')
         self.environments.append(env)
         resp, sess = self.create_session(env['id'])
-        resp, serv = self.create_apsnet(env['id'], sess['id'])
-        self.assertRaises(Exception, self.delete_service,
-                          None, sess['id'], serv['id'])
+        resp, serv = self.create_AD(env['id'], sess['id'])
+        resp = self.delete_session(env['id'], sess['id'])
+        self.assertRaises(Exception, self.get_list_services,
+                          env['id'], sess['id'])
         resp = self.delete_environment(env['id'])
         self.environments.pop(self.environments.index(env))
 
-    @attr(type='negative')
-    def test_delete_apsnet_wo_session_id(self):
-        """ Try to delete aspnet without session id
+    @testtools.skip("Service is not yet able to do it")
+    @attr(type='smoke')
+    def test_update_service(self):
+        """ Update service
         Target component: Murano
 
         Scenario:
             1. Send request to create environment
             2. Send request to create session
-            3. Send request to add aspnet
-            4. Send request to delete aspnet using wrong session id
-            5. Send request to delete environment
+            3. Send request to add AD
+            4. Send request to update service
+            5. Send request to remove AD
+            6. Send request to delete environment
         """
         resp, env = self.create_environment('test')
         self.environments.append(env)
         resp, sess = self.create_session(env['id'])
-        resp, serv = self.create_apsnet(env['id'], sess['id'])
-        self.assertRaises(Exception, self.delete_service,
-                          env['id'], "", serv['id'])
+        resp, serv = self.create_AD(env['id'], sess['id'])
+        resp, updt = self.update_service(env['id'], sess['id'], serv['id'],
+                                         serv)
+        resp = self.delete_service(env['id'], sess['id'], serv['id'])
         resp = self.delete_environment(env['id'])
         self.environments.pop(self.environments.index(env))
 
     @attr(type='smoke')
-    def test_create_and_delete_IIS_farm(self):
-        """ Create and delete IIS farm
+    def test_get_service_info(self):
+        """ Get service detailed info
         Target component: Murano
 
         Scenario:
             1. Send request to create environment
             2. Send request to create session
-            3. Send request to add IIS farm
-            4. Send request to remove IIS farm
+            3. Send request to create AD
+            4. Send request to get detailed info about service
             5. Send request to delete environment
         """
         resp, env = self.create_environment('test')
         self.environments.append(env)
         resp, sess = self.create_session(env['id'])
-        resp, serv = self.create_IIS_farm(env['id'], sess['id'])
-        resp = self.delete_service(env['id'], sess['id'], serv['id'])
+        resp, serv = self.create_AD(env['id'], sess['id'])
+        resp, serv = self.get_service_info(env['id'], sess['id'], serv['id'])
         resp = self.delete_environment(env['id'])
         self.environments.pop(self.environments.index(env))

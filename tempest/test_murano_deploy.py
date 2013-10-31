@@ -22,6 +22,40 @@ import time
 
 class SanityMuranoTest(base.MuranoTest):
 
+    def test_create_and_deploying_linux_agent(self):
+        """ Create and deploy Linux Agent
+        Target component: Murano
+
+        Scenario:
+        1. Send request to create environment
+        2. Send request to create session
+        3. Send request to add linux agent
+        4. Send request to deploy linux agent
+        5. Send request to get info for check deloyment status
+        6. Send request to delete environment
+        """
+        resp, env = self.create_environment('test')
+        resp, sess = self.create_session(env['id'])
+        resp, serv = self.create_linux_agent(env['id'], sess['id'])
+        resp = self.deploy_session(env['id'], sess['id'])
+        resp, sessinfo = self.get_session_info(env['id'], sess['id'])           
+        env.update({'status': None})
+        k = 0
+        while env['status'] != "ready":
+            time.sleep(15)
+            k += 1
+            resp, env = self.get_environment_by_id(env['id'])
+            if not env.has_key('status'):
+                env.update({'status': None})
+            if k > 120:
+                break
+        resp, envo = self.get_deployments_list(env['id'])
+        assert envo['deployments'][0]['state'] == 'success'
+        resp, infa = self.get_deployment_info(env['id'],                        
+                                              envo['deployments'][0]['id'])
+        resp = self.delete_environment(env['id'])
+
+
     @attr(type='positive')
     def test_create_and_deploying_ad(self):
         """ Create and deploy AD
@@ -55,6 +89,14 @@ class SanityMuranoTest(base.MuranoTest):
         assert envo['deployments'][0]['state'] == 'success'
         resp, infa = self.get_deployment_info(env['id'],
                                               envo['deployments'][0]['id'])
+        inst_id_list = self.search_instances(env['id'], 'ad')
+        for i in inst_id_list:
+            self.inst_wth_fl_ip.append(i)
+            ip = self.add_floating_ip(i)
+            time.sleep(5)
+            assert self.socket_check(ip, 3389) == 0
+            self.remove_floating_ip(i)
+            self.inst_wth_fl_ip.pop(self.inst_wth_fl_ip.index(i))
         resp = self.delete_environment(env['id'])
 
     @attr(type='positive')
@@ -90,6 +132,15 @@ class SanityMuranoTest(base.MuranoTest):
         assert envo['deployments'][0]['state'] == 'success'
         resp, infa = self.get_deployment_info(env['id'],
                                               envo['deployments'][0]['id'])
+        inst_id_list = self.search_instances(env['id'], 'iis')
+        for i in inst_id_list:
+            self.inst_wth_fl_ip.append(i)
+            ip = self.add_floating_ip(i)
+            time.sleep(5)
+            assert self.socket_check(ip, 80) == 0
+            assert self.socket_check(ip, 3389) == 0
+            self.remove_floating_ip(i)
+            self.inst_wth_fl_ip.pop(self.inst_wth_fl_ip.index(i))
         resp = self.delete_environment(env['id'])
 
     @attr(type='positive')
@@ -125,6 +176,15 @@ class SanityMuranoTest(base.MuranoTest):
         assert envo['deployments'][0]['state'] == 'success'
         resp, infa = self.get_deployment_info(env['id'],
                                               envo['deployments'][0]['id'])
+        inst_id_list = self.search_instances(env['id'], 'asp')
+        for i in inst_id_list:
+            self.inst_wth_fl_ip.append(i)
+            ip = self.add_floating_ip(i)
+            time.sleep(5)
+            assert self.socket_check(ip, 80) == 0
+            assert self.socket_check(ip, 3389) == 0
+            self.remove_floating_ip(i)
+            self.inst_wth_fl_ip.pop(self.inst_wth_fl_ip.index(i))
         resp = self.delete_environment(env['id'])
 
     @attr(type='positive')
@@ -230,6 +290,15 @@ class SanityMuranoTest(base.MuranoTest):
         assert envo['deployments'][0]['state'] == 'success'
         resp, infa = self.get_deployment_info(env['id'],
                                               envo['deployments'][0]['id'])
+        inst_id_list = self.search_instances(env['id'], 'sql')
+        for i in inst_id_list:
+            self.inst_wth_fl_ip.append(i)
+            ip = self.add_floating_ip(i)
+            time.sleep(5)
+            assert self.socket_check(ip, 1433) == 0
+            assert self.socket_check(ip, 3389) == 0
+            self.remove_floating_ip(i)
+            self.inst_wth_fl_ip.pop(self.inst_wth_fl_ip.index(i))
         resp = self.delete_environment(env['id'])
 
     @attr(type='positive')
@@ -241,32 +310,14 @@ class SanityMuranoTest(base.MuranoTest):
             1. Send request to create environment
             2. Send request to create session
             3. Send request to add AD
-            4. Send request to deploy AD
-            5. Send request to create new session
-            6. Send request to add SQL cluster
-            7. Send request to deploy SQL cluster
-            8. Send request to get info for check deloyment status
-            9. Send request to delete environment
+            4. Send request to add SQL cluster
+            5. Send request to deploy session
+            6. Send request to get info for check deloyment status
+            7. Send request to delete environment
         """
         resp, env = self.create_environment('test')
         resp, sess = self.create_session(env['id'])
         resp, serv = self.create_AD(env['id'], sess['id'])
-        resp = self.deploy_session(env['id'], sess['id'])
-        resp, sessinfo = self.get_session_info(env['id'], sess['id'])
-        env.update({'status': None})
-        k = 0
-        while env['status'] != "ready":
-            time.sleep(15)
-            k += 1
-            resp, env = self.get_environment_by_id(env['id'])
-            if not env.has_key('status'):
-                env.update({'status': None})
-            if k > 120:
-                break
-        assert (k > 7 and k <= 120)
-        resp, envo = self.get_deployments_list(env['id'])
-        assert envo['deployments'][0]['state'] == 'success'
-        resp, sess = self.create_session(env['id'])
         resp, serv1 = self.create_SQL_cluster(env['id'], sess['id'],
                                               serv['domain'])
         resp = self.deploy_session(env['id'], sess['id'])
@@ -279,13 +330,12 @@ class SanityMuranoTest(base.MuranoTest):
             resp, env = self.get_environment_by_id(env['id'])
             if not env.has_key('status'):
                 env.update({'status': None})
-            if k > 120:
+            if k > 180:
                 break
-        assert (k > 7 and k <= 120)
+        assert (k > 7 and k <= 180)
         resp, envo = self.get_deployments_list(env['id'])
-        #for i in envo['deployments']:
-            #assert i['state'] == 'success'
-        #assert envo['deployments'][0]['state'] == 'success'
+        for i in envo['deployments']:
+            assert i['state'] == 'success'
         resp, infa = self.get_deployment_info(env['id'],
                                               envo['deployments'][0]['id'])
         resp = self.delete_environment(env['id'])
