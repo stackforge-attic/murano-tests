@@ -82,9 +82,6 @@ if args.tags_list and args.script_name:
     for i, tag in enumerate(args.tags_list):
         values = (args.reports_dir, i, tag)
         threads.append(Popen(cmd % values, shell=True))
-    while len(threads) == args.processes_count:
-        wait_for_finished(threads)
-        sleep(1)
 
 # Wait for all threads finish.
 while len(threads) > 0:
