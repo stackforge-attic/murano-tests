@@ -1,8 +1,6 @@
 *** Settings ***
-Suite Setup
-Suite Teardown    Close All Browsers
-Test Setup        Open Browser    ${url}
-Test Teardown     Close All Browsers
+Test Setup        Open Browser    ${url}    remote_url=http://172.18.79.80:4444/wd/hub    browser=firefox
+Test Teardown     Close Browser
 Library           String
 Library           Boffin.WebUIlib    # Boffin framework library
 
