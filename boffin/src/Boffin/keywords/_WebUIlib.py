@@ -421,7 +421,7 @@ class _WebUIlib(_Utils):
         | ${selector} | Wait for element found | Dashboard Menu Title field \
         | input | next |
         """
-        for attempt in range(10):
+        for attempt in range(100):
             try:
                 page_source_code = self.get_source()
                 selector = self.get_web_element_selector(element_name,
@@ -433,12 +433,15 @@ class _WebUIlib(_Utils):
             if selector:
                 break
 
-            time.sleep(1)
+            time.sleep(0.1)
 
         if not selector:
-            path = os.environ('WORKSPACE')
-            path += str(time.time())
-            BuiltIn().run_keyword('Capture Page Screenshot', path)
+            try:
+                path = os.environ('WORKSPACE')
+                path += str(time.time())
+                BuiltIn().run_keyword('Capture Page Screenshot', path)
+            except:
+                pass
             raise AssertionError('Web element "%s" was not found in object '
                                  'repository and on page.' % element_name)
 
