@@ -50,7 +50,7 @@ Delete Image from repo
     User click on "Mark Image"
     User select "ws-2012-std" from dropdown list "Image"
     User set value "Image for deletion" for field Title
-    User select " Windows Server 2012" from dropdown list "with supported types of images"
+    User select "Windows Server 2012" from dropdown list "with supported types of images"
     User click on "Mark"
     Page should contain element "Image for deletion"
     Select "Delete Metadata" for chosen image "Image for deletion"
@@ -64,7 +64,7 @@ Rename Windows image
     User click on "Mark Image"
     User select "ws-2012-std" from dropdown list "Image"
     User set value "Windows Server 2012 Standard" for field Title
-    User select " Windows Server 2012" from dropdown list "with supported types of images"
+    User select "Windows Server 2012" from dropdown list "with supported types of images"
     User click on "Mark"
     Page should contain element "Windows Server 2012 Standard"
 
