@@ -284,7 +284,7 @@ Check opportunity to choose Instance Flavor
     User click on "Create"
     User click on "env_inst_flavor"
     User click on "Create Service"
-    User select "Internet Information Service" from dropdown list "Service Type"
+    User select "Internet Information Services" from dropdown list "Service Type"
     User click on "Next"
     User set value "iis-service" for field Service Name
     User set value "P@ssw0rd" for field Administrator password
