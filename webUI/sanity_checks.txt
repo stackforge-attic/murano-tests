@@ -2,11 +2,11 @@
 Test Setup        Open Browser    ${url}    remote_url=http://172.18.124.233:4444/wd/hub    browser=firefox
 Test Teardown     Close Browser
 Library           String
-Library           Boffin.WebUIlib    # Boffin framework library
+Library           Boffin.WebUIlib    10    20    # Boffin framework library
 
 *** Variables ***
 ${resources_path}    Resources/
-${url}    http://172.18.79.84/dashboard
+${url}            http://172.18.79.84/dashboard
 
 *** Test Cases ***
 Create environment
@@ -48,8 +48,7 @@ Rename Windows image
     User click on "Mark Image"
     User select "ws-2012-std" from dropdown list "Image"
     User set value "Windows Server 2012 Standard" for field Title
-    Sleep    2s
-    User select " Windows Server 2012" from dropdown list "Type"
+    User select "Windows Server 2012" from dropdown list "Type"
     User click on "Mark"
     Page should contain element "Windows Server 2012 Standard"
 
@@ -60,7 +59,6 @@ Rename Linux image
     User click on "Mark Image"
     User select "F18-x86_64-cfntools-MURANO" from dropdown list "Image"
     User set value "Linux Image" for field Title
-    Sleep    2s
     User select "Generic Linux" from dropdown list "Type"
     User click on "Mark"
     Page should contain element "Linux Image"
@@ -455,7 +453,7 @@ Check opportunity to choose Instance Flavor
     User click on "Create"
     User click on "env_inst_flavor"
     User click on "Create Service"
-    User select "Internet Information Service" from dropdown list "Service Type"
+    User select "Internet Information Services" from dropdown list "Service Type"
     User click on "Next"
     User set value "iis-service" for field Service Name
     User set value "P@ssw0rd" for field Administrator password
@@ -960,13 +958,7 @@ Log in WebUI by ${user}/${password}
     Navigate to    Project>Environments
 
 User set value "${value}" for field ${field}
-    Sleep    1s
     Fill Field    ${field}    ${value}
-
-Log out
-    Sleep    3s
-    Click On    Sign Out
-    Page should contain element "Sign In"
 
 Check the status of environment "${env_name}" (should be "${status}")
     Navigate to    Project>Environments
@@ -979,12 +971,9 @@ Check status
     Should Be Equal As Strings    ${text}    ${status}
 
 User click on "${element}"
-    Sleep    2s
     Click on    ${element}
-    Sleep    2s
 
 Page should contain element "${element}"
-    Sleep    5s
     Page Should Contain    ${element}
 
 Page should not contain element "${element}"
@@ -996,7 +985,6 @@ User select "${item}" from dropdown list "${menu}"
 
 User confirms deletion
     Click On    Confirm deletion
-    Sleep    3s
 
 User create Active Directory with domain name "${name}"
     User select "Active Directory" from dropdown list "Service Type"
@@ -1014,7 +1002,6 @@ User create Active Directory with domain name "${name}"
 Select "${action}" for chosen ${type} "${env}"
     ${xpath}=    Find Associated Element    ${env}    ${action}
     Click Element    ${xpath}
-    Sleep    5s
 
 Check that deploy "${env}" finished
     Navigate To    Project>Environments
@@ -1129,9 +1116,7 @@ Check that service "${service}" was joined in domain "${domain}"
 
 Delete environment "${name}" after test
     Navigate To    Project>Environments
-    Sleep    3s
     Select "More" for chosen environment "${name}"
     Select "Delete Environment" for chosen environment "${name}"
     User confirms deletion
     Page should not contain element "${name}"
->>>>>>> 5ec34db... Update tags and added new cases for WebUI
