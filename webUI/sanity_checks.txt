@@ -2,7 +2,7 @@
 Test Setup        Open Browser    ${url}    remote_url=http://172.18.124.233:4444/wd/hub    browser=firefox    ff_profile_dir=ffprofile
 Test Teardown     Close Browser
 Library           String
-Library           Boffin.WebUIlib    10    20    # Boffin framework library
+Library           Boffin.WebUIlib    0    5    # Boffin framework library
 
 *** Variables ***
 ${resources_path}    Resources/
@@ -626,8 +626,6 @@ Deploy MS SQL server and IIS in domain
     Check the status of environment "iis_sqlserver_in_domain" (should be "Ready")
     Check that deploy "iis_sqlserver_in_domain" finished
     Delete environment "iis_sqlserver_in_domain" after test
-
-Deploy MS SQL server and ASP.NET in domain
 
 Create IIS+ ASP Farm + AD + IIS
     [Tags]    night

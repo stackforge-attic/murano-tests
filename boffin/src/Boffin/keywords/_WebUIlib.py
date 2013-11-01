@@ -436,12 +436,7 @@ class _WebUIlib(_Utils):
             time.sleep(0.1)
 
         if not selector:
-            try:
-                path = os.environ('WORKSPACE')
-                path += str(time.time())
-                BuiltIn().run_keyword('Capture Page Screenshot', path)
-            except:
-                pass
+            BuiltIn().run_keyword('Capture Page Screenshot')
             raise AssertionError('Web element "%s" was not found in object '
                                  'repository and on page.' % element_name)
 
