@@ -11,16 +11,17 @@ ${url}            http://${IP}/horizon
 *** Test Cases ***
 Create environment
     [Tags]    commit    thread3
-    Log in WebUI by anastasia/swordfish
+    Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
     User set value "env" for field Environment Name
     User click on "Create"
     Reload Page
     Page should contain element "env"
+    Delete environment "env" after test
 
 Edit environment
     [Tags]    commit    thread4
-    Log in WebUI by anastasia/swordfish
+    Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
     User set value "env1" for field Environment Name
     User click on "Create"
@@ -29,10 +30,11 @@ Edit environment
     User set value "edited_env" for field new Name
     User click on "Save"
     Page should contain element "edited_env"
+    Delete environment "edited_env" after test
 
 Delete Environment
     [Tags]    commit    thread5
-    Log in WebUI by anastasia/swordfish
+    Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
     User set value "env2" for field Environment Name
     User click on "Create"
@@ -41,59 +43,73 @@ Delete Environment
     User confirms deletion
     Page should not contain element "env2"
 
+Delete Image from repo
+    [Tags]    commit
+    Log in WebUI by AutotestUser/swordfish
+    User click on "Marked Image"
+    User click on "Mark Image"
+    User select "ws-2012-std" from dropdown list "Image"
+    User set value "Image for deletion" for field Title
+    User select " Windows Server 2012" from dropdown list "with supported types of images"
+    User click on "Mark"
+    Page should contain element "Image for deletion"
+    Select "Delete Metadata" for chosen image "Image for deletion"
+    User confirms deletion
+    Page should not contain element "Image for deletion"
+
 Rename Windows image
     [Tags]    night    commit    thread1
-    Log in WebUI by anastasia/swordfish
+    Log in WebUI by AutotestUser/swordfish
     User click on "Marked Image"
     User click on "Mark Image"
     User select "ws-2012-std" from dropdown list "Image"
     User set value "Windows Server 2012 Standard" for field Title
-    User select "Windows Server 2012" from dropdown list "Type"
+    User select " Windows Server 2012" from dropdown list "with supported types of images"
     User click on "Mark"
     Page should contain element "Windows Server 2012 Standard"
 
 Rename Linux image
     [Tags]    night    commit    thread2
-    Log in WebUI by anastasia/swordfish
+    Log in WebUI by AutotestUser/swordfish
     User click on "Marked Image"
     User click on "Mark Image"
     User select "F18-x86_64-cfntools-MURANO" from dropdown list "Image"
     User set value "Linux Image" for field Title
-    User select "Generic Linux" from dropdown list "Type"
+    User select "Generic Linux" from dropdown list "with supported types of images"
     User click on "Mark"
     Page should contain element "Linux Image"
 
 Create and Delete AD service
     [Tags]    commit    thread1
-    Log in WebUI by anastasia/swordfish
+    Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
-    User set value "delete_ad" for field Environment Name
+    User set value "create_delete_ad" for field Environment Name
     User click on "Create"
-    User click on "delete_ad"
+    User click on "create_delete_ad"
     User click on "Create Service"
     User select "Active Directory" from dropdown list "Service Type"
     User click on "Next"
-    User set value "ad.nastya" for field Domain Name
+    User set value "muranotest.domain" for field Domain Name
     User set value "P@ssw0rd" for field Administrator password
     User set value "P@ssw0rd" for field Confirm password
     User set value "P@ssw0rd" for field Recovery password
     User set value "P@ssw0rd" for field Confirm recovery password
-    User set value "ad" for field Hostname template
+    User set value "muranotest.domain" for field Hostname template
     User click on "Next"
     User select "Windows Server 2012 Standard" from dropdown list "Instance image"
     User click on "Create"
     User click on "Delete Service"
     User confirms deletion
-    Page should not contain element "ad.nastya"
-    Delete environment "delete_ad" after test
+    Page should not contain element "muranotest.domain"
+    Delete environment "create_delete_ad" after test
 
 Create and Delete IIS service
     [Tags]    commit    thread2
-    Log in WebUI by anastasia/swordfish
+    Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
-    User set value "delete_iis" for field Environment Name
+    User set value "create_delete_iis" for field Environment Name
     User click on "Create"
-    User click on "delete_iis"
+    User click on "create_delete_iis"
     User click on "Create Service"
     User select "Internet Information Services" from dropdown list "Service Type"
     User click on "Next"
@@ -107,15 +123,15 @@ Create and Delete IIS service
     User click on "Delete Service"
     User confirms deletion
     Page should not contain element "iis_service"
-    Delete environment "delete_iis" after test
+    Delete environment "create_delete_iis" after test
 
 Create and Delete ASP.NET service
     [Tags]    commit    thread3
-    Log in WebUI by anastasia/swordfish
+    Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
-    User set value "delete_asp" for field Environment Name
+    User set value "create_delete_asp" for field Environment Name
     User click on "Create"
-    User click on "delete_asp"
+    User click on "create_delete_asp"
     User click on "Create Service"
     User select "ASP.NET Application" from dropdown list "Service Type"
     User click on "Next"
@@ -130,15 +146,15 @@ Create and Delete ASP.NET service
     User click on "Delete Service"
     User confirms deletion
     Page should not contain element "asp-service"
-    Delete environment "delete_asp" after test
+    Delete environment "create_delete_asp" after test
 
 Create and Delete IIS Farm service
     [Tags]    commit    thread4
-    Log in WebUI by anastasia/swordfish
+    Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
-    User set value "delete_iis_farm" for field Environment Name
+    User set value "create_delete_iis_farm" for field Environment Name
     User click on "Create"
-    User click on "delete_iis_farm"
+    User click on "create_delete_iis_farm"
     User click on "Create Service"
     User select "Internet Information Services Web Farm" from dropdown list "Service Type"
     User click on "Next"
@@ -152,15 +168,15 @@ Create and Delete IIS Farm service
     User click on "Delete Service"
     User confirms deletion
     Page should not contain element "iis-farm"
-    Delete environment "delete_iis_farm" after test
+    Delete environment "create_delete_iis_farm" after test
 
 Create and Delete ASP.NET Farm service
     [Tags]    commit    thread5
-    Log in WebUI by anastasia/swordfish
+    Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
-    User set value "delete_asp_farm" for field Environment Name
+    User set value "create_delete_asp_farm" for field Environment Name
     User click on "Create"
-    User click on "delete_asp_farm"
+    User click on "create_delete_asp_farm"
     User click on "Create Service"
     User select "ASP.NET Application Web Farm" from dropdown list "Service Type"
     User click on "Next"
@@ -175,15 +191,15 @@ Create and Delete ASP.NET Farm service
     User click on "Delete Service"
     User confirms deletion
     Page should not contain element "asp-farm"
-    Delete environment "delete_asp_farm" after test
+    Delete environment "create_delete_asp_farm" after test
 
 Create and Delete MS SQL server
     [Tags]    commit    thread1
-    Log in WebUI by anastasia/swordfish
+    Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
-    User set value "delete_mssql" for field Environment Name
+    User set value "create_delete_mssql" for field Environment Name
     User click on "Create"
-    User click on "delete_mssql"
+    User click on "create_delete_mssql"
     User click on "Create Service"
     User select "MS SQL Server" from dropdown list "Service Type"
     User click on "Next"
@@ -199,15 +215,15 @@ Create and Delete MS SQL server
     User click on "Delete Service"
     User confirms deletion
     Page should not contain element "ms_sql"
-    Delete environment "delete_mssql" after test
+    Delete environment "create_delete_mssql" after test
 
 Create and Delete MS SQL Cluster
     [Tags]    commit    thread2
-    Log in WebUI by anastasia/swordfish
+    Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
-    User set value "delete_sqlcluster" for field Environment Name
+    User set value "create_delete_sqlcluster" for field Environment Name
     User click on "Create"
-    User click on "delete_sqlcluster"
+    User click on "create_delete_sqlcluster"
     User click on "Create Service"
     User create Active Directory with domain name "activeDirectory.mssql"
     Page should contain element "activeDirectory.mssql"
@@ -238,15 +254,15 @@ Create and Delete MS SQL Cluster
     Select "Delete Service" for chosen service "sql_cluster"
     User confirms deletion
     Page should not contain element "sql_cluster"
-    Delete environment "delete_sqlcluster" after test
+    Delete environment "create_delete_sqlcluster" after test
 
 Create and Delete Telnet Service
     [Tags]    commit    thread3
-    Log in WebUI by anastasia/swordfish
+    Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
-    User set value "env_with_telnet" for field Environment Name
+    User set value "create_delete_telnet" for field Environment Name
     User click on "Create"
-    User click on "env_with_telnet"
+    User click on "create_delete_telnet"
     User click on "Create Service"
     User select "Linux Telnet" from dropdown list "Service Type"
     User click on "Next"
@@ -258,36 +274,17 @@ Create and Delete Telnet Service
     User click on "Delete Service"
     User confirms deletion
     Page should not contain element "telnet-service"
-    Delete environment "env_with_telnet" after test
-
-Check opportunity to choose availability zone
-    [Tags]
-    Log in WebUI by anastasia/swordfish
-    User click on "Create Environment"
-    User set value "env_av_zone" for field Environment Name
-    User click on "Create"
-    User click on "env_av_zone"
-    User click on "Create Service"
-    User select "Internet Information Service" from dropdown list "Service Type"
-    User click on "Next"
-    User set value "iis-service" for field Service Name
-    User set value "P@ssw0rd" for field Administrator password
-    User set value "P@ssw0rd" for field Confirm password
-    User set value "iis" for field Hostname template
-    User click on "Next"
-    User select "Windows Server 2012 Standard" from dropdown list "Instance image"
-    User select "nova" from dropdown list "Availability zone"
-    Delete environment "env_av_zone" after test
+    Delete environment "create_delete_telnet" after test
 
 Check opportunity to choose Instance Flavor
     [Tags]    commit
-    Log in WebUI by anastasia/swordfish
+    Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
     User set value "env_inst_flavor" for field Environment Name
     User click on "Create"
     User click on "env_inst_flavor"
     User click on "Create Service"
-    User select "Internet Information Services" from dropdown list "Service Type"
+    User select "Internet Information Service" from dropdown list "Service Type"
     User click on "Next"
     User set value "iis-service" for field Service Name
     User set value "P@ssw0rd" for field Administrator password
@@ -300,27 +297,9 @@ Check opportunity to choose Instance Flavor
     User select "m1.medium" from dropdown list "Instance flavor"
     Delete environment "env_inst_flavor" after test
 
-Check opportunity to choose Instance Image
-    [Tags]
-    Log in WebUI by anastasia/swordfish
-    User click on "Create Environment"
-    User set value "env_inst_image" for field Environment Name
-    User click on "Create"
-    User click on "env_inst_image"
-    User click on "Create Service"
-    User select "Internet Information Service" from dropdown list "Service Type"
-    User click on "Next"
-    User set value "iis-service" for field Service Name
-    User set value "P@ssw0rd" for field Administrator password
-    User set value "P@ssw0rd" for field Confirm password
-    User set value "iis" for field Hostname template
-    User click on "Next"
-    User select "Windows Server 2012 Standard" from dropdown list "Instance image"
-    Delete environment "env_inst_image" after test
-
 Deploy environment with AD Service
     [Tags]    night
-    Log in WebUI by anastasia/swordfish
+    Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
     User set value "deploy_one_ad" for field Environment Name
     User click on "Create"
@@ -328,7 +307,7 @@ Deploy environment with AD Service
     User click on "Create Service"
     User select "Active Directory" from dropdown list "Service Type"
     User click on "Next"
-    User set value "deployad.nastya" for field Domain Name
+    User set value "muranotest.domain" for field Domain Name
     User set value "P@ssw0rd" for field Administrator password
     User set value "P@ssw0rd" for field Confirm password
     User set value "P@ssw0rd" for field Recovery password
@@ -337,7 +316,7 @@ Deploy environment with AD Service
     User click on "Next"
     User select "Windows Server 2012 Standard" from dropdown list "Instance image"
     User click on "Create"
-    Page should contain element "deployad.nastya"
+    Page should contain element "muranotest.domain"
     User click on "Deploy This Environment"
     Check the status of environment "deploy_one_ad" (should be "Ready")
     Check that deploy "deploy_one_ad" finished
@@ -345,7 +324,7 @@ Deploy environment with AD Service
 
 Deploy environment with IIS Service
     [Tags]    night
-    Log in WebUI by anastasia/swordfish
+    Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
     User set value "deploy_iis" for field Environment Name
     User click on "Create"
@@ -368,7 +347,7 @@ Deploy environment with IIS Service
 
 Deploy environment with ASP.NET Service
     [Tags]    night
-    Log in WebUI by anastasia/swordfish
+    Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
     User set value "deploy_asp" for field Environment Name
     User click on "Create"
@@ -392,7 +371,7 @@ Deploy environment with ASP.NET Service
 
 Deploy environment with IIS Farm
     [Tags]    night
-    Log in WebUI by anastasia/swordfish
+    Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
     User set value "deploy_iis_farm" for field Environment Name
     User click on "Create"
@@ -415,7 +394,7 @@ Deploy environment with IIS Farm
 
 Deploy environment with ASP.NET Farm
     [Tags]    night
-    Log in WebUI by anastasia/swordfish
+    Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
     User set value "deploy_asp_farm" for field Environment Name
     User click on "Create"
@@ -439,7 +418,7 @@ Deploy environment with ASP.NET Farm
 
 Deploy environment with MS SQL server
     [Tags]    night
-    Log in WebUI by anastasia/swordfish
+    Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
     User set value "deploy_mssql" for field Environment Name
     User click on "Create"
@@ -464,7 +443,7 @@ Deploy environment with MS SQL server
 
 Deploy environment with MS SQL cluster
     [Tags]    night
-    Log in WebUI by anastasia/swordfish
+    Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
     User set value "deploy_sqlcluster" for field Environment Name
     User click on "Create"
@@ -503,7 +482,8 @@ Deploy environment with MS SQL cluster
     Delete environment "deploy_sqlcluster" after test
 
 Deploy Telnet Service
-    Log in WebUI by anastasia/swordfish
+    [Tags]    night
+    Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
     User set value "deploy_telnet" for field Environment Name
     User click on "Create"
@@ -519,11 +499,10 @@ Deploy Telnet Service
     User click on "Deploy This Environment"
     Check the status of environment "deploy_telnet" (should be "Ready")
     Check that deploy "deploy_telnet" finished
-    Delete environment "deploy_telnet" after test
 
 Deploy AD with 2 instances
     [Tags]    night
-    Log in WebUI by anastasia/swordfish
+    Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
     User set value "deploy_ad_2_inst" for field Environment Name
     User click on "Create"
@@ -531,7 +510,7 @@ Deploy AD with 2 instances
     User click on "Create Service"
     User select "Active Directory" from dropdown list "Service Type"
     User click on "Next"
-    User set value "adwith2.nastya" for field Domain Name
+    User set value "twoInstance.domain" for field Domain Name
     User set value "2" for field Instance Count
     User set value "P@ssw0rd" for field Administrator password
     User set value "P@ssw0rd" for field Confirm password
@@ -541,7 +520,7 @@ Deploy AD with 2 instances
     User click on "Next"
     User select "Windows Server 2012 Standard" from dropdown list "Instance image"
     User click on "Create"
-    Page should contain element "adwith2.nastya"
+    Page should contain element "twoInstance.domain"
     User click on "Deploy This Environment"
     Check the status of environment "deploy_ad_2_inst" (should be "Ready")
     Check that deploy "deploy_ad_2_inst" finished
@@ -549,57 +528,57 @@ Deploy AD with 2 instances
 
 Create IIS and IIS Farm in domain
     [Tags]    night
-    Log in WebUI by anastasia/swordfish
+    Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
     User set value "iis_iisfarm_in_domain" for field Environment Name
     User click on "Create"
     User click on "iis_iisfarm_in_domain"
     User click on "Create Service"
-    User create Active Directory with domain name "adForIIS.nastya"
+    User create Active Directory with domain name "adForIIS.domain"
     User click on "Create Service"
-    User create IIS with name "iis-service" and join in domain "adForIIS.nastya"
-    Check that service "iis-service" was joined in domain "adForIIS.nastya"
+    User create IIS with name "iis-service" and join in domain "adForIIS.domain"
+    Check that service "iis-service" was joined in domain "adForIIS.domain"
     User click on "environment iis_iisfarm_in_domain"
     User click on "Create Service"
-    User create IIS Farm with name "iis-farm" and join in domain "adForIIS.nastya"
-    Check that service "iis-farm" was joined in domain "adForIIS.nastya"
+    User create IIS Farm with name "iis-farm" and join in domain "adForIIS.domain"
+    Check that service "iis-farm" was joined in domain "adForIIS.domain"
     Delete environment "iis_iisfarm_in_domain" after test
 
 Create ASP.Net and ASP.Net Farm in domain
     [Tags]    night
-    Log in WebUI by anastasia/swordfish
+    Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
     User set value "asp_aspfarm_in_domain" for field Environment Name
     User click on "Create"
     User click on "asp_aspfarm_in_domain"
     User click on "Create Service"
-    User create Active Directory with domain name "adForASP.nastya"
+    User create Active Directory with domain name "adForASP.domain"
     User click on "Create Service"
-    User create ASP.NET App with name "asp-service" and join in domain "adForASP.nastya"
-    Check that service "asp-service" was joined in domain "adForASP.nastya"
+    User create ASP.NET App with name "asp-service" and join in domain "adForASP.domain"
+    Check that service "asp-service" was joined in domain "adForASP.domain"
     User click on "environment asp_aspfarm_in_domain"
     User click on "Create Service"
-    User create ASP.NET Farm with name "asp-farm" and join in domain "adForASP.nastya"
-    Check that service "asp-farm" was joined in domain "adForASP.nastya"
+    User create ASP.NET Farm with name "asp-farm" and join in domain "adForASP.domain"
+    Check that service "asp-farm" was joined in domain "adForASP.domain"
     Delete environment "asp_aspfarm_in_domain" after test
 
 Deploy IIS Farm and ASP.NET Farm in 2 domains
-    Log in WebUI by anastasia/swordfish
+    Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
     User set value "farms_in_domains" for field Environment Name
     User click on "Create"
     User click on "farms_in_domains"
     User click on "Create Service"
-    User create Active Directory with domain name "iisdomain.nastya"
+    User create Active Directory with domain name "iisdomain.murano"
     User click on "Create Service"
-    User create Active Directory with domain name "aspdomain.nastya"
+    User create Active Directory with domain name "aspdomain.murano"
     User click on "Create Service"
-    User create IIS Farm with name "iis-farm" and join in domain "iisdomain.nastya"
-    Check that service "iis-farm" was joined in domain "iisdomain.nastya"
+    User create IIS Farm with name "iis-farm" and join in domain "iisdomain.murano"
+    Check that service "iis-farm" was joined in domain "iisdomain.murano"
     User click on "environment farms_in_domains"
     User click on "Create Service"
-    User create ASP.NET Farm with name "asp-farm" and join in domain "aspdomain.nastya"
-    Check that service "asp-farm" was joined in domain "aspdomain.nastya"
+    User create ASP.NET Farm with name "asp-farm" and join in domain "aspdomain.murano"
+    Check that service "asp-farm" was joined in domain "aspdomain.murano"
     User click on "environment farms_in_domains"
     User click on "Deploy This Environment"
     Check the status of environment "farms_in_domains" (should be "Ready")
@@ -607,20 +586,20 @@ Deploy IIS Farm and ASP.NET Farm in 2 domains
 
 Deploy MS SQL server and IIS in domain
     [Tags]    night
-    Log in WebUI by anastasia/swordfish
+    Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
     User set value "iis_sqlserver_in_domain" for field Environment Name
     User click on "Create"
     User click on "iis_sqlserver_in_domain"
     User click on "Create Service"
-    User create Active Directory with domain name "iisANDsql.nastya"
+    User create Active Directory with domain name "iisANDsql.domain"
     User click on "Create Service"
-    User create IIS with name "iis-service" and join in domain "iisANDsql.nastya"
-    Check that service "iis-service" was joined in domain "iisANDsql.nastya"
+    User create IIS with name "iis-service" and join in domain "iisANDsql.domain"
+    Check that service "iis-service" was joined in domain "iisANDsql.domain"
     User click on "environment iis_sqlserver_in_domain"
     User click on "Create Service"
-    User create MS SQL server with name "mssql" and join in domain "iisANDsql.nastya"
-    Check that service "mssql" was joined in domain "iisANDsql.nastya"
+    User create MS SQL server with name "mssql" and join in domain "iisANDsql.domain"
+    Check that service "mssql" was joined in domain "iisANDsql.domain"
     User click on "environment iis_sqlserver_in_domain"
     User click on "Deploy This Environment"
     Check the status of environment "iis_sqlserver_in_domain" (should be "Ready")
@@ -629,7 +608,7 @@ Deploy MS SQL server and IIS in domain
 
 Create IIS+ ASP Farm + AD + IIS
     [Tags]    night
-    Log in WebUI by anastasia/swordfish
+    Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
     User set value "complex_env" for field Environment Name
     User click on "Create"
@@ -639,14 +618,14 @@ Create IIS+ ASP Farm + AD + IIS
     User click on "Create Service"
     User create ASP.NET Farm with name "asp-farm" and don't join to domain, select "Not in domain"
     User click on "Create Service"
-    User create Active Directory with domain name "singleAD.nastya"
+    User create Active Directory with domain name "singleAD.domain"
     User click on "Create Service"
     User create IIS with name "iis2" and don't join to domain, select "Not in domain"
     Delete environment "complex_env" after test
 
 Create ASP.FARM + SQL Cluster + SQL + AD
     [Tags]    night
-    Log in WebUI by anastasia/swordfish
+    Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
     User set value "ASP.FARM + SQL Cluster + SQL + AD" for field Environment Name
     User click on "Create"
@@ -654,14 +633,14 @@ Create ASP.FARM + SQL Cluster + SQL + AD
     User click on "Create Service"
     User create ASP.NET Farm with name "asp-farm" and don't join to domain, select "Not in domain"
     User click on "Create Service"
-    User create MS SQL cluster with name "sql-cluster" and join in domain "sqlAD.nastya"
+    User create MS SQL cluster with name "sql-cluster" and join in domain "sqlAD.domain"
     User click on "Create Service"
     User create MS SQL server with name "sql-server" and join to domain, select "Not in domain"
     Delete environment "ASP.FARM + SQL Cluster + SQL + AD" after test
 
 Create IIS + AD + SQL + SQL Cluster + ASP.FARM
     [Tags]    night
-    Log in WebUI by anastasia/swordfish
+    Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
     User set value "IIS + AD + SQL + SQL Cluster + ASP.FARM" for field Environment Name
     User click on "Create"
@@ -669,35 +648,35 @@ Create IIS + AD + SQL + SQL Cluster + ASP.FARM
     User click on "Create Service"
     User create IIS with name "iis" and don't join to domain, select "Not in domain"
     User click on "Create Service"
-    User create Active Directory with domain name "singleAD.nastya"
+    User create Active Directory with domain name "singleAD.domain"
     User click on "Create Service"
     User create MS SQL server with name "mssql" and don't join to domain, select "Not in domain"
     User click on "Create Service"
-    User create MS SQL cluster with name "sql-cluster" and join in domain "sqlAD.nastya"
+    User create MS SQL cluster with name "sql-cluster" and join in domain "sqlAD.domain"
     User click on "Create Service"
     User create ASP.NET Farm with name "asp-farm" and don't join to domain, select "Not in domain"
     Delete environment "IIS + AD + SQL + SQL Cluster + ASP.FARM" after test
 
 Create 4 MS SQL clusters
     [Tags]    night
-    Log in WebUI by anastasia/swordfish
+    Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
     User set value "4 SQL Clusters" for field Environment Name
     User click on "Create"
     User click on "4 SQL Clusters"
     User click on "Create Service"
-    User create MS SQL cluster with name "sql1-cluster" and join in domain "sql1.nastya"
+    User create MS SQL cluster with name "sql1-cluster" and join in domain "sql1.domain"
     User click on "Create Service"
-    User create MS SQL cluster with name "sql2-cluster" and join in domain "sql2.nastya"
+    User create MS SQL cluster with name "sql2-cluster" and join in domain "sql2.domain"
     User click on "Create Service"
-    User create MS SQL cluster with name "sql3-cluster" and join in domain "sql3.nastya"
+    User create MS SQL cluster with name "sql3-cluster" and join in domain "sql3.domain"
     User click on "Create Service"
-    User create MS SQL cluster with name "sql4-cluster" and join in domain "sql4.nastya"
+    User create MS SQL cluster with name "sql4-cluster" and join in domain "sql4.domain"
     Delete environment "4 SQL Clusters" after test
 
 Create IIS + SQL + ASP.FARM delete IIS
     [Tags]    night
-    Log in WebUI by anastasia/swordfish
+    Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
     User set value "IIS + SQL + ASP.FARM" for field Environment Name
     User click on "Create"
@@ -713,73 +692,111 @@ Create IIS + SQL + ASP.FARM delete IIS
     Page should not contain element "iis"
     Delete environment "IIS + SQL + ASP.FARM" after test
 
-Delete AD after deploy
-    [Tags]
-    Log in WebUI by anastasia/swordfish
+Add service in deployed env
+    [Tags]    night
+    Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
-    User set value "delete_ad_after_deploy" for field Environment Name
+    User set value "add_service_in_deployed_env" for field Environment Name
     User click on "Create"
-    User click on "delete_ad_after_deploy"
+    User click on "add_service_in_deployed_env"
     User click on "Create Service"
-    User select "Active Directory" from dropdown list "Service Type"
-    User click on "Next"
-    User set value "deployad.nastya" for field Domain Name
-    User set value "P@ssw0rd" for field Administrator password
-    User set value "P@ssw0rd" for field Confirm password
-    User set value "P@ssw0rd" for field Recovery password
-    User set value "P@ssw0rd" for field Confirm recovery password
-    User set value "ad" for field Hostname template
-    User click on "Next"
-    User select "Windows Server 2012 Standard" from dropdown list "Instance image"
-    User click on "Create"
-    Page should contain element "deployad.nastya"
+    User create IIS with name "iis" and don't join to domain, select "Not in domain"
     User click on "Deploy This Environment"
-    Check the status of environment "delete_ad_after_deploy" (should be "Ready")
-    Check that deploy "delete_ad_after_deploy" finished
-    User click on "Environments"
-    User click on "delete_ad_after_deploy"
-    User click on "Delete Service"
-    User confirms deletion
-    User click on "Deploy This Environment"
-    Check the status of environment "delete_ad_after_deploy" (should be "Ready")
-    Log out
-    Log in WebUI by anastasia/swordfish
-    User click on "delete_ad_after_deploy"
-    Page should not contain element "deletead.nastya"
-    Delete environment "delete_ad_after_deploy" after test
+    Check the status of environment "add_service_in_deployed_env" (should be "Ready")
+    Check that deploy "add_service_in_deployed_env" finished
+    Navigate To    Project>Environments
+    User click on "add_service_in_deployed_env"
+    User click on "Create Service"
+    User create IIS with name "iis2" and don't join to domain, select "Not in domain"
+    Delete environment "add_service_in_deployed_env" after test
 
-Delete IIS after deploy
-    [Tags]
-    Log in WebUI by anastasia/swordfish
+Check re-deploy
+    [Tags]    night
+    Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
-    User set value "delete_iis_after_deploy" for field Environment Name
+    User set value "re-deploy" for field Environment Name
     User click on "Create"
-    User click on "delete_iis_after_deploy"
+    User click on "re-deploy"
+    User click on "Create Service"
+    User create Active Directory with domain name "newdomain.com"
+    User click on "Deploy This Environment"
+    Check the status of environment "re-deploy" (should be "Ready")
+    Check that deploy "re-deploy" finished
+    Navigate To    Project>Environments
+    User click on "re-deploy"
+    User click on "Create Service"
+    User create IIS with name "iis2" and \ join in domain "newdomain.com"
+    User click on "Deploy This Environment"
+    Check the status of environment "re-deploy" (should be "Ready")
+    Check that deploy "re-deploy" finished
+    Delete environment "re-deploy" after test
+
+Deploy instance with different flavor
+    [Tags]    night
+    Log in WebUI by AutotestUser/swordfish
+    User click on "Create Environment"
+    User set value "different_flavor" for field Environment Name
+    User click on "Create"
+    User click on "different_flavor"
+    User click on "Create Service"
+    User create IIS with name "iis-medium" with instance flavor m1.medium and select "Not in domain"
     User click on "Create Service"
     User select "Internet Information Services" from dropdown list "Service Type"
     User click on "Next"
-    User set value "iis-service" for field Service Name
+    User set value "iis-large" for field Service Name
     User set value "P@ssw0rd" for field Administrator password
     User set value "P@ssw0rd" for field Confirm password
-    User set value "iis" for field Hostname template
+    User set value "iisLARGE" for field Hostname template
     User click on "Next"
+    User select "m1.large" from dropdown list "Instance flavor"
     User select "Windows Server 2012 Standard" from dropdown list "Instance image"
     User click on "Create"
-    Page should contain element "iis-service"
+    Page should contain element "iis-large"
     User click on "Deploy This Environment"
-    Check the status of environment "delete_iis_after_deploy" (should be "Ready")
-    Check that deploy "delete_iis_after_deploy" finished
-    User click on "Environments"
-    User click on "delete_iis_after_deploy"
-    User click on "Delete Service"
-    User confirms deletion
+    Check the status of environment "different_flavor" (should be "Ready")
+    Check that deploy "different_flavor" finished
+    Navigate To    Project>Instances
+    Check that size of instance "iis" is "m1.medium"
+    Check that size of instance "iisLARGE" is "m1.large"
+    Navigate To    Project>Environments
+    Delete environment "different_flavor" after test
+
+Linux and Windows services in one environment
+    [Tags]    night
+    Log in WebUI by AutotestUser/swordfish
+    User click on "Create Environment"
+    User set value "ad_and_telnet" for field Environment Name
+    User click on "Create"
+    User click on "ad_and_telnet"
+    User click on "Create Service"
+    User create Active Directory with domain name "windows.service"
+    User click on "Create Service"
+    User select "Linux Telnet" from dropdown list "Service Type"
+    User click on "Next"
+    User set value "telnet-service" for field Service Name
+    User set value "telnet" for field Hostname
+    User click on "Next"
+    User select "Linux Image" from dropdown list "Instance image"
+    User click on "Create"
     User click on "Deploy This Environment"
-    Check the status of environment "delete_iis_after_deploy" (should be "Ready")
-    Log out
-    Log in WebUI by anastasia/swordfish
-    User click on "delete_iis_after_deploy"
-    Page should not contain element "iis-service"
-    Delete environment "delete_iis_after_deploy" after test
+    Check the status of environment "ad_and_telnet" (should be "Ready")
+    Check that deploy "ad_and_telnet" finished
+
+Checking type and last operation
+    [Tags]    night
+    Log in WebUI by AutotestUser/swordfish
+    User click on "Create Environment"
+    User set value "test" for field Environment Name
+    User click on "Create"
+    User click on "test"
+    User click on "Create Service"
+    User create IIS with name "service-iis" and don't join to domain, select "Not in domain"
+    User click on "Deploy This Environment"
+    Check that Type of service "service-iis" is "Internet Information Services"
+    Check that Last operation of service "service-iis" is "Service draft"
+    Check the status of environment "test" (should be "Ready")
+    Check that deploy "test" finished
+    Delete environment "test" after test
 
 *** Keywords ***
 Log in WebUI by ${user}/${password}
@@ -791,29 +808,19 @@ Log in WebUI by ${user}/${password}
 User set value "${value}" for field ${field}
     Fill Field    ${field}    ${value}
 
-Check the status of environment "${env_name}" (should be "${status}")
+Check the status of environment "${name}" (should be "${status}")
     Navigate to    Project>Environments
-    ${row}=    Get Table Row With    ${env_name}
-    Wait Until Keyword Succeeds    40 min    5s    Check status    ${env_name}    ${row}    ${status}
-
-Check status
-    [Arguments]    ${env}    ${row}    ${status}
-    ${text}=    Get Text    xpath=${row}/td[3]
-    Should Be Equal As Strings    ${text}    ${status}
+    Wait Until Keyword Succeeds    40 min    5s    Check that Status of environment "${name}" is "${status}"
 
 User click on "${element}"
     Click on    ${element}
 
 Page should contain element "${element}"
-    ${default_timeout}    Set Selenium Timeout    15s
     Page Should Contain    ${element}
-    Set Selenium Timeout    ${default_timeout}
 
 Page should not contain element "${element}"
     Reload Page
-    ${default_timeout}    Set Selenium Timeout    5s
     Page Should Not Contain    ${element}
-    Set Selenium Timeout    ${default_timeout}
 
 User select "${item}" from dropdown list "${menu}"
     Select Item From List    ${menu}    ${item}
@@ -857,7 +864,7 @@ User create IIS with name "${name}" ${join} "${domain}"
     User click on "Next"
     User select "Windows Server 2012 Standard" from dropdown list "Instance image"
     User click on "Create"
-    Page should contain element "${name}"
+    Page Should Contain    ${name}
 
 User create ASP.NET App with name "${name}" ${join} "${domain}"
     User select "ASP.NET Application" from dropdown list "Service Type"
@@ -871,7 +878,6 @@ User create ASP.NET App with name "${name}" ${join} "${domain}"
     User click on "Next"
     User select "Windows Server 2012 Standard" from dropdown list "Instance image"
     User click on "Create"
-    Reload Page
     Page should contain element "${name}"
 
 User create IIS Farm with name "${name}" ${join} "${domain}"
@@ -885,7 +891,6 @@ User create IIS Farm with name "${name}" ${join} "${domain}"
     User click on "Next"
     User select "Windows Server 2012 Standard" from dropdown list "Instance image"
     User click on "Create"
-    Reload Page
     Page should contain element "${name}"
 
 User create ASP.NET Farm with name "${name}" ${join} "${domain}"
@@ -900,7 +905,6 @@ User create ASP.NET Farm with name "${name}" ${join} "${domain}"
     User click on "Next"
     User select "Windows Server 2012 Standard" from dropdown list "Instance image"
     User click on "Create"
-    Reload Page
     Page should contain element "${name}"
 
 User create MS SQL server with name "${name}" ${join} "${domain}"
@@ -916,7 +920,6 @@ User create MS SQL server with name "${name}" ${join} "${domain}"
     User click on "Next"
     User select "Windows Server 2012 Standard" from dropdown list "Instance image"
     User click on "Create"
-    Reload Page
     Page should contain element "${name}"
 
 User create MS SQL cluster with name "${name}" ${join} "${domain}"
@@ -946,7 +949,6 @@ User create MS SQL cluster with name "${name}" ${join} "${domain}"
     User click on "Next"
     User select "Windows Server 2012 Standard" from dropdown list "Instance image"
     User click on "Create"
-    Reload Page
     Page should contain element "${name}"
 
 Check that service "${service}" was joined in domain "${domain}"
@@ -959,3 +961,12 @@ Delete environment "${name}" after test
     Select "Delete Environment" for chosen environment "${name}"
     User confirms deletion
     Page should not contain element "${name}"
+
+Check that ${subject} of ${element} "${name}" is "${status}"
+    ${row}=    Get Table Row With    ${name}
+    ${source}=    Get Source
+    ${cell}=    Get Web Element Selector    ${subject}    ${source}    th    this
+    ${#_of_column}=    Get Substring    ${cell}    -2    -1
+    ${text}=    Get Text    xpath=${row}/td[${#_of_column}]
+    Should Contain    ${text}    ${status}
+
