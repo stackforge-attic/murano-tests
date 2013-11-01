@@ -6,7 +6,7 @@ Library           Boffin.WebUIlib    10    20    # Boffin framework library
 
 *** Variables ***
 ${resources_path}    Resources/
-${url}            http://172.18.79.84/dashboard
+${url}            http://10.100.0.13/horizon
 
 *** Test Cases ***
 Create environment
