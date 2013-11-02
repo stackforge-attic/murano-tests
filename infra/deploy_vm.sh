@@ -40,9 +40,9 @@ send -- "sed -i \"s/port = 5672/port = "
 send -- [lindex $argv 4]
 send -- "/\" /etc/murano-conductor/conductor.conf\n"
 expect "*@murano-devbox*"
-send -- "sed -i \"s/\"BootFromVolume\": true,//\" /etc/murano-conductor/data/templates/cf/Linux.template\n"
+send -- "sed -i \"s/\\\"BootFromVolume\\\": true,//\" /etc/murano-conductor/data/templates/cf/Linux.template\n"
 expect "*@murano-devbox*"
-send -- "sed -i \"s/\"BootFromVolume\": true,//\" /etc/murano-conductor/data/templates/cf/Windows.template\n"
+send -- "sed -i \"s/\\\"BootFromVolume\\\": true,//\" /etc/murano-conductor/data/templates/cf/Windows.template\n"
 expect "*@murano-devbox*"
 
 send -- "restart murano-api\n"
