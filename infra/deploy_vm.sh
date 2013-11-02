@@ -3,56 +3,44 @@ set timeout 1200
 send_user "\n\nStart to login to the test bed...\n\n"
 
 spawn /usr/bin/ssh  [lindex $argv 0]@[lindex $argv 1]
-expect "password"
-send -- [lindex $argv 2]
-send -- "\n"
-expect "*root@??box*"
-
-send -- "yum makecache -y\n"
-expect "*root@??box*"
-send -- "yum update -y\n"
-expect "*root@??box*"
+expect "*@murano-devbox*"
 
 send -- "sed -i \"s/LAB_HOST=''/LAB_HOST='"
+send -- [lindex $argv 2]
+send -- "'/\" /etc/murano-deployment/lab-binding.rc\n"
+expect "*@murano-devbox*"
+send -- "sed -i \"s/BRANCH_NAME=''/BRANCH_NAME='"
 send -- [lindex $argv 3]
 send -- "'/\" /etc/murano-deployment/lab-binding.rc\n"
-expect "*root@??box*"
-send -- "sed -i \"s/BRANCH_NAME=''/BRANCH_NAME='"
-send -- [lindex $argv 4]
-send -- "'/\" /etc/murano-deployment/lab-binding.rc\n"
-expect "*root@??box*"
-send -- "rm -rf /opt/git\n"
-expect "*root@??box*"
-send -- "mkdir -p /opt/git\n"
-expect "*root@??box*"
-send -- "cd /opt/git\n"
-expect "*root@??box*"
+expect "*@murano-devbox*"
+send -- "rm -rf /opt/git; mkdir -p /opt/git; cd /opt/git\n"
+expect "*@murano-devbox*"
 send -- "git clone https://github.com/stackforge/murano-deployment -b "
-send -- [lindex $argv 4]
+send -- [lindex $argv 3]
 send -- "\n"
-expect "*root@??box*"
+expect "*@murano-devbox*"
 
 send -- "cd murano-deployment/devbox-scripts/\n"
-expect "*root@??box*"
+expect "*@murano-devbox*"
 send -- "./murano-git-install.sh prerequisites\n"
-expect "*root@??box*"
+expect "*@murano-devbox*"
 send -- "./murano-git-install.sh install\n"
-expect "*root@??box*"
+expect "*@murano-devbox*"
 
 send -- "sed -i \"s/connection = sqlite:\\/\\/\\/murano.sqlite/connection = mysql:\\/\\/murano:swordfish@localhost:3306\\/murano/\" /etc/murano-api/murano-api.conf\n"
-expect "*root@??box*"
+expect "*@murano-devbox*"
 send -- "sed -i \"s/port = 5672/port = "
-send -- [lindex $argv 5]
+send -- [lindex $argv 4]
 send -- "/\" /etc/murano-api/murano-api.conf\n"
-expect "*root@??box*"
+expect "*@murano-devbox*"
 send -- "sed -i \"s/port = 5672/port = "
-send -- [lindex $argv 5]
+send -- [lindex $argv 4]
 send -- "/\" /etc/murano-conductor/conductor.conf\n"
-expect "*root@??box*"
+expect "*@murano-devbox*"
 
 send -- "restart murano-api\n"
-expect "*root@??box*"
+expect "*@murano-devbox*"
 send -- "restart murano-conductor\n"
-expect "*root@??box*"
+expect "*@murano-devbox*"
 
 send -- "exit\n"
