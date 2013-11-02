@@ -5,6 +5,9 @@ send_user "\n\nStart to login to the test bed...\n\n"
 spawn /usr/bin/ssh  [lindex $argv 0]@[lindex $argv 1]
 expect "*@murano-devbox*"
 
+send -- "sudo su\n"
+expect "*@murano-devbox*"
+
 send -- "sed -i \"s/LAB_HOST=''/LAB_HOST='"
 send -- [lindex $argv 2]
 send -- "'/\" /etc/murano-deployment/lab-binding.rc\n"
