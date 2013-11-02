@@ -12,8 +12,8 @@
 #    License for the specific language governing permissions and limitations
 #    under the License
 
-import time
-import os
+from time import sleep
+
 from robot.libraries.BuiltIn import BuiltIn
 
 from _Utils import _Utils
@@ -87,7 +87,7 @@ class _WebUIlib(_Utils):
         | Click on submenu | Settings | Profile |
         """
         self.put_mouse_over(over_element_name)
-        time.sleep(1)
+        sleep(1)
         self.click_on(name)
         self.wait_for_page_loaded(dont_wait)
 
@@ -434,7 +434,7 @@ class _WebUIlib(_Utils):
             if selector:
                 break
 
-            time.sleep(0.5)
+            sleep(0.5)
 
         if not selector:
             BuiltIn().run_keyword('Capture Page Screenshot')
@@ -475,7 +475,7 @@ class _WebUIlib(_Utils):
         *Examples:*
         | Set checkbox on | Dashboard . Delete Posts Role checkbox |
         """
-        selector = self.wait_for_element_found(name, 'select', 'previous')
+        selector = self.wait_for_element_found(name, 'select/input', 'previous')
         self.select_checkbox(selector)
 
     @_framed('name')
@@ -492,7 +492,7 @@ class _WebUIlib(_Utils):
         *Examples:*
         | Set checkbox off | Dashboard . Delete Posts Role checkbox |
         """
-        selector = self.wait_for_element_found(name, 'select', 'previous')
+        selector = self.wait_for_element_found(name, 'select/input', 'previous')
         self.unselect_checkbox(selector)
 
     @_framed('from_name')
