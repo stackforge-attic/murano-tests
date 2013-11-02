@@ -42,6 +42,3 @@ while server.status == 'REBUILD':
 
 if server.status != 'ACTIVE':
     server.start()
-server = nova.servers.find(name=args.instance_name)
-while server.status != 'ACTIVE':
-    server = nova.servers.find(name=args.instance_name)
