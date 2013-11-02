@@ -1,302 +1,17 @@
 *** Settings ***
+Suite Setup
+Suite Teardown    Close All Browsers
 Test Setup        Open Browser    ${url}    remote_url=http://172.18.124.233:4444/wd/hub    browser=firefox    ff_profile_dir=ffprofile
-Test Teardown     Close Browser
+Test Teardown     Close All Browsers
 Library           String
-Library           Boffin.WebUIlib    0    10    # Boffin framework library
+Library           Boffin.WebUIlib    0    5    # Boffin framework library
 
 *** Variables ***
 ${resources_path}    Resources/
-${url}            http://${IP}/horizon
+${url}            http://10.100.0.6/horizon
+
 
 *** Test Cases ***
-Create environment
-    [Tags]    commit    thread3
-    Log in WebUI by AutotestUser/swordfish
-    User click on "Create Environment"
-    User set value "env" for field Environment Name
-    User click on "Create"
-    Reload Page
-    Page should contain element "env"
-    Delete environment "env" after test
-
-Edit environment
-    [Tags]    commit    thread4
-    Log in WebUI by AutotestUser/swordfish
-    User click on "Create Environment"
-    User set value "env1" for field Environment Name
-    User click on "Create"
-    Select "More" for chosen environment "env1"
-    Select "Edit Environment" for chosen environment "env1"
-    User set value "edited_env" for field new Name
-    User click on "Save"
-    Page should contain element "edited_env"
-    Delete environment "edited_env" after test
-
-Delete Environment
-    [Tags]    commit    thread5
-    Log in WebUI by AutotestUser/swordfish
-    User click on "Create Environment"
-    User set value "env2" for field Environment Name
-    User click on "Create"
-    Select "More" for chosen environment "env2"
-    Select "Delete Environment" for chosen environment "env2"
-    User confirms deletion
-    Page should not contain element "env2"
-
-Delete Image from repo
-    [Tags]    commit
-    Log in WebUI by AutotestUser/swordfish
-    User click on "Marked Image"
-    User click on "Mark Image"
-    User select "ws-2012-std" from dropdown list "Image"
-    User set value "Image for deletion" for field Title
-    User select "Windows Server 2012" from dropdown list "with supported types of images"
-    User click on "Mark"
-    Page should contain element "Image for deletion"
-    Select "Delete Metadata" for chosen image "Image for deletion"
-    User confirms deletion
-    Page should not contain element "Image for deletion"
-
-Rename Windows image
-    [Tags]    night    commit    thread1
-    Log in WebUI by AutotestUser/swordfish
-    User click on "Marked Image"
-    User click on "Mark Image"
-    User select "ws-2012-std" from dropdown list "Image"
-    User set value "Windows Server 2012 Standard" for field Title
-    User select "Windows Server 2012" from dropdown list "with supported types of images"
-    User click on "Mark"
-    Page should contain element "Windows Server 2012 Standard"
-
-Rename Linux image
-    [Tags]    night    commit    thread2
-    Log in WebUI by AutotestUser/swordfish
-    User click on "Marked Image"
-    User click on "Mark Image"
-    User select "F18-x86_64-cfntools-MURANO" from dropdown list "Image"
-    User set value "Linux Image" for field Title
-    User select "Generic Linux" from dropdown list "with supported types of images"
-    User click on "Mark"
-    Page should contain element "Linux Image"
-
-Create and Delete AD service
-    [Tags]    commit    thread1
-    Log in WebUI by AutotestUser/swordfish
-    User click on "Create Environment"
-    User set value "create_delete_ad" for field Environment Name
-    User click on "Create"
-    User click on "create_delete_ad"
-    User click on "Create Service"
-    User select "Active Directory" from dropdown list "Service Type"
-    User click on "Next"
-    User set value "muranotest.domain" for field Domain Name
-    User set value "P@ssw0rd" for field Administrator password
-    User set value "P@ssw0rd" for field Confirm password
-    User set value "P@ssw0rd" for field Recovery password
-    User set value "P@ssw0rd" for field Confirm recovery password
-    User set value "muranotest.domain" for field Hostname template
-    User click on "Next"
-    User select "Windows Server 2012 Standard" from dropdown list "Instance image"
-    User click on "Create"
-    User click on "Delete Service"
-    User confirms deletion
-    Page should not contain element "muranotest.domain"
-    Delete environment "create_delete_ad" after test
-
-Create and Delete IIS service
-    [Tags]    commit    thread2
-    Log in WebUI by AutotestUser/swordfish
-    User click on "Create Environment"
-    User set value "create_delete_iis" for field Environment Name
-    User click on "Create"
-    User click on "create_delete_iis"
-    User click on "Create Service"
-    User select "Internet Information Services" from dropdown list "Service Type"
-    User click on "Next"
-    User set value "iis_service" for field Service Name
-    User set value "P@ssw0rd" for field Administrator password
-    User set value "P@ssw0rd" for field Confirm password
-    User set value "iis" for field Hostname template
-    User click on "Next"
-    User select "Windows Server 2012 Standard" from dropdown list "Instance image"
-    User click on "Create"
-    User click on "Delete Service"
-    User confirms deletion
-    Page should not contain element "iis_service"
-    Delete environment "create_delete_iis" after test
-
-Create and Delete ASP.NET service
-    [Tags]    commit    thread3
-    Log in WebUI by AutotestUser/swordfish
-    User click on "Create Environment"
-    User set value "create_delete_asp" for field Environment Name
-    User click on "Create"
-    User click on "create_delete_asp"
-    User click on "Create Service"
-    User select "ASP.NET Application" from dropdown list "Service Type"
-    User click on "Next"
-    User set value "asp-service" for field Service Name
-    User set value "P@ssw0rd" for field Administrator password
-    User set value "P@ssw0rd" for field Confirm password
-    User set value "git://github.com/Mirantis/murano-mvc-demo.git" for field Git repository
-    User set value "asp" for field Hostname template
-    User click on "Next"
-    User select "Windows Server 2012 Standard" from dropdown list "Instance image"
-    User click on "Create"
-    User click on "Delete Service"
-    User confirms deletion
-    Page should not contain element "asp-service"
-    Delete environment "create_delete_asp" after test
-
-Create and Delete IIS Farm service
-    [Tags]    commit    thread4
-    Log in WebUI by AutotestUser/swordfish
-    User click on "Create Environment"
-    User set value "create_delete_iis_farm" for field Environment Name
-    User click on "Create"
-    User click on "create_delete_iis_farm"
-    User click on "Create Service"
-    User select "Internet Information Services Web Farm" from dropdown list "Service Type"
-    User click on "Next"
-    User set value "iis-farm" for field Service Name
-    User set value "P@ssw0rd" for field Administrator password
-    User set value "P@ssw0rd" for field Confirm password
-    User set value "iisfarm#" for field Hostname template
-    User click on "Next"
-    User select "Windows Server 2012 Standard" from dropdown list "Instance image"
-    User click on "Create"
-    User click on "Delete Service"
-    User confirms deletion
-    Page should not contain element "iis-farm"
-    Delete environment "create_delete_iis_farm" after test
-
-Create and Delete ASP.NET Farm service
-    [Tags]    commit    thread5
-    Log in WebUI by AutotestUser/swordfish
-    User click on "Create Environment"
-    User set value "create_delete_asp_farm" for field Environment Name
-    User click on "Create"
-    User click on "create_delete_asp_farm"
-    User click on "Create Service"
-    User select "ASP.NET Application Web Farm" from dropdown list "Service Type"
-    User click on "Next"
-    User set value "asp-farm" for field Service Name
-    User set value "P@ssw0rd" for field Administrator password
-    User set value "P@ssw0rd" for field Confirm password
-    User set value "git://github.com/Mirantis/murano-mvc-demo.git" for field Git repository
-    User set value "aspfarm#" for field Hostname template
-    User click on "Next"
-    User select "Windows Server 2012 Standard" from dropdown list "Instance image"
-    User click on "Create"
-    User click on "Delete Service"
-    User confirms deletion
-    Page should not contain element "asp-farm"
-    Delete environment "create_delete_asp_farm" after test
-
-Create and Delete MS SQL server
-    [Tags]    commit    thread1
-    Log in WebUI by AutotestUser/swordfish
-    User click on "Create Environment"
-    User set value "create_delete_mssql" for field Environment Name
-    User click on "Create"
-    User click on "create_delete_mssql"
-    User click on "Create Service"
-    User select "MS SQL Server" from dropdown list "Service Type"
-    User click on "Next"
-    User set value "ms_sql" for field Service Name
-    User set value "P@ssw0rd" for field Administrator password
-    User set value "P@ssw0rd" for field Confirm password
-    User set value "P@ssw0rd" for field SA Password
-    User set value "P@ssw0rd" for field Confirm SA password SQL
-    User set value "sql" for field Hostname template
-    User click on "Next"
-    User select "Windows Server 2012 Standard" from dropdown list "Instance image"
-    User click on "Create"
-    User click on "Delete Service"
-    User confirms deletion
-    Page should not contain element "ms_sql"
-    Delete environment "create_delete_mssql" after test
-
-Create and Delete MS SQL Cluster
-    [Tags]    commit    thread2
-    Log in WebUI by AutotestUser/swordfish
-    User click on "Create Environment"
-    User set value "create_delete_sqlcluster" for field Environment Name
-    User click on "Create"
-    User click on "create_delete_sqlcluster"
-    User click on "Create Service"
-    User create Active Directory with domain name "activeDirectory.mssql"
-    Page should contain element "activeDirectory.mssql"
-    User click on "Create Service"
-    User select "MS SQL Server Cluster" from dropdown list "Service Type"
-    User click on "Next"
-    User set value "sql_cluster" for field Service Name
-    User set value "P@ssw0rd" for field Administrator password
-    User set value "P@ssw0rd" for field Confirm password
-    User select "activeDirectory.mssql" from dropdown list "Domain"
-    User set value "P@ssw0rd" for field SA Password
-    User set value "P@ssw0rd" for field Confirm SA password
-    User click on "Next"
-    User set value "10.100.0.88" for field Cluster Static IP
-    User set value "cluster" for field Cluster Name
-    User set value "AG_name" for field Availability Group Name
-    User set value "AG_listener_name" for field Availability Group Listener Name
-    User set value "10.100.0.89" for field Availability Group Listener IP
-    User set value "user" for field SQL User Name
-    User set value "P@ssw0rd" for field SQL User Password
-    User set value "P@ssw0rd" for field Confirm password
-    User set value "sqlcluster#" for field Hostname template
-    User click on "Next"
-    User set value "testbase" for field Database list
-    User click on "Next"
-    User select "Windows Server 2012 Standard" from dropdown list "Instance image"
-    User click on "Create"
-    Select "Delete Service" for chosen service "sql_cluster"
-    User confirms deletion
-    Page should not contain element "sql_cluster"
-    Delete environment "create_delete_sqlcluster" after test
-
-Create and Delete Telnet Service
-    [Tags]    commit    thread3
-    Log in WebUI by AutotestUser/swordfish
-    User click on "Create Environment"
-    User set value "create_delete_telnet" for field Environment Name
-    User click on "Create"
-    User click on "create_delete_telnet"
-    User click on "Create Service"
-    User select "Linux Telnet" from dropdown list "Service Type"
-    User click on "Next"
-    User set value "telnet-service" for field Service Name
-    User set value "telnet" for field Hostname
-    User click on "Next"
-    User select "Linux Image" from dropdown list "Instance image"
-    User click on "Create"
-    User click on "Delete Service"
-    User confirms deletion
-    Page should not contain element "telnet-service"
-    Delete environment "create_delete_telnet" after test
-
-Check opportunity to choose Instance Flavor
-    [Tags]    commit
-    Log in WebUI by AutotestUser/swordfish
-    User click on "Create Environment"
-    User set value "env_inst_flavor" for field Environment Name
-    User click on "Create"
-    User click on "env_inst_flavor"
-    User click on "Create Service"
-    User select "Internet Information Services" from dropdown list "Service Type"
-    User click on "Next"
-    User set value "iis-service" for field Service Name
-    User set value "P@ssw0rd" for field Administrator password
-    User set value "P@ssw0rd" for field Confirm password
-    User set value "iis" for field Hostname template
-    User click on "Next"
-    User select "Windows Server 2012 Standard" from dropdown list "Instance image"
-    User select "m1.small" from dropdown list "Instance flavor"
-    User select "m1.large" from dropdown list "Instance flavor"
-    User select "m1.medium" from dropdown list "Instance flavor"
-    Delete environment "env_inst_flavor" after test
-
 Deploy environment with AD Service
     [Tags]    night
     Log in WebUI by AutotestUser/swordfish
@@ -606,210 +321,18 @@ Deploy MS SQL server and IIS in domain
     Check that deploy "iis_sqlserver_in_domain" finished
     Delete environment "iis_sqlserver_in_domain" after test
 
-Create IIS+ ASP Farm + AD + IIS
-    [Tags]    night
-    Log in WebUI by AutotestUser/swordfish
-    User click on "Create Environment"
-    User set value "complex_env" for field Environment Name
-    User click on "Create"
-    User click on "complex_env"
-    User click on "Create Service"
-    User create IIS with name "iis1" and don't join to domain, select "Not in domain"
-    User click on "Create Service"
-    User create ASP.NET Farm with name "asp-farm" and don't join to domain, select "Not in domain"
-    User click on "Create Service"
-    User create Active Directory with domain name "singleAD.domain"
-    User click on "Create Service"
-    User create IIS with name "iis2" and don't join to domain, select "Not in domain"
-    Delete environment "complex_env" after test
-
-Create ASP.FARM + SQL Cluster + SQL + AD
-    [Tags]    night
-    Log in WebUI by AutotestUser/swordfish
-    User click on "Create Environment"
-    User set value "ASP.FARM + SQL Cluster + SQL + AD" for field Environment Name
-    User click on "Create"
-    User click on "ASP.FARM + SQL Cluster + SQL + AD"
-    User click on "Create Service"
-    User create ASP.NET Farm with name "asp-farm" and don't join to domain, select "Not in domain"
-    User click on "Create Service"
-    User create MS SQL cluster with name "sql-cluster" and join in domain "sqlAD.domain"
-    User click on "Create Service"
-    User create MS SQL server with name "sql-server" and join to domain, select "Not in domain"
-    Delete environment "ASP.FARM + SQL Cluster + SQL + AD" after test
-
-Create IIS + AD + SQL + SQL Cluster + ASP.FARM
-    [Tags]    night
-    Log in WebUI by AutotestUser/swordfish
-    User click on "Create Environment"
-    User set value "IIS + AD + SQL + SQL Cluster + ASP.FARM" for field Environment Name
-    User click on "Create"
-    User click on "IIS + AD + SQL + SQL Cluster + ASP.FARM"
-    User click on "Create Service"
-    User create IIS with name "iis" and don't join to domain, select "Not in domain"
-    User click on "Create Service"
-    User create Active Directory with domain name "singleAD.domain"
-    User click on "Create Service"
-    User create MS SQL server with name "mssql" and don't join to domain, select "Not in domain"
-    User click on "Create Service"
-    User create MS SQL cluster with name "sql-cluster" and join in domain "sqlAD.domain"
-    User click on "Create Service"
-    User create ASP.NET Farm with name "asp-farm" and don't join to domain, select "Not in domain"
-    Delete environment "IIS + AD + SQL + SQL Cluster + ASP.FARM" after test
-
-Create 4 MS SQL clusters
-    [Tags]    night
-    Log in WebUI by AutotestUser/swordfish
-    User click on "Create Environment"
-    User set value "4 SQL Clusters" for field Environment Name
-    User click on "Create"
-    User click on "4 SQL Clusters"
-    User click on "Create Service"
-    User create MS SQL cluster with name "sql1-cluster" and join in domain "sql1.domain"
-    User click on "Create Service"
-    User create MS SQL cluster with name "sql2-cluster" and join in domain "sql2.domain"
-    User click on "Create Service"
-    User create MS SQL cluster with name "sql3-cluster" and join in domain "sql3.domain"
-    User click on "Create Service"
-    User create MS SQL cluster with name "sql4-cluster" and join in domain "sql4.domain"
-    Delete environment "4 SQL Clusters" after test
-
-Create IIS + SQL + ASP.FARM delete IIS
-    [Tags]    night
-    Log in WebUI by AutotestUser/swordfish
-    User click on "Create Environment"
-    User set value "IIS + SQL + ASP.FARM" for field Environment Name
-    User click on "Create"
-    User click on "IIS + SQL + ASP.FARM"
-    User click on "Create Service"
-    User create IIS with name "iis" and don't join to domain, select "Not in domain"
-    User click on "Create Service"
-    User create MS SQL server with name "sql-server" and don't join to domain, select "Not in domain"
-    User click on "Create Service"
-    User create ASP.NET Farm with name "asp-farm" and don't join to domain, select "Not in domain"
-    Select "Delete Service" for chosen service "iis"
-    User confirms deletion
-    Page should not contain element "iis"
-    Delete environment "IIS + SQL + ASP.FARM" after test
-
-Add service in deployed env
-    [Tags]    night
-    Log in WebUI by AutotestUser/swordfish
-    User click on "Create Environment"
-    User set value "add_service_in_deployed_env" for field Environment Name
-    User click on "Create"
-    User click on "add_service_in_deployed_env"
-    User click on "Create Service"
-    User create IIS with name "iis" and don't join to domain, select "Not in domain"
-    User click on "Deploy This Environment"
-    Check the status of environment "add_service_in_deployed_env" (should be "Ready")
-    Check that deploy "add_service_in_deployed_env" finished
-    Navigate To    Project>Environments
-    User click on "add_service_in_deployed_env"
-    User click on "Create Service"
-    User create IIS with name "iis2" and don't join to domain, select "Not in domain"
-    Delete environment "add_service_in_deployed_env" after test
-
-Check re-deploy
-    [Tags]    night
-    Log in WebUI by AutotestUser/swordfish
-    User click on "Create Environment"
-    User set value "re-deploy" for field Environment Name
-    User click on "Create"
-    User click on "re-deploy"
-    User click on "Create Service"
-    User create Active Directory with domain name "newdomain.com"
-    User click on "Deploy This Environment"
-    Check the status of environment "re-deploy" (should be "Ready")
-    Check that deploy "re-deploy" finished
-    Navigate To    Project>Environments
-    User click on "re-deploy"
-    User click on "Create Service"
-    User create IIS with name "iis2" and \ join in domain "newdomain.com"
-    User click on "Deploy This Environment"
-    Check the status of environment "re-deploy" (should be "Ready")
-    Check that deploy "re-deploy" finished
-    Delete environment "re-deploy" after test
-
-Deploy instance with different flavor
-    [Tags]    night
-    Log in WebUI by AutotestUser/swordfish
-    User click on "Create Environment"
-    User set value "different_flavor" for field Environment Name
-    User click on "Create"
-    User click on "different_flavor"
-    User click on "Create Service"
-    User create IIS with name "iis-medium" with instance flavor m1.medium and select "Not in domain"
-    User click on "Create Service"
-    User select "Internet Information Services" from dropdown list "Service Type"
-    User click on "Next"
-    User set value "iis-large" for field Service Name
-    User set value "P@ssw0rd" for field Administrator password
-    User set value "P@ssw0rd" for field Confirm password
-    User set value "iisLARGE" for field Hostname template
-    User click on "Next"
-    User select "m1.large" from dropdown list "Instance flavor"
-    User select "Windows Server 2012 Standard" from dropdown list "Instance image"
-    User click on "Create"
-    Page should contain element "iis-large"
-    User click on "Deploy This Environment"
-    Check the status of environment "different_flavor" (should be "Ready")
-    Check that deploy "different_flavor" finished
-    Navigate To    Project>Instances
-    Check that size of instance "iis" is "m1.medium"
-    Check that size of instance "iisLARGE" is "m1.large"
-    Navigate To    Project>Environments
-    Delete environment "different_flavor" after test
-
-Linux and Windows services in one environment
-    [Tags]    night
-    Log in WebUI by AutotestUser/swordfish
-    User click on "Create Environment"
-    User set value "ad_and_telnet" for field Environment Name
-    User click on "Create"
-    User click on "ad_and_telnet"
-    User click on "Create Service"
-    User create Active Directory with domain name "windows.service"
-    User click on "Create Service"
-    User select "Linux Telnet" from dropdown list "Service Type"
-    User click on "Next"
-    User set value "telnet-service" for field Service Name
-    User set value "telnet" for field Hostname
-    User click on "Next"
-    User select "Linux Image" from dropdown list "Instance image"
-    User click on "Create"
-    User click on "Deploy This Environment"
-    Check the status of environment "ad_and_telnet" (should be "Ready")
-    Check that deploy "ad_and_telnet" finished
-
-Checking type and last operation
-    [Tags]    night
-    Log in WebUI by AutotestUser/swordfish
-    User click on "Create Environment"
-    User set value "test" for field Environment Name
-    User click on "Create"
-    User click on "test"
-    User click on "Create Service"
-    User create IIS with name "service-iis" and don't join to domain, select "Not in domain"
-    User click on "Deploy This Environment"
-    Check that Type of service "service-iis" is "Internet Information Services"
-    Check that Last operation of service "service-iis" is "Service draft"
-    Check the status of environment "test" (should be "Ready")
-    Check that deploy "test" finished
-    Delete environment "test" after test
-
 *** Keywords ***
 Log in WebUI by ${user}/${password}
     Fill Field    User Name    ${user}
     Fill Field    Password    ${password}
     Click on    Sign In
-    Navigate to    Project>Environments
+    Navigate to    Murano>Environments
 
 User set value "${value}" for field ${field}
     Fill Field    ${field}    ${value}
 
 Check the status of environment "${name}" (should be "${status}")
-    Navigate to    Project>Environments
+    Navigate to    Murano>Environments
     Wait Until Keyword Succeeds    40 min    5s    Check that Status of environment "${name}" is "${status}"
 
 User click on "${element}"
@@ -846,7 +369,7 @@ Select "${action}" for chosen ${type} "${env}"
     Click Element    ${xpath}
 
 Check that deploy "${env}" finished
-    Navigate To    Project>Environments
+    Navigate To    Murano>Environments
     Select "More" for chosen environment "${env}"
     Select "Show Deployments" for chosen environment "${env}"
     Reload Page
@@ -956,7 +479,7 @@ Check that service "${service}" was joined in domain "${domain}"
     Page should contain element "${domain}"
 
 Delete environment "${name}" after test
-    Navigate To    Project>Environments
+    Navigate To    Murano>Environments
     Select "More" for chosen environment "${name}"
     Select "Delete Environment" for chosen environment "${name}"
     User confirms deletion
@@ -969,4 +492,3 @@ Check that ${subject} of ${element} "${name}" is "${status}"
     ${#_of_column}=    Get Substring    ${cell}    -2    -1
     ${text}=    Get Text    xpath=${row}/td[${#_of_column}]
     Should Contain    ${text}    ${status}
-

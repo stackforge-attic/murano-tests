@@ -1,0 +1,87 @@
+*** Settings ***
+Suite Setup
+Suite Teardown    Close All Browsers
+Test Setup        Open Browser    ${url}    remote_url=http://172.18.124.233:4444/wd/hub    browser=firefox    ff_profile_dir=ffprofile
+Test Teardown     Close All Browsers
+Library           String
+Library           Boffin.WebUIlib    0    5    # Boffin framework library
+
+*** Variables ***
+${resources_path}    Resources/
+${url}            http://10.100.0.6/horizon
+
+
+*** Test Cases ***
+Create test environment
+    Log in WebUI by AutotestUser/swordfish
+    User click on "Create Environment"
+    User set value "test" for field Environment Name
+    User click on "Create"
+    Reload Page
+    Page should contain element "test"
+
+Toggle Active
+    Log in WebUI by AutotestUser/swordfish
+    User click on "Service Definitions"
+    Select "Toggle Active" for chosen service "Internet Information Services"
+    Check that Active of element "Internet Information services" is "False"
+    Select a few services for example "IIS" and "AD"
+
+Modify Service
+    Log in WebUI by AutotestUser/swordfish
+    User click on "Service Definitions"
+    Select "Modify Service" for chosen service "ASP.NET Application"
+    User set value "Modified ASP.NET" for field Name of Service
+    Set Checkbox Off    Active
+    User click on "Submit"
+    Check that Active of element "Modified ASP.NET" is "False"
+    User click on "Environments"
+    User click on "test"
+    User click on "Create Service"
+    User select "Modified ASP.NET" from dropdown list "Service Type"
+
+*** Keywords ***
+Log in WebUI by ${user}/${password}
+    Fill Field    User Name    ${user}
+    Fill Field    Password    ${password}
+    Click on    Sign In
+    Navigate to    Murano>Environments
+
+User set value "${value}" for field ${field}
+    Fill Field    ${field}    ${value}
+
+User click on "${element}"
+    Click on    ${element}
+
+Page should contain element "${element}"
+    Page Should Contain    ${element}
+
+Page should not contain element "${element}"
+    Reload Page
+    Page Should Not Contain    ${element}
+
+Select "${action}" for chosen ${type} "${env}"
+    ${xpath}=    Find Associated Element    ${env}    ${action}
+    Click Element    ${xpath}
+
+Delete environment "${name}" after test
+    Navigate To    Murano>Environments
+    Select "More" for chosen environment "${name}"
+    Select "Delete Environment" for chosen environment "${name}"
+    User confirms deletion
+    Page should not contain element "${name}"
+
+Check that ${subject} of ${element} "${name}" is "${status}"
+    ${row}=    Get Table Row With    ${name}
+    ${source}=    Get Source
+    ${cell}=    Get Web Element Selector    ${subject}    ${source}    th    this
+    ${#_of_column}=    Get Substring    ${cell}    -2    -1
+    ${text}=    Get Text    xpath=${row}/td[${#_of_column}]
+    Should Contain    ${text}    ${status}
+
+User select "${item}" from dropdown list "${menu}"
+    Select Item From List    ${menu}    ${item}
+
+Select a few ${elements} for example "${el1}" and "${el2}"
+    Set Checkbox On    ${el1}
+    Set Checkbox On    ${el2}
