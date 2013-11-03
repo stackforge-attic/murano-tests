@@ -5,6 +5,9 @@ send_user "\n\nStart to login to the test bed...\n\n"
 spawn /usr/bin/ssh  [lindex $argv 0]@[lindex $argv 1]
 expect "*@murano-devbox*"
 
+send -- "sudo su\n"
+expect "*@murano-devbox*"
+
 send -- "cd /opt/git/murano-api\n"
 expect "*@murano-devbox*"
 send -- "sh setup-centos.sh uninstall; sh setup.sh uninstall\n"
