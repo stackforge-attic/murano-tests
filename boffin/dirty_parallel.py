@@ -54,15 +54,7 @@ req_group.add_argument('-d', dest='tests_dir',
                        default=None, type=str,
                        help='The name of directory with tests to be executed.')
 
-parser.add_argument("-t", dest="tags_list",
-                    default=None, nargs='*',
-                    help="Test tags separated by spaces. Should be specified "
-                         "with SCRIPT_NAME argument.")
-
-parser.add_argument('-R', dest='resources_dir',
-                    default=None, type=str,
-                    help='The resources directory path (e.g. '
-                         'samples/mirantis.com/resources/).')
+parser.add_argument("-t", dest="tag", type=str)
 
 parser.add_argument('-r', dest='reports_dir',
                     default="reports", type=str,
@@ -73,16 +65,32 @@ parser.add_argument('--IP', dest='IP', type=str)
 
 args = parser.parse_args()
 
+i = 1
+tags_list = []
+parallel_script = args.script_name+'_parallel'
+o = open(parallel_script,'a') #open for append
+for line in open(args.script_name):
+   if args.tag in line:
+       new_tag = args.tag + str(i)
+       line = line.replace(args.tag, new_tag)
+       if not new_tag in tags_list:
+           tags_list.append(new_tag)
+       i += 1
+       if i > processes_count:
+           i = 1
+   o.write(line + 'n')
+o.close()
+
 
 cmd = 'pybot -C off -K off -d %s/%s'
 
 # Start all threads with tests.
-if args.tags_list and args.script_name:
+if args.script_name:
     cmd += ' -i %s --variable IP:' + args.IP + ' '
-    cmd += args.script_name + ' >/dev/null 2>&1'
+    cmd += parallel_script + ' >/dev/null 2>&1'
     # Start all threads with tests and ignore empty threads.
     threads = []
-    for i, tag in enumerate(args.tags_list):
+    for i, tag in enumerate(tags_list):
         values = (args.reports_dir, i, tag)
         threads.append(Popen(cmd % values, shell=True))
         sleep(5)
