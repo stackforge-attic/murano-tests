@@ -76,7 +76,7 @@ for line in open(args.script_name):
        if not new_tag in tags_list:
            tags_list.append(new_tag)
        i += 1
-       if i > processes_count:
+       if i > args.processes_count:
            i = 1
    o.write(line + 'n')
 o.close()
