@@ -36,38 +36,40 @@ def wait_for_finished(threads):
 s = "This script allows to run Robot Framework tests concurrently."
 parser = ArgumentParser(description=s)
 
-parser.add_argument("-n", action="store", dest="processes_count",
+parser.add_argument("-n", dest="processes_count",
                     default=1, type=int,
                     help="The number of parallel threads (1 by default).")
 
 req_group = parser.add_mutually_exclusive_group(required=True)
 
-req_group.add_argument('-s', action='store', dest='script_name',
+req_group.add_argument('-s', dest='script_name',
                        default=None, type=str,
                        help='The name of file with tests or name pattern.')
 
-req_group.add_argument('-l', action='store', dest='scripts_list',
+req_group.add_argument('-l', dest='scripts_list',
                        default=None, nargs='*',
                        help='Names of test files separated by spaces.')
 
-req_group.add_argument('-d', action='store', dest='tests_dir',
+req_group.add_argument('-d', dest='tests_dir',
                        default=None, type=str,
                        help='The name of directory with tests to be executed.')
 
-parser.add_argument("-t", action="store", dest="tags_list",
+parser.add_argument("-t", dest="tags_list",
                     default=None, nargs='*',
                     help="Test tags separated by spaces. Should be specified "
                          "with SCRIPT_NAME argument.")
 
-parser.add_argument('-R', action='store', dest='resources_dir',
+parser.add_argument('-R', dest='resources_dir',
                     default=None, type=str,
                     help='The resources directory path (e.g. '
                          'samples/mirantis.com/resources/).')
 
-parser.add_argument('-r', action='store', dest='reports_dir',
+parser.add_argument('-r', dest='reports_dir',
                     default="reports", type=str,
                     help='The directory name with reports '
                          '("reports" directory by default).')
+
+parser.add_argument('--IP', dest='IP', type=str)
 
 args = parser.parse_args()
 
@@ -76,16 +78,18 @@ cmd = 'pybot -C off -K off -d %s/%s'
 
 # Start all threads with tests.
 if args.tags_list and args.script_name:
-    cmd += ' -i %s ' + args.script_name + ' 2>/dev/null'
+    cmd += ' -i %s --variable IP:' + args.IP + ' '
+    cmd += args.script_name + ' >/dev/null 2>&1'
     # Start all threads with tests and ignore empty threads.
     threads = []
     for i, tag in enumerate(args.tags_list):
         values = (args.reports_dir, i, tag)
         threads.append(Popen(cmd % values, shell=True))
+        sleep(5)
         while len(threads) == args.processes_count:
             wait_for_finished(threads)
-        sleep(1)
 
 # Wait for all threads finish.
 while len(threads) > 0:
     wait_for_finished(threads)
+    sleep(1)
