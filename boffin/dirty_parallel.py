@@ -67,7 +67,7 @@ args = parser.parse_args()
 
 i = 1
 tags_list = []
-parallel_script = args.script_name+'_parallel'
+parallel_script = args.script_name+'_parallel.txt'
 o = open(parallel_script,'a') #open for append
 for line in open(args.script_name):
    if args.tag in line:
