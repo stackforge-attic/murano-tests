@@ -2,7 +2,7 @@
 Test Setup        Open Browser    ${url}    remote_url=http://172.18.124.233:4444/wd/hub    browser=firefox    ff_profile_dir=ffprofile
 Test Teardown     Close Browser
 Library           String
-Library           Boffin.WebUIlib    0    5    # Boffin framework library
+Library           Boffin.WebUIlib    0    10    # Boffin framework library
 
 *** Variables ***
 ${resources_path}    Resources/
@@ -805,11 +805,15 @@ User click on "${element}"
     Click on    ${element}
 
 Page should contain element "${element}"
+    ${default_timeout}    Set Selenium Timeout    15s
     Page Should Contain    ${element}
+    Set Selenium Timeout    ${default_timeout}
 
 Page should not contain element "${element}"
     Reload Page
+    ${default_timeout}    Set Selenium Timeout    5s
     Page Should Not Contain    ${element}
+    Set Selenium Timeout    ${default_timeout}
 
 User select "${item}" from dropdown list "${menu}"
     Select Item From List    ${menu}    ${item}
