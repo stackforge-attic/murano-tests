@@ -81,7 +81,7 @@ cmd = 'pybot -C off -K off -d %s/%s'
 
 # Start all threads with tests.
 if args.script_name:
-    cmd += ' -i %s --variable IP:' + args.IP + ' '
+    cmd += ' -i %s --name Test --variable IP:' + args.IP + ' '
     if args.run_failed:
         cmd += '--runfailed ' + args.run_failed + ' '
     cmd += parallel_script + ' >/dev/null 2>&1'
@@ -89,6 +89,7 @@ if args.script_name:
     threads = []
     for i, tag in enumerate(tags_list):
         values = (args.reports_dir, i, tag)
+        print cmd % values
         threads.append(Popen(cmd % values, shell=True))
         sleep(5)
         while len(threads) == args.processes_count:
