@@ -1,4 +1,4 @@
-set timeout 1200
+set timeout 30
 
 send_user "\n\nStart to login to the test bed...\n\n"
 
@@ -23,6 +23,7 @@ send -- [lindex $argv 3]
 send -- "\n"
 expect "*@murano-devbox*"
 
+set timeout 600
 send -- "cd murano-deployment/devbox-scripts/\n"
 expect "*@murano-devbox*"
 send -- "./murano-git-install.sh prerequisites\n"
@@ -30,6 +31,7 @@ expect "*@murano-devbox*"
 send -- "./murano-git-install.sh install\n"
 expect "*@murano-devbox*"
 
+set timeout 30
 send -- "sed -i \"s/connection = sqlite:\\/\\/\\/murano.sqlite/connection = mysql:\\/\\/murano:swordfish@localhost:3306\\/murano/\" /etc/murano-api/murano-api.conf\n"
 expect "*@murano-devbox*"
 send -- "sed -i \"s/port = 5672/port = "
