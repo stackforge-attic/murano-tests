@@ -3,18 +3,36 @@ from neutronclient.neutron import client as netclient
 from muranoclient.v1.client import Client as murano_client
 import novaclient.v1_1.client as nvclient
 import time
-user = 'sergey_demo_user'
-password = '111'
-tenant = 'ForTests'
-keystone_url = 'http://172.18.124.202:5000/v2.0/'
+import argparse
+
+parser = argparse.ArgumentParser(description="Script for cleaning trash")
+parser.add_argument("-openstack_user",  dest='openstack_user',  type=str,
+               help="Openstack username",  default='sergey_demo_user')
+parser.add_argument("-openstack_password",  dest='openstack_password',
+                    type=str, help="Openstack password",
+                    default='111')
+parser.add_argument("-openstack_tenant",  dest='openstack_tenant',  type=str,
+                    help="Openstack tenant",  default='ForTests')
+parser.add_argument("-keystone_url",  dest='keystone_url',  type=str,
+               help="Keystone url", default='http://172.18.124.201:5000/v2.0/')
+parser.add_argument("-murano_url",  dest='murano_url',  type=str,
+               help="Murano url", default='http://172.18.78.92:8082')
+parser.add_argument("-neutron_url",  dest='neutron_url',  type=str,
+               help="Neutron url", default='http://172.18.124.202:9696/')
+args = parser.parse_args()
+
+user = args.openstack_user
+password = args.openstack_password
+tenant = args.openstack_tenant
+keystone_url = args.keystone_url
 keystone_client = ksclient.Client(username=user, password=password,
                                   tenant_name=tenant, auth_url=keystone_url)
 nova = nvclient.Client(user, password, tenant, keystone_url,
                        service_type = "compute")
 token = keystone_client.auth_token
-murano_url = "http://172.18.78.92:8082"
+murano_url = args.murano_url
 muranoclient = murano_client(endpoint=murano_url, token=token)
-quantum_endpoint = 'http://172.18.124.202:9696/'
+quantum_endpoint = args.neutron_url
 neutron = netclient.Client('2.0', endpoint_url=quantum_endpoint, token=token)
 networks = neutron.list_networks()
 for i in keystone_client.tenants.list():
