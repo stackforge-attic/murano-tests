@@ -40,29 +40,21 @@ parser.add_argument("-n", dest="processes_count",
                     default=1, type=int,
                     help="The number of parallel threads (1 by default).")
 
-req_group = parser.add_mutually_exclusive_group(required=True)
+parser.add_argument('-s', dest='script_name',
+                    default=None, type=str,
+                    help='The name of file with tests or name pattern.')
 
-req_group.add_argument('-s', dest='script_name',
-                       default=None, type=str,
-                       help='The name of file with tests or name pattern.')
+parser.add_argument('-l', dest='scripts_list',
+                    default=None, nargs='*',
+                    help='Names of test files separated by spaces.')
 
-req_group.add_argument('-l', dest='scripts_list',
-                       default=None, nargs='*',
-                       help='Names of test files separated by spaces.')
-
-req_group.add_argument('-d', dest='tests_dir',
-                       default=None, type=str,
-                       help='The name of directory with tests to be executed.')
-
-req_group.add_argument('--runfailed', dest='run_failed',
-                       default=None, type=str)
+parser.add_argument('--runfailed', dest='run_failed',
+                    default=None, type=str)
 
 parser.add_argument("-t", dest="tag", type=str)
 
 parser.add_argument('-r', dest='reports_dir',
-                    default="reports", type=str,
-                    help='The directory name with reports '
-                         '("reports" directory by default).')
+                    default="reports", type=str)
 
 parser.add_argument('--IP', dest='IP', type=str)
 
