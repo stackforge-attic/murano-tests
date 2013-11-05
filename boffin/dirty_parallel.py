@@ -53,6 +53,8 @@ parser.add_argument('--runfailed', dest='run_failed',
 
 parser.add_argument("-t", dest="tag", type=str)
 
+parser.add_argument('--name', dest='name', type=str)
+
 parser.add_argument('-r', dest='reports_dir',
                     default="reports", type=str)
 
@@ -81,7 +83,7 @@ cmd = 'pybot -C off -K off -d %s/%s'
 
 # Start all threads with tests.
 if args.script_name:
-    cmd += ' -i %s --name Test --variable IP:' + args.IP + ' '
+    cmd += ' -i %s --name ' + args.name + ' --variable IP:' + args.IP + ' '
     if args.run_failed:
         cmd += '--runfailed ' + args.run_failed + ' '
     cmd += parallel_script + ' >/dev/null 2>&1'
