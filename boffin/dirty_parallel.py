@@ -68,7 +68,7 @@ args = parser.parse_args()
 i = 1
 tags_list = []
 parallel_script = args.script_name+'_parallel.txt'
-o = open(parallel_script,'a') #open for append
+o = open(parallel_script,'w')
 for line in open(args.script_name):
    if args.tag in line:
        new_tag = args.tag + str(i)
@@ -78,7 +78,7 @@ for line in open(args.script_name):
        i += 1
        if i > args.processes_count:
            i = 1
-   o.write(line + 'n')
+   o.write(line)
 o.close()
 
 
