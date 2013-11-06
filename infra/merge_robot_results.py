@@ -24,6 +24,7 @@ import sys
 from dateutil import parser
 from bs4 import BeautifulSoup
 
+
 files = []
 for i in range(len(sys.argv) - 1):
     try:
@@ -37,16 +38,10 @@ if files:
     for test in files[0].robot.suite.find_all('test'):
         for f in files[1:]:
             for retest in f.robot.suite.find_all('test'):
-                name = test['name']
-                status = test.status['status']
-                end_time = parser.parse(test.status['endtime'])
-                retest_end_time = parser.parse(retest.status['endtime'])
-                if (test['name'] == retest['name'] and
-                    status != retest.status['status'] and
-                    end_time < retest_end_time):
-                    test.status['status'] = retest.status['status']
-                    test.status['starttime'] = retest.status['starttime']
-                    test.status['endtime'] = retest.status['endtime']
+                if test['name'] == retest['name']:
+                    test.replace_with(retest)
+
+    files[0].robot.statistics.replace_with('')
 
     result = open('result.xml', 'w')
     result.write(files[0].prettify())
