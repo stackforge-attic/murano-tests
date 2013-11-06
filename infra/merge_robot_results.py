@@ -41,7 +41,8 @@ if files:
                 if test['name'] == retest['name']:
                     test.replace_with(retest)
 
-    files[0].robot.statistics.replace_with('')
+    if files[0].robot.statistics:
+        files[0].robot.statistics.replace_with('')
 
     result = open('result.xml', 'w')
     result.write(files[0].prettify())
