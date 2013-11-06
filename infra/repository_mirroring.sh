@@ -13,6 +13,9 @@ send -- [lindex $argv 2]
 send -- "\n"
 expect "*@reposync*"
 
+send -- "rm -rf *murano*\n"
+expect "*@reposync*"
+
 send -- "git clone --mirror https://github.com/stackforge/"
 send -- [lindex $argv 4]
 send -- ".git\n"
