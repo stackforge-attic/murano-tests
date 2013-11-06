@@ -398,6 +398,7 @@ class _WebUIlib(_Utils):
         selector = self.wait_for_element_found(field_name, 'input/textarea',
                                                'next')
 
+        self.wait_for_page_loaded()
         if 'PASSWORD' in field_name.upper():
             self.input_password(selector, text)
         else:
@@ -433,7 +434,7 @@ class _WebUIlib(_Utils):
             if selector:
                 break
 
-            time.sleep(0.1)
+            time.sleep(0.5)
 
         if not selector:
             BuiltIn().run_keyword('Capture Page Screenshot')
