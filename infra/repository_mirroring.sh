@@ -13,27 +13,27 @@ send -- [lindex $argv 2]
 send -- "\n"
 expect "*@reposync*"
 
-send -- "rm -rf *murano*; rm -rf *git*\n"
-expect "*@reposync*"
+send -- "rm -rf *murano*; rm -rf *git*; sudo su\n"
+expect "*#*"
 
 send -- "git clone --mirror https://github.com/stackforge/"
 send -- [lindex $argv 4]
 send -- ".git\n"
-expect "*@reposync*"
+expect "*#*"
 
 send -- "cd "
 send -- [lindex $argv 4]
 send -- ".git\n"
-expect "*@reposync*"
+expect "*#*"
 
-send -- "git fetch origin +refs/meta/*:refs/meta/*"
-expect "*@reposync*"
+send -- "git fetch origin +refs/meta/*:refs/meta/*\n"
+expect "*#*"
 
 send -- "git push --mirror ssh://"
 send -- [lindex $argv 3]
 send -- "@gerrit.mirantis.com:29418/openstack/"
 send -- [lindex $argv 4]
 send -- ".git\n"
-expect "*@reposync*"
+expect "*#*"
 
 send -- "exit\n"
