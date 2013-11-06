@@ -28,7 +28,7 @@ expect "*@reposync*"
 
 send -- "git push --mirror ssh://"
 send -- [lindex $argv 3]
-send -- "@gerrit.mirantis.com:29418/murano/"
+send -- "@gerrit.mirantis.com:29418/openstack/"
 send -- [lindex $argv 4]
 send -- ".git\n"
 expect "*@reposync*"
