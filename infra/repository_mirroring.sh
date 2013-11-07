@@ -13,7 +13,7 @@ send -- [lindex $argv 2]
 send -- "\n"
 expect "*@reposync*"
 
-send -- "sudo su; rm -rf *murano*; rm -rf *git*\n"
+send -- "sudo su\n"
 expect "*#*"
 
 send -- "git clone --mirror https://github.com/stackforge/"
@@ -24,6 +24,9 @@ expect "*#*"
 send -- "cd "
 send -- [lindex $argv 4]
 send -- ".git\n"
+expect "*#*"
+
+send -- "git fetch\n"
 expect "*#*"
 
 send -- "git fetch origin +refs/meta/*:refs/meta/*\n"
