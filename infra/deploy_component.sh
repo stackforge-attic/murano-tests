@@ -27,9 +27,9 @@ send -- " && git checkout FETCH_HEAD\n"
 expect "*@murano-devbox*"
 send -- "sh setup-centos.sh install; sh setup.sh install\n"
 expect "*@murano-devbox*"
-send -- "restart "
+send -- "service "
 send -- [lindex $argv 3]
-send -- "\n"
+send -- " restart\n"
 expect "*@murano-devbox*"
 
 send -- "exit\n"
