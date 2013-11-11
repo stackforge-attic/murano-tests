@@ -11,21 +11,21 @@ from keystoneclient.v2_0 import client as ksclient
 logging.basicConfig()
 LOG = logging.getLogger(' REST service tests')
 
+config = ConfigParser.RawConfigParser()
+config.read('config.ini')
+user = config.get('keystone', 'user')
+password = config.get('keystone', 'password')
+tenant = config.get('keystone', 'tenant')
+keystone_url = config.get('keystone', 'url')
+keystone_client = ksclient.Client(username=user, password=password,
+                                  tenant_name=tenant, auth_url=keystone_url)
+token = str(keystone_client.auth_token)
 
 class TestMeta(FunkLoadTestCase):
 
     def setUp(self):
         self.clearHeaders()
         self.url = self.conf_get('main', 'meta_url')
-        config = ConfigParser.RawConfigParser()
-        config.read('config.ini')
-        user = config.get('keystone', 'user')
-        password = config.get('keystone', 'password')
-        tenant = config.get('keystone', 'tenant')
-        keystone_url = config.get('keystone', 'url')
-        keystone_client = ksclient.Client(username=user, password=password,
-                                    tenant_name=tenant, auth_url=keystone_url)
-        token = str(keystone_client.auth_token)
         self.setHeader('X-Auth-Token', token)
 
     def generate_num(self):
@@ -80,7 +80,23 @@ class TestMeta(FunkLoadTestCase):
         assert response.code == 200
 
     def mix_for_load_testing(self):
-        return self.test_create_and_delete_dir()
+        k = random.randint(0,100)
+        if k < 12:
+            return self.test_get_ui_definitions()
+        elif k < 24:
+            return self.test_get_conductor_metadata()
+        elif k < 36:
+            return self.test_get_list_metadata_objects_workflows()
+        elif k < 48:
+            return self.test_get_list_metadata_objects_ui()
+        elif k < 60:
+            return self.test_get_list_metadata_objects_heat()
+        elif k < 72:
+            return self.test_get_list_metadata_objects_agent()
+        elif k < 84:
+            return self.test_get_list_metadata_objects_scripts()
+        elif k < 100:
+            return self.test_create_and_delete_dir()
 
 
 if __name__ == '__main__':
