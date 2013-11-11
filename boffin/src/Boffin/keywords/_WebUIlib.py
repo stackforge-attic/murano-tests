@@ -395,10 +395,10 @@ class _WebUIlib(_Utils):
         *Examples:*
         | Fill field | Dashboard . New Post Title field | Test blog-post |
         """
+        self.wait_for_page_loaded()
         selector = self.wait_for_element_found(field_name, 'input/textarea',
                                                'next')
 
-        self.wait_for_page_loaded()
         if 'PASSWORD' in field_name.upper():
             self.input_password(selector, text)
         else:
