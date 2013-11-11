@@ -73,9 +73,9 @@ expect "*@murano-devbox*"
 send -- "sed -i \"s/\\\"BootFromVolume\\\": true,//\" /etc/murano-conductor/data/templates/cf/Windows.template\n"
 expect "*@murano-devbox*"
 
-send -- "restart murano-api\n"
+send -- "service murano-api restart\n"
 expect "*@murano-devbox*"
-send -- "restart murano-conductor\n"
+send -- "service murano-conductor restart\n"
 expect "*@murano-devbox*"
 
 send -- "exit\n"
