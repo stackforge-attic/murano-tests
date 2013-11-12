@@ -86,7 +86,7 @@ def get_priority(parameter):
 
 
 def get_jira_bugs(url, user, password, project):
-    ISSUES_COUNT = 900000
+    ISSUES_COUNT = 1000000
     ISSUE_FIELDS = 'key,summary,description,issuetype,' + \
                    'priority,status,updated,comment,fixVersions'
 
@@ -173,7 +173,7 @@ def get_launchpad_bugs(project):
 
 
 def update_jira_bug(jira, issue, title, description, priority, status):
-    print "Udating JIRA bug ", title
+    print "Updating JIRA bug ", title
     print "Description & Title & Priority updating..."
     try:
         issue.update(summary=title, description=description,
@@ -193,7 +193,7 @@ def update_jira_bug(jira, issue, title, description, priority, status):
 
 
 def update_lp_bug(bug, title, description, priority, status):
-    print "Udating launchpad bug ", title
+    print "Updating launchpad bug ", title
     # attachments
     #print launchpad.bugs[Lbug['key']].lp_operations
 
@@ -259,7 +259,7 @@ def sync_jira_with_launchpad(url, user, password, project, project_key=''):
     jira = JIRA(basic_auth=(user, password), options={'server': url})
     launchpad = Launchpad.login_with(project, 'production')
 
-    " Sync already create tasks "
+    " Sync already created tasks "
     for Jbug in jira_bugs:
         for Lbug in launchpad_bugs:
             if (Lbug['title'] in Jbug['title'] or \
@@ -267,7 +267,7 @@ def sync_jira_with_launchpad(url, user, password, project, project_key=''):
                 for parameter in ['description', 'summary', 'status_code', \
                                   'priority_code']:
                     if Jbug[parameter] != Lbug[parameter]:
-                        if Jbug['updated'] < Lbug['updated']:
+                        if Jbug['updated'] > Lbug['updated']:
 
                             new_title = ''
                             if not Lbug['key'] in Jbug['title']:
@@ -371,7 +371,6 @@ def sync_jira_with_launchpad(url, user, password, project, project_key=''):
                                 Jbug['status']['jira'])
 
 
-
 config = ConfigParser.RawConfigParser()
 config.read('sync.cfg')
 Jira_link = config.get('JIRA', 'URL')
@@ -381,4 +380,3 @@ project_key = config.get('JIRA', 'project_key')
 project = config.get('project', 'name')
 
 sync_jira_with_launchpad(Jira_link, user, password, project, project_key)
-
