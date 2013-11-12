@@ -28,7 +28,7 @@ send -- [lindex $argv 2]
 send -- " && git checkout FETCH_HEAD\n"
 expect "@murano"
 send -- "sh setup-centos.sh install > 3.log\n"
-except "@murano"
+expect "@murano"
 send -- "sh setup.sh install > 4.log\n"
 expect "@murano"
 send -- "service "
