@@ -67,7 +67,7 @@ send -- "sed -i \"s/port = 5672/port = "
 send -- [lindex $argv 4]
 send -- "/\" /etc/murano-conductor/conductor.conf\n"
 expect "@murano"
-send -- "sed -i \"s/ssl = False/"
+send -- "sed -i \"s/ssl = False/ssl = "
 send -- [lindex $argv 5]
 send -- "/\" /etc/murano-conductor/conductor.conf\n"
 expect "@murano"
