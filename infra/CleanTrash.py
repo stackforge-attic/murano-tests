@@ -73,3 +73,7 @@ for i in nova.servers.list():
             time.sleep(5)
         except:
             print "All is bad"
+
+for i in nova.security_groups.list():
+    if i.tenant_id == cool and i.name !='default':
+        nova.security_groups.delete(i)
