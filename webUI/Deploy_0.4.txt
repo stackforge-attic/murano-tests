@@ -329,7 +329,7 @@ Deploy Apache service
     User click on "Create"
     User click on "deploy_apache"
     User click on "Create Service"
-    User select "Linux Apache" from dropdown list "Service Type"
+    User select "Apache Service" from dropdown list "Service Type"
     User click on "Next"
     User set value "apache-service" for field Service Name
     User set value "telnet" for field Hostname
