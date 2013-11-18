@@ -13,7 +13,7 @@ ${url}            http://10.100.0.6/horizon
 
 *** Test Cases ***
 Create IIS+ ASP Farm + AD + IIS
-    [Tags]    night
+    [Tags]    night    13
     Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
     User set value "complex_env" for field Environment Name
@@ -30,7 +30,7 @@ Create IIS+ ASP Farm + AD + IIS
     Delete environment "complex_env" after test
 
 Create ASP.FARM + SQL Cluster + SQL + AD
-    [Tags]    night
+    [Tags]    night    14
     Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
     User set value "ASP.FARM + SQL Cluster + SQL + AD" for field Environment Name
@@ -45,7 +45,7 @@ Create ASP.FARM + SQL Cluster + SQL + AD
     Delete environment "ASP.FARM + SQL Cluster + SQL + AD" after test
 
 Create IIS + AD + SQL + SQL Cluster + ASP.FARM
-    [Tags]    night
+    [Tags]    night    15
     Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
     User set value "IIS + AD + SQL + SQL Cluster + ASP.FARM" for field Environment Name
@@ -64,7 +64,7 @@ Create IIS + AD + SQL + SQL Cluster + ASP.FARM
     Delete environment "IIS + AD + SQL + SQL Cluster + ASP.FARM" after test
 
 Create 4 MS SQL clusters
-    [Tags]    night
+    [Tags]    night    16
     Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
     User set value "4 SQL Clusters" for field Environment Name
@@ -81,7 +81,7 @@ Create 4 MS SQL clusters
     Delete environment "4 SQL Clusters" after test
 
 Create IIS + SQL + ASP.FARM delete IIS
-    [Tags]    night
+    [Tags]    night    17
     Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
     User set value "IIS + SQL + ASP.FARM" for field Environment Name
@@ -99,7 +99,7 @@ Create IIS + SQL + ASP.FARM delete IIS
     Delete environment "IIS + SQL + ASP.FARM" after test
 
 Add service in deployed env
-    [Tags]    night
+    [Tags]    night    18
     Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
     User set value "add_service_in_deployed_env" for field Environment Name
@@ -117,7 +117,7 @@ Add service in deployed env
     Delete environment "add_service_in_deployed_env" after test
 
 Check re-deploy
-    [Tags]    night
+    [Tags]    night    19
     Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
     User set value "re-deploy" for field Environment Name
@@ -138,7 +138,7 @@ Check re-deploy
     Delete environment "re-deploy" after test
 
 Deploy instance with different flavor
-    [Tags]    night
+    [Tags]    night    20
     Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
     User set value "different_flavor" for field Environment Name
@@ -168,7 +168,7 @@ Deploy instance with different flavor
     Delete environment "different_flavor" after test
 
 Linux and Windows services in one environment
-    [Tags]    night
+    [Tags]    night    21
     Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
     User set value "ad_and_telnet" for field Environment Name
@@ -189,7 +189,7 @@ Linux and Windows services in one environment
     Check that deploy "ad_and_telnet" finished
 
 Checking type and last operation
-    [Tags]    night
+    [Tags]    night    22
     Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
     User set value "test" for field Environment Name
@@ -199,10 +199,27 @@ Checking type and last operation
     User create IIS with name "service-iis" and don't join to domain, select "Not in domain"
     User click on "Deploy This Environment"
     Check that Type of service "service-iis" is "Internet Information Services"
-    Check that Last operation of service "service-iis" is "Service draft"
+    Check that Last operation of service "service-iis" is "Creating"
     Check the status of environment "test" (should be "Ready")
     Check that deploy "test" finished
     Delete environment "test" after test
+
+Check that there is instance url in service info (after deploy)
+    [Tags]    23
+    Log in WebUI by AutotestUser/swordfish
+    User click on "Create Environment"
+    User set value "instance_url" for field Environment Name
+    User click on "Create"
+    User click on "instance_url"
+    User click on "Create Service"
+    User create IIS with name "iis" and don't join to domain, select "Not in domain"
+    User click on "Deploy This Environment"
+    Check the status of environment "instance_url" (should be "Ready")
+    Check that deploy "instance_url" finished
+    Navigate To    Murano>Environments
+    User click on "instance_url"
+    User click on "iis"
+    Page should contain element "Service instance name"
 
 *** Keywords ***
 Log in WebUI by ${user}/${password}
@@ -258,6 +275,7 @@ Check that deploy "${env}" finished
     Reload Page
     ${text}=    Get Text    xpath=/html/body/div/div[2]/div[3]/form/table/tbody/tr/td[3]
     Should Be Equal As Strings    ${text}    Successful
+    Run Keyword If    '${text}'== 'Failed'    Take a screenshot of the failed deploy
 
 User create IIS with name "${name}" ${join} "${domain}"
     User select "Internet Information Services" from dropdown list "Service Type"
@@ -375,3 +393,8 @@ Check that ${subject} of ${element} "${name}" is "${status}"
     ${#_of_column}=    Get Substring    ${cell}    -2    -1
     ${text}=    Get Text    xpath=${row}/td[${#_of_column}]
     Should Contain    ${text}    ${status}
+
+Take a screenshot of the failed deploy
+    User click on "Show Details"
+    User click on "Logs"
+    Log Screenshot

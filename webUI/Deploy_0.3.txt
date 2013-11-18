@@ -8,11 +8,11 @@ Library           Boffin.WebUIlib    0    5    # Boffin framework library
 
 *** Variables ***
 ${resources_path}    Resources/
-${url}            http://10.100.0.2/horizon
+${url}            http://10.100.0.30/horizon
 
 *** Test Cases ***
 Deploy environment with AD Service
-    [Tags]    night
+    [Tags]    night    1
     Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
     User set value "deploy_one_ad" for field Environment Name
@@ -37,7 +37,7 @@ Deploy environment with AD Service
     Delete environment "deploy_one_ad" after test
 
 Deploy environment with IIS Service
-    [Tags]    night
+    [Tags]    night    2
     Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
     User set value "deploy_iis" for field Environment Name
@@ -60,7 +60,7 @@ Deploy environment with IIS Service
     Delete environment "deploy_iis" after test
 
 Deploy environment with ASP.NET Service
-    [Tags]    night
+    [Tags]    night    3
     Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
     User set value "deploy_asp" for field Environment Name
@@ -84,7 +84,7 @@ Deploy environment with ASP.NET Service
     Delete environment "deploy_asp" after test
 
 Deploy environment with IIS Farm
-    [Tags]    night
+    [Tags]    night    4
     Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
     User set value "deploy_iis_farm" for field Environment Name
@@ -107,7 +107,7 @@ Deploy environment with IIS Farm
     Delete environment "deploy_iis_farm" after test
 
 Deploy environment with ASP.NET Farm
-    [Tags]    night
+    [Tags]    night    5
     Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
     User set value "deploy_asp_farm" for field Environment Name
@@ -131,7 +131,7 @@ Deploy environment with ASP.NET Farm
     Delete environment "deploy_asp_farm" after test
 
 Deploy environment with MS SQL server
-    [Tags]    night
+    [Tags]    night    6
     Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
     User set value "deploy_mssql" for field Environment Name
@@ -156,7 +156,7 @@ Deploy environment with MS SQL server
     Delete environment "deploy_mssql" after test
 
 Deploy environment with MS SQL cluster
-    [Tags]    night
+    [Tags]    night    7
     Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
     User set value "deploy_sqlcluster" for field Environment Name
@@ -196,7 +196,7 @@ Deploy environment with MS SQL cluster
     Delete environment "deploy_sqlcluster" after test
 
 Deploy Telnet Service
-    [Tags]    night
+    [Tags]    night    8
     Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
     User set value "deploy_telnet" for field Environment Name
@@ -215,7 +215,7 @@ Deploy Telnet Service
     Check that deploy "deploy_telnet" finished
 
 Deploy AD with 2 instances
-    [Tags]    night
+    [Tags]    night    9
     Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
     User set value "deploy_ad_2_inst" for field Environment Name
@@ -241,7 +241,7 @@ Deploy AD with 2 instances
     Delete environment "deploy_ad_2_inst" after test
 
 Create IIS and IIS Farm in domain
-    [Tags]    night
+    [Tags]    night    10
     Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
     User set value "iis_iisfarm_in_domain" for field Environment Name
@@ -259,7 +259,7 @@ Create IIS and IIS Farm in domain
     Delete environment "iis_iisfarm_in_domain" after test
 
 Create ASP.Net and ASP.Net Farm in domain
-    [Tags]    night
+    [Tags]    night    11
     Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
     User set value "asp_aspfarm_in_domain" for field Environment Name
@@ -299,7 +299,7 @@ Deploy IIS Farm and ASP.NET Farm in 2 domains
     Check that deploy "farms_in_domains" finished
 
 Deploy MS SQL server and IIS in domain
-    [Tags]    night
+    [Tags]    night    12
     Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
     User set value "iis_sqlserver_in_domain" for field Environment Name
@@ -321,6 +321,7 @@ Deploy MS SQL server and IIS in domain
     Delete environment "iis_sqlserver_in_domain" after test
 
 Deploy Apache service
+    [Tags]    night    13
     Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
     User set value "deploy_apache" for field Environment Name
@@ -392,6 +393,7 @@ Check that deploy "${env}" finished
     Reload Page
     ${text}=    Get Text    xpath=/html/body/div/div[2]/div[3]/form/table/tbody/tr/td[3]
     Should Be Equal As Strings    ${text}    Successful
+    Run Keyword If    '${text}'== 'Failed'    Take a screenshot of the failed deploy
 
 User create IIS with name "${name}" ${join} "${domain}"
     User select "Internet Information Services" from dropdown list "Service Type"
@@ -509,3 +511,8 @@ Check that ${subject} of ${element} "${name}" is "${status}"
     ${#_of_column}=    Get Substring    ${cell}    -2    -1
     ${text}=    Get Text    xpath=${row}/td[${#_of_column}]
     Should Contain    ${text}    ${status}
+
+Take a screenshot of the failed deploy
+    User click on "Show Details"
+    User click on "Logs"
+    Log Screenshot

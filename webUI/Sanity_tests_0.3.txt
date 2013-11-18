@@ -12,7 +12,7 @@ ${url}            http://10.100.0.2/horizon
 
 *** Test Cases ***
 Create environment
-    [Tags]    commit
+    [Tags]    commit    1
     Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
     User set value "env" for field Environment Name
@@ -22,7 +22,7 @@ Create environment
     Delete environment "env" after test
 
 Edit environment
-    [Tags]    commit
+    [Tags]    commit    2
     Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
     User set value "env1" for field Environment Name
@@ -35,7 +35,7 @@ Edit environment
     Delete environment "edited_env" after test
 
 Delete Environment
-    [Tags]    commit
+    [Tags]    commit    3
     Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
     User set value "env2" for field Environment Name
@@ -46,7 +46,7 @@ Delete Environment
     Page should not contain element "env2"
 
 Delete Image from repo
-    [Tags]    commit
+    [Tags]    commit    4
     Log in WebUI by AutotestUser/swordfish
     User click on "Marked Image"
     User click on "Mark Image"
@@ -60,7 +60,7 @@ Delete Image from repo
     Page should not contain element "Image for deletion"
 
 Rename Windows image
-    [Tags]    night    commit
+    [Tags]    night    commit    5
     Log in WebUI by AutotestUser/swordfish
     User click on "Marked Image"
     User click on "Mark Image"
@@ -71,7 +71,7 @@ Rename Windows image
     Page should contain element "Windows Server 2012 Standard"
 
 Rename Linux image
-    [Tags]    night    commit
+    [Tags]    night    commit    6
     Log in WebUI by AutotestUser/swordfish
     User click on "Marked Image"
     User click on "Mark Image"

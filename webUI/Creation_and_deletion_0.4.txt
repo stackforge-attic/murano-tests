@@ -12,7 +12,7 @@ ${url}            http://10.100.0.6/horizon
 
 *** Test Cases ***
 Create and Delete AD service
-    [Tags]    commit
+    [Tags]    commit    7
     Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
     User set value "create_delete_ad" for field Environment Name
@@ -36,7 +36,7 @@ Create and Delete AD service
     Delete environment "create_delete_ad" after test
 
 Create and Delete IIS service
-    [Tags]    commit
+    [Tags]    commit    8
     Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
     User set value "create_delete_iis" for field Environment Name
@@ -58,7 +58,7 @@ Create and Delete IIS service
     Delete environment "create_delete_iis" after test
 
 Create and Delete ASP.NET service
-    [Tags]    commit
+    [Tags]    commit    9
     Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
     User set value "create_delete_asp" for field Environment Name
@@ -81,7 +81,7 @@ Create and Delete ASP.NET service
     Delete environment "create_delete_asp" after test
 
 Create and Delete IIS Farm service
-    [Tags]    commit
+    [Tags]    commit    10
     Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
     User set value "create_delete_iis_farm" for field Environment Name
@@ -103,7 +103,7 @@ Create and Delete IIS Farm service
     Delete environment "create_delete_iis_farm" after test
 
 Create and Delete ASP.NET Farm service
-    [Tags]    commit
+    [Tags]    commit    11
     Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
     User set value "create_delete_asp_farm" for field Environment Name
@@ -126,7 +126,7 @@ Create and Delete ASP.NET Farm service
     Delete environment "create_delete_asp_farm" after test
 
 Create and Delete MS SQL server
-    [Tags]    commit
+    [Tags]    commit    12
     Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
     User set value "create_delete_mssql" for field Environment Name
@@ -150,7 +150,7 @@ Create and Delete MS SQL server
     Delete environment "create_delete_mssql" after test
 
 Create and Delete MS SQL Cluster
-    [Tags]    commit
+    [Tags]    commit    13
     Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
     User set value "create_delete_sqlcluster" for field Environment Name
@@ -189,7 +189,7 @@ Create and Delete MS SQL Cluster
     Delete environment "create_delete_sqlcluster" after test
 
 Create and Delete Telnet Service
-    [Tags]    commit
+    [Tags]    commit    14
     Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
     User set value "create_delete_telnet" for field Environment Name
@@ -209,7 +209,7 @@ Create and Delete Telnet Service
     Delete environment "create_delete_telnet" after test
 
 Create and Delete Apache service
-    [Tags]
+    [Tags]    commit    15
     Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
     User set value "create_delete_apache" for field Environment Name
@@ -229,7 +229,7 @@ Create and Delete Apache service
     Delete environment "create_delete_apache" after test
 
 Check opportunity to choose Instance Flavor
-    [Tags]    commit
+    [Tags]    commit    16
     Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
     User set value "env_inst_flavor" for field Environment Name

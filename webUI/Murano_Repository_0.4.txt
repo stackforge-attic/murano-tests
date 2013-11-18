@@ -40,6 +40,14 @@ Modify Service
     User click on "Create Service"
     User select "Modified ASP.NET" from dropdown list "Service Type"
 
+Delete Service
+    Log in WebUI by AutotestUser/swordfish
+    User click on "Service Definitions"
+    Select "More" for chosen service "Demo"
+    Select "Delete Service" for chosen service "Demo"
+    User confirms deletion
+    Page should not contain element "Demo"
+
 *** Keywords ***
 Log in WebUI by ${user}/${password}
     Fill Field    User Name    ${user}
@@ -85,3 +93,6 @@ User select "${item}" from dropdown list "${menu}"
 Select a few ${elements} for example "${el1}" and "${el2}"
     Set Checkbox On    ${el1}
     Set Checkbox On    ${el2}
+
+User confirms deletion
+    Click On    Confirm deletion
