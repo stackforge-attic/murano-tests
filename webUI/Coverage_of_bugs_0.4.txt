@@ -397,4 +397,4 @@ Check that ${subject} of ${element} "${name}" is "${status}"
 Take a screenshot of the failed deploy
     User click on "Show Details"
     User click on "Logs"
-    Log Screenshot
+    Capture Page Screenshot
