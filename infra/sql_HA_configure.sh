@@ -11,4 +11,6 @@ send -- "sed -i \"s/connection = mysql:\\/\\/murano:swordfish@localhost:3306\\/m
 send -- [lindex $argv 2]
 send -- ":3306\\/murano/\" /etc/murano-api/murano-api.conf\n"
 expect "@murano"
+send -- "service murano-api restart"
+expect "@murano"
 send -- "exit\n"
