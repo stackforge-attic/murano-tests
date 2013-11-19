@@ -15,7 +15,6 @@
 
 import re
 import sys
-import time
 import httplib2
 import ConfigParser
 from dateutil import parser
@@ -23,13 +22,18 @@ from jira.client import JIRA
 from launchpadlib.launchpad import Launchpad
 
 
-httplib2.debuglevel=0
+httplib2.debuglevel = 0
 
 
 def update_status_of_jira_issue(jira, issue, new_status):
+    new_status_id = None
     for status in jira.transitions(issue):
         if get_str(status['name']) == new_status:
             new_status_id = status['id']
+
+    if not new_status_id:
+        raise RuntimeError('No jira_status_id exists for status {0}'.format(
+            new_status))
 
     jira.transition_issue(issue, new_status_id,
                           comment="Automatically updated by script.")
@@ -50,51 +54,53 @@ def get_status(parameter):
     parameter = get_str(parameter)
     if parameter in ['In Testing', 'To Test']:
         return {'jira': parameter, 'launchpad': 'Fix Committed', 'code': 0}
-    if parameter == 'Fix Committed':
+    elif parameter == 'Fix Committed':
         return {'jira': 'To Test', 'launchpad': 'Fix Committed', 'code': 0}
-    if parameter == 'Resolved':
+    elif parameter == 'Resolved':
         return {'jira': 'Resolved', 'launchpad': 'Fix Released', 'code': 3}
-    if parameter == 'Fix Released':
+    elif parameter == 'Fix Released':
         return {'jira': 'Closed', 'launchpad': 'Fix Released', 'code': 3}
-    if parameter in ['Reopened', 'To Do']:
+    elif parameter in ['Reopened', 'To Do']:
         return {'jira': parameter, 'launchpad': 'New', 'code': 1}
-    if parameter == 'Rejected':
-        return {'jira': parameter, 'launchpad': 'Invalid' , 'code': 2}
-    if parameter == 'Closed':
+    elif parameter == 'Rejected':
+        return {'jira': parameter, 'launchpad': 'Invalid', 'code': 2}
+    elif parameter == 'Closed':
         return {'jira': parameter, 'launchpad': 'Fix Released', 'code': 3}
-    if parameter in ['New', 'Incomplete', 'Opinion', 'Confirmed', 'Triaged']:
+    elif parameter in ['New', 'Incomplete', 'Opinion', 'Confirmed', 'Triaged']:
         return {'jira': 'ToDo', 'launchpad': parameter, 'code': 1}
-    if parameter in ['Invalid', "Won't Fix"]:
+    elif parameter in ['Invalid', "Won't Fix"]:
         return {'jira': 'Rejected', 'launchpad': parameter, 'code': 2}
-    return {'jira': parameter, 'launchpad': parameter, 'code': 4}
+    else:
+        return {'jira': parameter, 'launchpad': parameter, 'code': 4}
 
 
 def get_priority(parameter):
     parameter = get_str(parameter)
     if parameter in ['Blocker', 'Critical']:
         return {'jira': parameter, 'launchpad': 'Critical', 'code': 0}
-    if parameter in ['High', 'Medium']:
+    elif parameter in ['High', 'Medium']:
         return {'jira': 'Major', 'launchpad': parameter, 'code': 1}
-    if parameter == 'Major':
+    elif parameter == 'Major':
         return {'jira': 'Major', 'launchpad': 'Medium', 'code': 1}
-    if parameter in ['Nice to have', 'Some day']:
+    elif parameter in ['Nice to have', 'Some day']:
         return {'jira': parameter, 'launchpad': 'Low', 'code': 2}
-    if 'Low' in parameter:
+    elif 'Low' in parameter:
         return {'jira': 'Nice to have', 'launchpad': 'Low', 'code': 2}
- 
-    return {'jira': parameter, 'launchpad': parameter, 'code': 3}
+    else:
+        return {'jira': parameter, 'launchpad': parameter, 'code': 3}
 
 
-def get_jira_bugs(url, user, password, project):
-    ISSUES_COUNT = 1000000
-    ISSUE_FIELDS = 'key,summary,description,issuetype,' + \
-                   'priority,status,updated,comment,fixVersions'
+def get_jira_bugs(url, user, password, project,
+                  issues_count=1000000,
+                  issues_fields='key,summary,description,issuetype,priority,'
+                                'status,updated,comment,fixVersions',
+                  search_string_template='project={0} and issuetype=Bug'):
 
     jira = JIRA(basic_auth=(user, password), options={'server': url})
 
-    SEARCH_STRING = 'project={0} and issuetype=Bug'.format(project)
-    issues = jira.search_issues(SEARCH_STRING, fields=ISSUE_FIELDS,
-                                maxResults=ISSUES_COUNT)
+    search_string = search_string_template.format(project)
+    issues = jira.search_issues(search_string, fields=issues_fields,
+                                maxResults=issues_count)
     bugs = []
 
     for issue in issues:
@@ -121,7 +127,7 @@ def get_jira_bugs(url, user, password, project):
 
         bugs.append(bug)
 
-    print 'Found ' + str(len(bugs)) + ' bugs in JIRA'
+    print 'Found {0} bugs in JIRA'.format(len(bugs))
 
     return bugs
 
@@ -162,12 +168,11 @@ def get_launchpad_bugs(project):
 
         bugs.append(bug)
 
-        " It is works very slow, print the dot per bug, for fun "
+        # It works very slow, print the dot per bug, for fun
         print ".",
         sys.stdout.flush()
 
-    print ''
-    print 'Found ' + str(len(bugs)) + ' bugs on launchpad'
+    print '\nFound {0} bugs on launchpad'.format(len(bugs))
 
     return bugs
 
@@ -221,8 +226,8 @@ def update_lp_bug(bug, title, description, priority, status):
 
 def create_jira_bug(jira, project_key, title, description):
     new_issue = None
-    fields = {'project': { 'key': project_key }, 'summary': title,
-              'description': description, 'issuetype': { 'name': 'Bug' }}
+    fields = {'project': {'key': project_key}, 'summary': title,
+              'description': description, 'issuetype': {'name': 'Bug'}}
 
     print "Creating the new bug desciption in JIRA... ", title
     try:
@@ -250,7 +255,7 @@ def create_lp_bug(launchpad, project, title, description):
     return new_bug
 
 
-def sync_jira_with_launchpad(url, user, password, project, project_key=''):
+def sync_jira_with_launchpad(url, user, password, project, project_key):
     template = 'Launchpad Bug #{0}: '
     
     jira_bugs = get_jira_bugs(url, user, password, project)
@@ -259,12 +264,12 @@ def sync_jira_with_launchpad(url, user, password, project, project_key=''):
     jira = JIRA(basic_auth=(user, password), options={'server': url})
     launchpad = Launchpad.login_with(project, 'production')
 
-    " Sync already created tasks "
+    # Sync already created tasks
     for Jbug in jira_bugs:
         for Lbug in launchpad_bugs:
-            if (Lbug['title'] in Jbug['title'] or \
-                Lbug['key'] in Jbug['title']):
-                for parameter in ['description', 'summary', 'status_code', \
+            if (Lbug['title'] in Jbug['title'] or
+                    Lbug['key'] in Jbug['title']):
+                for parameter in ['description', 'summary', 'status_code',
                                   'priority_code']:
                     if Jbug[parameter] != Lbug[parameter]:
                         if Jbug['updated'] > Lbug['updated']:
@@ -290,7 +295,7 @@ def sync_jira_with_launchpad(url, user, password, project, project_key=''):
                         break
                 break
 
-    " Move new bugs from launchpad to JIRA "
+    # Move new bugs from launchpad to JIRA
     for Lbug in launchpad_bugs:
         if Lbug['status_code'] == 3:
             continue
@@ -299,18 +304,16 @@ def sync_jira_with_launchpad(url, user, password, project, project_key=''):
         duplicated = False
 
         for Jbug in jira_bugs:
-            if (Lbug['title'] in Jbug['title'] or \
-                Lbug['key'] in Jbug['title'] or \
-                'Launchpad Bug' in Jbug['title']):
+            if (Lbug['title'] in Jbug['title'] or
+                    Lbug['key'] in Jbug['title'] or
+                    'Launchpad Bug' in Jbug['title']):
                 sync = True
 
         for Lbug2 in launchpad_bugs:
-            if Lbug2['title'] == Lbug['title'] and \
-               Lbug2['key'] != Lbug['key']:
+            if Lbug2['title'] == Lbug['title'] and Lbug2['key'] != Lbug['key']:
                 duplicated = True
 
         if not sync and not duplicated:
-
             new_title = ''
             if not Lbug['key'] in Jbug['title']:
                 new_title = template.format(Lbug['key'])
@@ -324,7 +327,7 @@ def sync_jira_with_launchpad(url, user, password, project, project_key=''):
                                 Lbug['priority']['jira'],
                                 Lbug['status']['jira'])
 
-    " Move new bugs from JIRA to launchpad "
+    # Move new bugs from JIRA to launchpad
     for Jbug in jira_bugs:
         if Jbug['status_code'] == 3:
             continue
@@ -333,14 +336,13 @@ def sync_jira_with_launchpad(url, user, password, project, project_key=''):
         duplicated = False
 
         for Lbug in launchpad_bugs:
-            if (Lbug['title'] in Jbug['title'] or \
-                Lbug['key'] in Jbug['title'] or \
-                'Launchpad Bug' in Jbug['title']):
+            if (Lbug['title'] in Jbug['title'] or
+                    Lbug['key'] in Jbug['title'] or
+                    'Launchpad Bug' in Jbug['title']):
                 sync = True
 
         for Jbug2 in jira_bugs:
-            if Jbug2['title'] == Jbug['title'] and \
-               Jbug2['key'] != Jbug['key']:
+            if Jbug2['title'] == Jbug['title'] and Jbug2['key'] != Jbug['key']:
                 duplicated = True
 
         if not sync and not duplicated:
@@ -361,7 +363,7 @@ def sync_jira_with_launchpad(url, user, password, project, project_key=''):
         for Lbug in launchpad_bugs:
             if Lbug['title'] in Jbug['title']:
                 if Lbug['key'] in Jbug['title'] and \
-                   'Launchpad Bug' in Jbug['title']:
+                        'Launchpad Bug' in Jbug['title']:
                     continue
 
                 new_title = template.format(Lbug['key']) + Lbug['title']
@@ -373,10 +375,9 @@ def sync_jira_with_launchpad(url, user, password, project, project_key=''):
 
 config = ConfigParser.RawConfigParser()
 config.read('sync.cfg')
-Jira_link = config.get('JIRA', 'URL')
-user = config.get('JIRA', 'user')
-password = config.get('JIRA', 'password')
-project_key = config.get('JIRA', 'project_key')
-project = config.get('project', 'name')
 
-sync_jira_with_launchpad(Jira_link, user, password, project, project_key)
+sync_jira_with_launchpad(url=config.get('JIRA', 'URL'),
+                         user=config.get('JIRA', 'user'),
+                         password=config.get('JIRA', 'password'),
+                         project=config.get('project', 'name'),
+                         project_key=config.get('JIRA', 'project_key'))
