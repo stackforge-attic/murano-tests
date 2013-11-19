@@ -5,6 +5,7 @@ Test Setup        Open Browser    ${url}    remote_url=http://172.18.124.233:444
 Test Teardown     Close All Browsers
 Library           String
 Library           Boffin.WebUIlib    0    5    # Boffin framework library
+Library           Selenium2Library
 
 *** Variables ***
 ${resources_path}    Resources/
@@ -379,4 +380,4 @@ Check that ${subject} of ${element} "${name}" is "${status}"
 Take a screenshot of the failed deploy
     User click on "Show Details"
     User click on "Logs"
-    Log Screenshot
+    Capture Page Screenshot
