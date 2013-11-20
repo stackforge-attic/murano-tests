@@ -10,3 +10,6 @@ send -- "sed -i \"s/init_scripts_dir = \\/etc\\/murano\\/init-scripts/init_scrip
 expect "@murano"
 send -- "sed -i \"s/agent_config_dir = \\/etc\\/murano\\/agent-config/agent_config_dir = \\/etc\\/murano-conductor\\/data\\/templates\\/agent-config/\" /etc/murano-conductor/conductor.conf\n"
 expect "@murano"
+send -- "service murano-conductor restart\n"
+expect "@murano"
+send "exit\n"
