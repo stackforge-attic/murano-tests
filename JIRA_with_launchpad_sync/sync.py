@@ -335,26 +335,26 @@ def sync_jira_with_launchpad(url, user, password, project, project_key):
         sync = False
         duplicated = False
 
+        for Jbug2 in jira_bugs:
+            if Jbug2['title'] == Jbug['title'] and Jbug2['key'] != Jbug['key']:
+                duplicated = True
+
         for Lbug in launchpad_bugs:
             if (Lbug['title'] in Jbug['title'] or
                     Lbug['key'] in Jbug['title'] or
                     'Launchpad Bug' in Jbug['title']):
                 sync = True
 
-        for Jbug2 in jira_bugs:
-            if Jbug2['title'] == Jbug['title'] and Jbug2['key'] != Jbug['key']:
-                duplicated = True
+            if not sync and not duplicated:
+                lp_project = launchpad.projects[project]
+                new_bug = create_lp_bug(launchpad, lp_project, Jbug['title'],
+                                        Jbug['description'])
 
-        if not sync and not duplicated:
-            lp_project = launchpad.projects[project]
-            new_bug = create_lp_bug(launchpad, lp_project, Jbug['title'],
-                                    Jbug['description'])
-
-            if new_bug:
-                update_lp_bug(new_bug,
-                              Jbug['title'], Jbug['description'],
-                              Jbug['priority']['launchpad'],
-                              Jbug['status']['launchpad'])
+                if new_bug:
+                    update_lp_bug(new_bug,
+                                  Jbug['title'], Jbug['description'],
+                                  Jbug['priority']['launchpad'],
+                                  Jbug['status']['launchpad'])
 
     for Jbug in jira_bugs:
         if Jbug['status_code'] == 3:
