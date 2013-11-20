@@ -272,7 +272,7 @@ def sync_jira_with_launchpad(url, user, password, project, project_key):
                 for parameter in ['description', 'summary', 'status_code',
                                   'priority_code']:
                     if Jbug[parameter] != Lbug[parameter]:
-                        if Jbug['updated'] > Lbug['updated']:
+                        if Jbug['updated'] < Lbug['updated']:
 
                             new_title = ''
                             if not Lbug['key'] in Jbug['title']:
@@ -303,29 +303,29 @@ def sync_jira_with_launchpad(url, user, password, project, project_key):
         sync = False
         duplicated = False
 
+        for Lbug2 in launchpad_bugs:
+            if Lbug2['title'] == Lbug['title'] and Lbug2['key'] != Lbug['key']:
+                duplicated = True
+
         for Jbug in jira_bugs:
             if (Lbug['title'] in Jbug['title'] or
                     Lbug['key'] in Jbug['title'] or
                     'Launchpad Bug' in Jbug['title']):
                 sync = True
 
-        for Lbug2 in launchpad_bugs:
-            if Lbug2['title'] == Lbug['title'] and Lbug2['key'] != Lbug['key']:
-                duplicated = True
+            if not sync and not duplicated:
+                new_title = ''
+                if not Lbug['key'] in Jbug['title']:
+                    new_title = template.format(Lbug['key'])
+                new_title += Lbug['title']
 
-        if not sync and not duplicated:
-            new_title = ''
-            if not Lbug['key'] in Jbug['title']:
-                new_title = template.format(Lbug['key'])
-            new_title += Lbug['title']
-
-            new_issue = create_jira_bug(jira, project_key, new_title,
-                                        Lbug['description'])
-            if new_issue:
-                update_jira_bug(jira, jira.issue(new_issue.key),
-                                new_title, Lbug['description'],
-                                Lbug['priority']['jira'],
-                                Lbug['status']['jira'])
+                new_issue = create_jira_bug(jira, project_key, new_title,
+                                            Lbug['description'])
+                if new_issue:
+                    update_jira_bug(jira, jira.issue(new_issue.key),
+                                    new_title, Lbug['description'],
+                                    Lbug['priority']['jira'],
+                                    Lbug['status']['jira'])
 
     # Move new bugs from JIRA to launchpad
     for Jbug in jira_bugs:
