@@ -75,7 +75,7 @@ Rename Linux image
     Log in WebUI by AutotestUser/swordfish
     User click on "Images"
     User click on "Mark Image"
-    User select "murano-cirros-i386" from dropdown list "Image"
+    User select "F18-x86_64-cfntools" from dropdown list "Image"
     User set value "Linux Image" for field Title
     User select "Generic Linux" from dropdown list "with supported types of images"
     User click on "Mark"
