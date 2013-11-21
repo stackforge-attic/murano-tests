@@ -274,8 +274,8 @@ Check that deploy "${env}" finished
     Select "Show Deployments" for chosen environment "${env}"
     Reload Page
     ${text}=    Get Text    xpath=/html/body/div/div[2]/div[3]/form/table/tbody/tr/td[3]
-    Should Be Equal As Strings    ${text}    Successful
     Run Keyword If    '${text}'== 'Failed'    Take a screenshot of the failed deploy
+    Should Be Equal As Strings    ${text}    Successful
 
 User create IIS with name "${name}" ${join} "${domain}"
     User select "Internet Information Services" from dropdown list "Service Type"
