@@ -180,6 +180,7 @@ Linux and Windows services in one environment
     User select "Linux Telnet" from dropdown list "Service Type"
     User click on "Next"
     User set value "telnet-service" for field Service Name
+    User select "murano-lb-key" from dropdown list "Key Pair"
     User set value "telnet" for field Hostname
     User click on "Next"
     User select "Linux Image" from dropdown list "Instance image"
