@@ -27,6 +27,11 @@ send -- [lindex $argv 6]
 send -- "'/\" /etc/murano-deployment/lab-binding.rc\n"
 expect "@murano"
 
+send -- "sed -i \"s/RABBITMQ_PORT=''/RABBITMQ_PORT='"
+send -- [lindex $argv 4]
+send -- "'/\" /etc/murano-deployment/lab-binding.rc\n"
+expect "@murano"
+
 send -- "sed -i \"s/BRANCH_NAME=''/BRANCH_NAME='"
 send -- [lindex $argv 3]
 send -- "'/\" /etc/murano-deployment/lab-binding.rc\n"
@@ -51,25 +56,17 @@ send -- "./murano-git-install.sh install\n"
 expect "@murano"
 
 set timeout 30
-send -- "sed -i \"s/connection = sqlite:\\/\\/\\/murano.sqlite/connection = mysql:\\/\\/murano:swordfish@localhost:3306\\/murano/\" /etc/murano-api/murano-api.conf\n"
+send -- "sed -i \"s/connection = sqlite:\\/\\/\\/murano.sqlite/connection = mysql:\\/\\/murano:swordfish@localhost:3306\\/murano/\" /etc/murano/murano-api.conf\n"
 expect "@murano"
 
-send -- "sed -i \"s/port = 5672/port = "
-send -- [lindex $argv 4]
-send -- "/\" /etc/murano-api/murano-api.conf\n"
-expect "@murano"
 send -- "sed -i \"s/ssl = False/ssl = "
 send -- [lindex $argv 5]
-send -- "/\" /etc/murano-api/murano-api.conf\n"
+send -- "/\" /etc/murano/murano-api.conf\n"
 expect "@murano"
 
-send -- "sed -i \"s/port = 5672/port = "
-send -- [lindex $argv 4]
-send -- "/\" /etc/murano-conductor/conductor.conf\n"
-expect "@murano"
 send -- "sed -i \"s/ssl = False/ssl = "
 send -- [lindex $argv 5]
-send -- "/\" /etc/murano-conductor/conductor.conf\n"
+send -- "/\" /etc/murano/conductor.conf\n"
 expect "@murano"
 
 send -- "sed -i \"s/\\\"BootFromVolume\\\": true,//\" /etc/murano-conductor/data/templates/cf/Linux.template\n"
