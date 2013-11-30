@@ -1,15 +1,14 @@
 *** Settings ***
 Suite Setup
 Suite Teardown    Close All Browsers
-Test Setup        Open Browser    ${url}    remote_url=http://172.18.124.233:4444/wd/hub    browser=firefox    ff_profile_dir=ffprofile
+Test Setup        Open Browser    ${url}
 Test Teardown     Close All Browsers
 Library           String
-Library           Boffin.WebUIlib    0    5    # Boffin framework library
+Library           Boffin.WebUIlib    0    20    # Boffin framework library
 
 *** Variables ***
-${resources_path}    Resources/
-${url}            http://10.100.0.6/horizon
-
+${resources_path}    C:/Murano/WebUI/samples/Murano/Resources/
+${url}            http://12.0.2.16/horizon
 
 *** Test Cases ***
 Create test environment
@@ -20,33 +19,108 @@ Create test environment
     Reload Page
     Page should contain element "test"
 
-Toggle Active
+Check opportunity to compose a new service in repository
     Log in WebUI by AutotestUser/swordfish
     User click on "Service Definitions"
-    Select "Toggle Active" for chosen service "Internet Information Services"
-    Check that Active of element "Internet Information services" is "False"
-    Select a few services for example "IIS" and "AD"
-
-Modify Service
-    Log in WebUI by AutotestUser/swordfish
-    User click on "Service Definitions"
-    Select "Modify Service" for chosen service "ASP.NET Application"
-    User set value "Modified ASP.NET" for field Name of Service
-    Set Checkbox Off    Active
+    User click on "Compose Service"
+    User set value "New Test Service" for field Service_Name
+    User set value "newService" for field Fully Qualified Service Name
+    User set value "<strong> New Test Service </strong> Here is a new description" for field Description
+    User click on "UI Files"
+    Choose Demo.yaml (set checkbox on in the 3 column)
+    User click on "Workflows"
+    Choose Demo.xml (set checkbox on in the 3 column)
+    User click on "Heat Templates"
+    Choose Demo.template (set checkbox on in the 3 column)
+    User click on "Scripts"
+    Choose CopyPrerequisites.ps1 (set checkbox on in the 3 column)
     User click on "Submit"
-    Check that Active of element "Modified ASP.NET" is "False"
+    Page should contain element "New Test Service"
+
+Check opportunity to toggle service (make it active/inactive)
+    Log in WebUI by AutotestUser/swordfish
+    User click on "Service Definitions"
+    Select "More" for chosen service "Internet Information Services"
+    Select "Toggle Active" for chosen service "Internet Information Services"
+    Check that Active of element "Internet Information Services" is "False"
+    Select "More" for chosen service "Internet Information Services"
+    Select "Toggle Active" for chosen service "Internet Information Services"
+    Check that Active of element "Internet Information Services" is "True"
+
+Modify Service(change name)
+    Log in WebUI by AutotestUser/swordfish
+    User click on "Service Definitions"
+    Select "Modify Service" for chosen service "Linux Apache"
+    User set value "Modified Linux Apache" for field Service_Name
+    User click on "Submit"
+    Check that Active of element "Modified Linux Apache" is "True"
     User click on "Environments"
     User click on "test"
     User click on "Create Service"
-    User select "Modified ASP.NET" from dropdown list "Service Type"
+    Page should contain element "Modified Linux Apache"
 
-Delete Service
+Modify Service (change version)
     Log in WebUI by AutotestUser/swordfish
     User click on "Service Definitions"
-    Select "More" for chosen service "Demo"
-    Select "Delete Service" for chosen service "Demo"
-    User confirms deletion
-    Page should not contain element "Demo"
+    Select "Modify Service" for chosen service "Linux Telnet"
+    User set value "Linux Telnet" for field Service_Name
+    User set value "version1" for field Version
+    User click on "Submit"
+    Select "More" for chosen service "Linux Telnet"
+    Select "Manage Service" for chosen service "Linux Telnet"
+    Page should contain element "Version"
+    Page should contain element "version1"
+
+Modify Service (change description)
+    Log in WebUI by AutotestUser/swordfish
+    User click on "Service Definitions"
+    Select "Modify Service" for chosen service "Active Directory"
+    User set value "1.0" for field Version
+    User set value "<strong> Active Directory </strong> Here is a new description" for field Description
+    User click on "Submit"
+    Select "More" for chosen service "Active Directory"
+    Select "Manage Service" for chosen service "Active Directory"
+    Page should contain element "Description"
+    Page should contain element "<strong> Active Directory </strong> Here is a new description"
+
+Download Service
+    Log in WebUI by AutotestUser/swordfish
+    User click on "Service Definitions"
+    User click on "Upload Service"
+    User click on "Browse"
+
+Check opportunity to select composed service in Service Type list
+    Log in WebUI by AutotestUser/swordfish
+    User click on "Service Definitions"
+    Compose a new service "Test service"
+    Navigate To    Murano>Environments
+    User click on "test"
+    User click on "Create Service"
+    User select "Test service" from dropdown list "Service Type"
+    User click on "Next"
+    Page should contain element "Service Name"
+
+Check opportunity to delete service from repository
+    Log in WebUI by AutotestUser/swordfish
+    User click on "Service Definitions"
+    Compose a new service "Service for deletion"
+    Select "More" for chosen service "Service for deletion"
+    Select "Delete Service" for chosen service "Service for deletion"
+    Page should not contain element "Service for deletion"
+
+Check opportunity to toggle files (make few services active/inactive)
+    Log in WebUI by AutotestUser/swordfish
+    User click on "Service Definitions"
+    Choose "Internet Information Services" (set checkbox on in the 1 column)
+    Choose "Active Directory" (set checkbox on in the 1 column)
+    User click on "Toggle Active"
+    Check that Active of element "Internet Information Services" is "False"
+    Check that Active of element "Active Directory" is "False"
+    Choose "Internet Information Services" (set checkbox on in the 1 column)
+    Choose "Active Directory" (set checkbox on in the 1 column)
+    User click on "Toggle Active"
+    Check that Active of element "Internet Information Services" is "True"
+    Check that Active of element "Active Directory" is "True"
 
 *** Keywords ***
 Log in WebUI by ${user}/${password}
@@ -69,6 +143,7 @@ Page should not contain element "${element}"
     Page Should Not Contain    ${element}
 
 Select "${action}" for chosen ${type} "${env}"
+    Sleep    5s
     ${xpath}=    Find Associated Element    ${env}    ${action}
     Click Element    ${xpath}
 
@@ -80,6 +155,7 @@ Delete environment "${name}" after test
     Page should not contain element "${name}"
 
 Check that ${subject} of ${element} "${name}" is "${status}"
+    Wait For Page Loaded
     ${row}=    Get Table Row With    ${name}
     ${source}=    Get Source
     ${cell}=    Get Web Element Selector    ${subject}    ${source}    th    this
@@ -90,9 +166,25 @@ Check that ${subject} of ${element} "${name}" is "${status}"
 User select "${item}" from dropdown list "${menu}"
     Select Item From List    ${menu}    ${item}
 
-Select a few ${elements} for example "${el1}" and "${el2}"
-    Set Checkbox On    ${el1}
-    Set Checkbox On    ${el2}
-
 User confirms deletion
     Click On    Confirm deletion
+
+Choose ${name} (set checkbox on in the ${num} column)
+    ${row}=    Get Table Row With    ${name}
+    Click Element    xpath=${row}/td[${num}]/input
+
+Compose a new service "${name}"
+    User click on "Compose Service"
+    User set value "${name}" for field Service_Name
+    User set value "newService" for field Fully Qualified Service Name
+    User set value "<strong> New Test Service </strong> Here is a new description" for field Description
+    User click on "UI Files"
+    Choose Demo.yaml (set checkbox on in the 1 column)
+    User click on "Workflows"
+    Choose Demo.xml (set checkbox on in the 1 column)
+    User click on "Heat Templates"
+    Choose Demo.template (set checkbox on in the 1 column)
+    User click on "Scripts"
+    Choose CopyPrerequisites.ps1 (set checkbox on in the 1 column)
+    User click on "Submit"
+    Page should contain element "${name}"
