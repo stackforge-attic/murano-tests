@@ -79,4 +79,9 @@ expect "@murano"
 send -- "service murano-conductor restart\n"
 expect "@murano"
 
+send -- "echo \"LANGUAGE_CODE='en'\" >> /etc/openstack-dashboard/local_settings.py\n"
+expect "@murano"
+send -- "service apache2 restart\n"
+expect "@murano"
+
 send -- "exit\n"
