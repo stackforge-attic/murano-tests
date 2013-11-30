@@ -233,7 +233,7 @@ User set value "${value}" for field ${field}
     Fill Field    ${field}    ${value}
 
 Check the status of environment "${name}" (should be "${status}")
-    Navigate to    Project>Environments
+    Navigate to    Murano>Environments
     Wait Until Keyword Succeeds    40 min    5s    Check that Status of environment "${name}" is "${status}"
 
 User click on "${element}"
@@ -270,7 +270,7 @@ Select "${action}" for chosen ${type} "${env}"
     Click Element    ${xpath}
 
 Check that deploy "${env}" finished
-    Navigate To    Project>Environments
+    Navigate To    Murano>Environments
     Select "More" for chosen environment "${env}"
     Select "Show Deployments" for chosen environment "${env}"
     Reload Page
@@ -312,6 +312,7 @@ User create IIS Farm with name "${name}" ${join} "${domain}"
     User set value "P@ssw0rd" for field Administrator password
     User set value "P@ssw0rd" for field Confirm password
     User select "${domain}" from dropdown list "Domain"
+    User set value "10.100.0.77" for field Load Balancer VIP
     User set value "iisfarm#" for field Hostname template
     User click on "Next"
     User select "Windows Server 2012 Standard" from dropdown list "Instance image"
@@ -326,6 +327,7 @@ User create ASP.NET Farm with name "${name}" ${join} "${domain}"
     User set value "P@ssw0rd" for field Confirm password
     User select "${domain}" from dropdown list "Domain"
     User set value "git://github.com/Mirantis/murano-mvc-demo.git" for field Git repository
+    User set value "10.100.0.78" for field Load Balancer VIP
     User set value "aspfarm#" for field Hostname template
     User click on "Next"
     User select "Windows Server 2012 Standard" from dropdown list "Instance image"
@@ -381,7 +383,7 @@ Check that service "${service}" was joined in domain "${domain}"
     Page should contain element "${domain}"
 
 Delete environment "${name}" after test
-    Navigate To    Project>Environments
+    Navigate To    Murano>Environments
     Select "More" for chosen environment "${name}"
     Select "Delete Environment" for chosen environment "${name}"
     User confirms deletion
