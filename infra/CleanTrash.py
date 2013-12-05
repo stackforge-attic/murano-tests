@@ -1,24 +1,29 @@
 from keystoneclient.v2_0 import client as ksclient
 from neutronclient.neutron import client as netclient
 from muranoclient.v1.client import Client as murano_client
+from heatclient import client as heat_client
 import novaclient.v1_1.client as nvclient
 import time
 import argparse
 
 parser = argparse.ArgumentParser(description="Script for cleaning trash")
 parser.add_argument("-openstack_user",  dest='openstack_user',  type=str,
-               help="Openstack username",  default='sergey_demo_user')
+                    help="Openstack username",  default='sergey_demo_user')
 parser.add_argument("-openstack_password",  dest='openstack_password',
                     type=str, help="Openstack password",
                     default='111')
 parser.add_argument("-openstack_tenant",  dest='openstack_tenant',  type=str,
                     help="Openstack tenant",  default='ForTests')
 parser.add_argument("-keystone_url",  dest='keystone_url',  type=str,
-               help="Keystone url", default='http://172.18.124.201:5000/v2.0/')
+                    help="Keystone url", default='http://172.18.124.201:5000/v2.0/')
 parser.add_argument("-murano_url",  dest='murano_url',  type=str,
-               help="Murano url", default='http://172.18.78.92:8082')
+                    help="Murano url", default='http://172.18.78.92:8082')
 parser.add_argument("-neutron_url",  dest='neutron_url',  type=str,
-               help="Neutron url", default='http://172.18.124.202:9696/')
+                    help="Neutron url", default='http://172.18.124.202:9696/')
+parser.add_argument("-heat_url",  dest='heat_url',  type=str,
+                    help="Heat url",
+                    default='http://172.18.124.203:8004'
+                            '/v1/72239681556748a3b9b74b44d081b84b')
 args = parser.parse_args()
 
 user = args.openstack_user
@@ -28,16 +33,21 @@ keystone_url = args.keystone_url
 keystone_client = ksclient.Client(username=user, password=password,
                                   tenant_name=tenant, auth_url=keystone_url)
 nova = nvclient.Client(user, password, tenant, keystone_url,
-                       service_type = "compute")
+                       service_type="compute")
 token = keystone_client.auth_token
 murano_url = args.murano_url
 muranoclient = murano_client(endpoint=murano_url, token=token)
 quantum_endpoint = args.neutron_url
 neutron = netclient.Client('2.0', endpoint_url=quantum_endpoint, token=token)
+heat_endpoint = args.heat_url
+heat = heat_client.Client('1', endpoint=heat_endpoint, token=token)
+for i in heat.stacks.list():
+    i.delete()
+
 networks = neutron.list_networks()
 for i in keystone_client.tenants.list():
     if i.name == tenant:
-        cool =  i.id
+        cool = i.id
 
 for i in muranoclient.environments.list():
     muranoclient.environments.delete(i.id)
