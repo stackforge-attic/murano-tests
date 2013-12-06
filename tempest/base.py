@@ -637,17 +637,33 @@ class MuranoMeta(tempest.test.BaseTestCase):
         resp, body = self.client.get('v1/client/ui', self.client.headers)
         return resp, body
 
+    def get_ui_definitions_without_token(self):
+        resp = requests.get('%s/v1/client/ui' % self.client.base_url)
+        return resp
+
     def get_conductor_metadata(self):
         resp, body = self.client.get('v1/client/conductor', self.client.headers)
         return resp, body
+
+    def get_conductor_metadata_without_token(self):
+        resp = requests.get('%s/v1/client/conductor' % self.client.base_url)
+        return resp
 
     def get_list_metadata_objects(self, path):
         resp, body = self.client.get('v1/admin/' + path, self.client.headers)
         return resp, body
 
+    def get_list_metadata_objects_without_token(self, path):
+        resp = requests.get('%s/v1/admin/%s' % (self.client.base_url, path))
+        return resp
+
     def get_metadata_object(self, object):
         resp, body = self.client.get('v1/admin/' + object, self.client.headers)
         return resp, body
+
+    def get_metadata_object_without_token(self, object):
+        resp = requests.get('%s/v1/admin/%s' % (self.client.base_url, object))
+        return resp
 
     def upload_metadata_object(self, path):
         with open('testfile.txt', 'w') as f:
@@ -659,36 +675,79 @@ class MuranoMeta(tempest.test.BaseTestCase):
         os.remove('testfile.txt')
         return resp
 
+    def upload_metadata_object_without_token(self, path):
+        with open('testfile.txt', 'w') as f:
+            f.write("It's a test file")
+        files = {'file': open('testfile.txt', 'rb')}
+        resp = requests.post('%s/v1/admin/%s' % (self.client.base_url, path),
+                             files=files)
+        os.remove('testfile.txt')
+        return resp
+
     def create_directory(self, path, name):
         post_body = '{}'
         resp, body = self.client.put('v1/admin/' + path + name, post_body,
                                      self.client.headers)
         return resp, body
 
+    def create_directory_without_token(self, path, name):
+        post_body = None
+        resp = requests.put('%s/v1/admin/%s/%s' %
+                            (self.client.base_url, path, name), data=post_body)
+        return resp
+
     def delete_metadata_obj_or_folder(self, object):
         resp, body = self.client.delete('v1/admin/' + object,
                                         self.client.headers)
         return resp, body
 
+    def delete_metadata_obj_or_folder_without_token(self, object):
+        resp = requests.delete('%s/v1/admin/%s' %
+                               (self.client.base_url, object))
+        return resp
+
     def create_new_service(self, name):
-        post_body = { "name": name,"version": "0.1",
-                      "full_service_name": name,
-                      "service_display_name": name}
+        post_body = {"name": name,"version": "0.1",
+                     "full_service_name": name,
+                     "service_display_name": name}
         post_body = json.dumps(post_body)
         resp, body = self.client.put('v1/admin/services/' + name, post_body,
                                      self.client.headers)
         return resp, body
 
+    def create_new_service_without_token(self, name):
+        post_body = {"name": name, "version": "0.1",
+                     "full_service_name": name,
+                     "service_display_name": name}
+        post_body = json.dumps(post_body)
+        resp = requests.put('%s/v1/admin/services/%s' %
+                            (self.client.base_url, name), data=post_body)
+        return resp
+
     def update_new_service(self, name):
-        post_body = { "name": name + "1", "version": "0.1",
-                      "full_service_name": name,
-                      "service_display_name": name + "1"}
+        post_body = {"name": name + "1", "version": "0.1",
+                     "full_service_name": name,
+                     "service_display_name": name + "1"}
         post_body = json.dumps(post_body)
         resp, body = self.client.put('v1/admin/services/' + name,
-                                      post_body, self.client.headers)
+                                     post_body, self.client.headers)
         return resp, body
+
+    def update_new_service_without_token(self, name):
+        post_body = {"name": name + "1", "version": "0.1",
+                     "full_service_name": name,
+                     "service_display_name": name + "1"}
+        post_body = json.dumps(post_body)
+        resp = requests.put('%s/v1/admin/services/%s' %
+                            (self.client.base_url, name), data=post_body)
+        return resp
 
     def delete_service(self, name):
         resp, body = self.client.delete('v1/admin/services/' + name,
                                         self.client.headers)
         return resp, body
+
+    def delete_service_without_token(self, name):
+        resp = requests.delete('%s/v1/admin/services/%s' %
+                               (self.client.base_url, name))
+        return resp
