@@ -85,7 +85,7 @@ Deploy environment with ASP.NET Service
     Delete environment "deploy_asp" after test
 
 Deploy environment with IIS Farm
-    [Tags]    night
+    [Tags]    
     Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
     User set value "deploy_iis_farm" for field Environment Name
@@ -109,7 +109,7 @@ Deploy environment with IIS Farm
     Delete environment "deploy_iis_farm" after test
 
 Deploy environment with ASP.NET Farm
-    [Tags]    night    4
+    [Tags]    4
     Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
     User set value "deploy_asp_farm" for field Environment Name
