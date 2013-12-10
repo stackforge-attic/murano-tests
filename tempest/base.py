@@ -751,3 +751,47 @@ class MuranoMeta(tempest.test.BaseTestCase):
         resp = requests.delete('%s/v1/admin/services/%s' %
                                (self.client.base_url, name))
         return resp
+
+    def create_complex_service(self, name):
+
+        post_body = {"name": name, "version": "0.1",
+                     "full_service_name": name,
+                     "service_display_name": name,
+                     "agent": [
+                     "CreatePrimaryDC.template",
+                     "LeaveDomain.template",
+                     "SetPassword.template",
+                     "CreateSecondaryDC.template",
+                     "AskDnsIp.template",
+                     "JoinDomain.template"
+                     ],
+                     "heat": [
+                     "RouterInterface.template",
+                     "Windows.template",
+                     "Network.template",
+                     "NNSecurity.template",
+                     "Param.template",
+                     "Subnet.template",
+                     "InstancePortWSubnet.template",
+                     "InstancePort.template"
+                     ],
+                     "scripts": [
+                     "Install-RoleSecondaryDomainController.ps1",
+                     "Install-RolePrimaryDomainController.ps1",
+                     "Join-Domain.ps1",
+                     "ImportCoreFunctions.ps1",
+                     "Get-DnsListeningIpAddress.ps1",
+                     "Set-LocalUserPassword.ps1"
+                     ],
+                     "ui": [
+                     "ActiveDirectory.yaml"
+                     ],
+                     "workflows": [
+                     "AD.xml",
+                     "Networking.xml",
+                     "Common.xml"
+                     ]}
+        post_body = json.dumps(post_body)
+        resp, body = self.client.put('v1/admin/services/' + name, post_body,
+                                     self.client.headers)
+        return resp, body, json.loads(post_body)

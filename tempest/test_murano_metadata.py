@@ -366,3 +366,16 @@ class SanityMuranoTest(base.MuranoMeta):
         resp = self.update_new_service_without_token('test')
         self.delete_service('test')
         assert resp.status_code == 401
+
+    @attr(type='positive')
+    def test_create_complex_service(self):
+        resp, body, post_body = self.create_complex_service('test')
+        assert resp['status'] == '200'
+        assert 'success' in body
+        resp, body = self.get_metadata_object('services/test')
+        self.delete_service('test')
+        assert resp['status'] == '200'
+        for k in post_body.values():
+            if isinstance(k, list):
+                for j in k:
+                    assert j in body
