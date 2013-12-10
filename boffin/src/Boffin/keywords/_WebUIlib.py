@@ -462,7 +462,7 @@ class _WebUIlib(_Utils):
         self.select_from_list(selector, item_name)
 
     @_framed('name')
-    def set_checkbox_on(self, name):
+    def set_checkbox_on(self, name, method='this'):
         """
         Set checkbox with given title on.
 
@@ -475,11 +475,11 @@ class _WebUIlib(_Utils):
         *Examples:*
         | Set checkbox on | Dashboard . Delete Posts Role checkbox |
         """
-        selector = self.wait_for_element_found(name, 'select/input', 'previous')
+        selector = self.wait_for_element_found(name, 'select/input', method)
         self.select_checkbox(selector)
 
     @_framed('name')
-    def set_checkbox_off(self, name):
+    def set_checkbox_off(self, name, method='this'):
         """
         Set checkbox with given title off.
 
@@ -492,7 +492,7 @@ class _WebUIlib(_Utils):
         *Examples:*
         | Set checkbox off | Dashboard . Delete Posts Role checkbox |
         """
-        selector = self.wait_for_element_found(name, 'select/input', 'previous')
+        selector = self.wait_for_element_found(name, 'select/input', method)
         self.unselect_checkbox(selector)
 
     @_framed('from_name')
