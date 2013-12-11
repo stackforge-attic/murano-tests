@@ -17,7 +17,7 @@ Create environment
     User click on "Create Environment"
     User set value "env" for field Environment Name
     User click on "Create"
-    Reload Page
+    Wait For Page Loaded
     Page should contain element "env"
     Delete environment "env" after test
 
