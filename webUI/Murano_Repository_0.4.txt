@@ -1,17 +1,18 @@
 *** Settings ***
 Suite Setup
 Suite Teardown    Close All Browsers
-Test Setup        Open Browser    ${url}
+Test Setup        Open Browser    ${url}    remote_url=http://172.18.124.233:4444/wd/hub    browser=firefox    ff_profile_dir=ffprofile
 Test Teardown     Close All Browsers
 Library           String
 Library           Boffin.WebUIlib    0    20    # Boffin framework library
 
 *** Variables ***
-${resources_path}    C:/Murano/WebUI/samples/Murano/Resources/
-${url}            http://12.0.2.16/horizon
+${resources_path}    Resources/
+${url}            http://10.100.0.6/horizon
 
 *** Test Cases ***
 Create test environment
+    [Tags]    night
     Log in WebUI by AutotestUser/swordfish
     User click on "Create Environment"
     User set value "test" for field Environment Name
@@ -20,6 +21,7 @@ Create test environment
     Page should contain element "test"
 
 Check opportunity to compose a new service in repository
+    [Tags]    night
     Log in WebUI by AutotestUser/swordfish
     User click on "Service Definitions"
     User click on "Compose Service"
@@ -38,6 +40,7 @@ Check opportunity to compose a new service in repository
     Page should contain element "New Test Service"
 
 Check opportunity to toggle service (make it active/inactive)
+    [Tags]    night
     Log in WebUI by AutotestUser/swordfish
     User click on "Service Definitions"
     Select "More" for chosen service "Internet Information Services"
@@ -48,6 +51,7 @@ Check opportunity to toggle service (make it active/inactive)
     Check that Active of element "Internet Information Services" is "True"
 
 Modify Service(change name)
+    [Tags]    night
     Log in WebUI by AutotestUser/swordfish
     User click on "Service Definitions"
     Select "Modify Service" for chosen service "Linux Apache"
@@ -60,6 +64,7 @@ Modify Service(change name)
     Page should contain element "Modified Linux Apache"
 
 Modify Service (change version)
+    [Tags]    night
     Log in WebUI by AutotestUser/swordfish
     User click on "Service Definitions"
     Select "Modify Service" for chosen service "Linux Telnet"
@@ -72,6 +77,7 @@ Modify Service (change version)
     Page should contain element "version1"
 
 Modify Service (change description)
+    [Tags]    night
     Log in WebUI by AutotestUser/swordfish
     User click on "Service Definitions"
     Select "Modify Service" for chosen service "Active Directory"
@@ -90,6 +96,7 @@ Download Service
     User click on "Browse"
 
 Check opportunity to select composed service in Service Type list
+    [Tags]    night
     Log in WebUI by AutotestUser/swordfish
     User click on "Service Definitions"
     Compose a new service "Test service"
@@ -101,6 +108,7 @@ Check opportunity to select composed service in Service Type list
     Page should contain element "Service Name"
 
 Check opportunity to delete service from repository
+    [Tags]    night
     Log in WebUI by AutotestUser/swordfish
     User click on "Service Definitions"
     Compose a new service "Service for deletion"
@@ -109,15 +117,16 @@ Check opportunity to delete service from repository
     Page should not contain element "Service for deletion"
 
 Check opportunity to toggle files (make few services active/inactive)
+    [Tags]    night
     Log in WebUI by AutotestUser/swordfish
     User click on "Service Definitions"
-    Choose "Internet Information Services" (set checkbox on in the 1 column)
-    Choose "Active Directory" (set checkbox on in the 1 column)
+    Choose Internet Information Services (set checkbox on in the 1 column)
+    Choose Active Directory (set checkbox on in the 1 column)
     User click on "Toggle Active"
     Check that Active of element "Internet Information Services" is "False"
     Check that Active of element "Active Directory" is "False"
-    Choose "Internet Information Services" (set checkbox on in the 1 column)
-    Choose "Active Directory" (set checkbox on in the 1 column)
+    Choose Internet Information Services (set checkbox on in the 1 column)
+    Choose Active Directory (set checkbox on in the 1 column)
     User click on "Toggle Active"
     Check that Active of element "Internet Information Services" is "True"
     Check that Active of element "Active Directory" is "True"
@@ -179,12 +188,12 @@ Compose a new service "${name}"
     User set value "newService" for field Fully Qualified Service Name
     User set value "<strong> New Test Service </strong> Here is a new description" for field Description
     User click on "UI Files"
-    Choose Demo.yaml (set checkbox on in the 1 column)
+    Choose Demo.yaml (set checkbox on in the 3 column)
     User click on "Workflows"
-    Choose Demo.xml (set checkbox on in the 1 column)
+    Choose Demo.xml (set checkbox on in the 3 column)
     User click on "Heat Templates"
-    Choose Demo.template (set checkbox on in the 1 column)
+    Choose Demo.template (set checkbox on in the 3 column)
     User click on "Scripts"
-    Choose CopyPrerequisites.ps1 (set checkbox on in the 1 column)
+    Choose CopyPrerequisites.ps1 (set checkbox on in the 3 column)
     User click on "Submit"
     Page should contain element "${name}"
