@@ -302,27 +302,23 @@ Deploy IIS Farm and ASP.NET Farm in 2 domains
     Check the status of environment "farms_in_domains" (should be "Ready")
     Check that deploy "farms_in_domains" finished
 
-Deploy MS SQL server and IIS in domain
+Deploy MS SQL server and IIS
     [Tags]    night    11
     Log in WebUI by WebTestUser/swordfish
     User click on "Create Environment"
-    User set value "iis_sqlserver_in_domain" for field Environment Name
+    User set value "iis_sqlserver" for field Environment Name
     User click on "Create"
-    User click on "iis_sqlserver_in_domain"
+    User click on "iis_sqlserver"
     User click on "Create Service"
-    User create Active Directory with domain name "iisANDsql.domain"
+    User create IIS with name "iis-service" and don't join to domain, select "Not in domain"
+    User click on "environment iis_sqlserver"
     User click on "Create Service"
-    User create IIS with name "iis-service" and join in domain "iisANDsql.domain"
-    Check that service "iis-service" was joined in domain "iisANDsql.domain"
-    User click on "environment iis_sqlserver_in_domain"
-    User click on "Create Service"
-    User create MS SQL server with name "mssql" and join in domain "iisANDsql.domain"
-    Check that service "mssql" was joined in domain "iisANDsql.domain"
-    User click on "environment iis_sqlserver_in_domain"
+    User create MS SQL server with name "mssql" and don't join to domain, select "Not in domain"
+    User click on "environment iis_sqlserver"
     User click on "Deploy This Environment"
-    Check the status of environment "iis_sqlserver_in_domain" (should be "Ready")
-    Check that deploy "iis_sqlserver_in_domain" finished
-    Delete environment "iis_sqlserver_in_domain" after test
+    Check the status of environment "iis_sqlserver" (should be "Ready")
+    Check that deploy "iis_sqlserver" finished
+    Delete environment "iis_sqlserver" after test
 
 Deploy Apache service
     [Tags]    night    12

@@ -88,7 +88,7 @@ Create IIS + SQL + ASP delete IIS
     User click on "Create Service"
     User create MS SQL server with name "sql-server" and don't join to domain, select "Not in domain"
     User click on "Create Service"
-    User create ASP.NET App with name "asp-farm" and don't join to domain, select "Not in domain"
+    User create ASP.NET App with name "asp" and don't join to domain, select "Not in domain"
     Select "Delete Service" for chosen service "iis"
     User confirms deletion
     Page should not contain element "iis"
@@ -102,7 +102,7 @@ Add service in deployed env
     User click on "Create"
     User click on "add_service_in_deployed_env"
     User click on "Create Service"
-    User create IIS with name "iis" and don't join to domain, select "Not in domain"
+    User create Telnet with name "telnet"
     User click on "Deploy This Environment"
     Check the status of environment "add_service_in_deployed_env" (should be "Ready")
     Check that deploy "add_service_in_deployed_env" finished
@@ -112,7 +112,7 @@ Add service in deployed env
     User create IIS with name "iis2" and don't join to domain, select "Not in domain"
     Delete environment "add_service_in_deployed_env" after test
 
-Check re-deploy
+Check that service can be joined to domain
     [Tags]    night    19
     Log in WebUI by WebTestUser/swordfish
     User click on "Create Environment"
@@ -127,7 +127,7 @@ Check re-deploy
     Navigate To    Murano>Environments
     User click on "re-deploy"
     User click on "Create Service"
-    User create IIS with name "iis2" and \ join in domain "newdomain.com"
+    User create IIS with name "iis2" and join in domain "newdomain.com"
     User click on "Deploy This Environment"
     Check the status of environment "re-deploy" (should be "Ready")
     Check that deploy "re-deploy" finished
@@ -141,14 +141,24 @@ Deploy instance with different flavor
     User click on "Create"
     User click on "different_flavor"
     User click on "Create Service"
-    User create IIS with name "iis-medium" with instance flavor m1.medium and select "Not in domain"
+    User select "Internet Information Services" from dropdown list "Service Type"
+    User click on "Next"
+    User set value "iis-medium" for field Service Name
+    User set value "P@ssw0rd" for field Administrator password
+    User set value "P@ssw0rd" for field Confirm password
+    User set value "MEDIUM" for field Hostname template
+    User click on "Next"
+    User select "m1.medium" from dropdown list "Instance flavor"
+    User select "Windows Server 2012 Standard" from dropdown list "Instance image"
+    User click on "Create"
+    Page should contain element "iis-medium"
     User click on "Create Service"
     User select "Internet Information Services" from dropdown list "Service Type"
     User click on "Next"
     User set value "iis-large" for field Service Name
     User set value "P@ssw0rd" for field Administrator password
     User set value "P@ssw0rd" for field Confirm password
-    User set value "iisLARGE" for field Hostname template
+    User set value "LARGE" for field Hostname template
     User click on "Next"
     User select "m1.large" from dropdown list "Instance flavor"
     User select "Windows Server 2012 Standard" from dropdown list "Instance image"
@@ -158,9 +168,9 @@ Deploy instance with different flavor
     Check the status of environment "different_flavor" (should be "Ready")
     Check that deploy "different_flavor" finished
     Navigate To    Project>Instances
-    Check that size of instance "iis" is "m1.medium"
-    Check that size of instance "iisLARGE" is "m1.large"
-    Navigate To    Project>Environments
+    Check that size of instance "MEDIUM" is "m1.medium"
+    Check that size of instance "LARGE" is "m1.large"
+    Navigate To    Murano>Environments
     Delete environment "different_flavor" after test
 
 Linux and Windows services in one environment
@@ -181,9 +191,10 @@ Linux and Windows services in one environment
     User click on "Next"
     User select "Linux Image" from dropdown list "Instance image"
     User click on "Create"
-    User click on "Deploy This Environment"
-    Check the status of environment "ad_and_telnet" (should be "Ready")
-    Check that deploy "ad_and_telnet" finished
+    #User click on "Deploy This Environment"
+    #Check the status of environment "ad_and_telnet" (should be "Ready")
+    #Check that deploy "ad_and_telnet" finished
+    Delete environment "ad_and_telnet" after test
 
 Checking type and last operation
     [Tags]    night    22
@@ -193,10 +204,10 @@ Checking type and last operation
     User click on "Create"
     User click on "test"
     User click on "Create Service"
-    User create IIS with name "service-iis" and don't join to domain, select "Not in domain"
+    User create Telnet with name "telnet"
     User click on "Deploy This Environment"
-    Check that Type of service "service-iis" is "Internet Information Services"
-    Check that Last operation of service "service-iis" is "Creating"
+    Check that Type of service "telnet" is "Linux Telnet"
+    Check that Last operation of service "telnet" is "Creating"
     Check the status of environment "test" (should be "Ready")
     Check that deploy "test" finished
     Delete environment "test" after test
