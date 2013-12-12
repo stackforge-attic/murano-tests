@@ -47,7 +47,7 @@ Create IIS + AD + SQL
     [Tags]    night    15
     Log in WebUI by WebTestUser/swordfish
     User click on "Create Environment"
-    User set value "IIS + AD + SQM" for field Environment Name
+    User set value "IIS + AD + SQL" for field Environment Name
     User click on "Create"
     User click on "IIS + AD + SQL"
     User click on "Create Service"
