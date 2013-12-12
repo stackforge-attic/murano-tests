@@ -176,6 +176,17 @@ User create MS SQL cluster with name "${name}" ${join} "${domain}"
     User click on "Create"
     Page should contain element "${name}"
 
+User create Telnet with name "${name}"
+    User select "Linux Telnet" from dropdown list "Service Type"
+    User click on "Next"
+    User set value "${name}" for field Service Name
+    User select "murano-lb-key" from dropdown list "Key Pair"
+    User set value "telnet" for field Hostname
+    User click on "Next"
+    User select "Linux Image" from dropdown list "Instance image"
+    User click on "Create"
+    Wait For Page Loaded
+
 Check that service "${service}" was joined in domain "${domain}"
     User click on "${service}"
     Page should contain element "${domain}"
