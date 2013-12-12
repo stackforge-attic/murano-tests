@@ -65,13 +65,6 @@ Check that deploy "${env}" finished
     Should Be Equal As Strings    ${text}    Successful
     Run Keyword If    '${text}'== 'Failed'    Take a screenshot of the failed deploy
 
-User create IIS with name "${name}" ${join} "${domain}"
-    User select "Internet Information Services" from dropdown list "Service Type"
-    User click on "Next"
-    User set value "${name}" for field Service Name
-    User set value "P@ssw0rd" for field Administrator password
-    User set value "P@ssw0rd" for field Confirm password
-
 Check that ${subject} of ${element} "${name}" is "${status}"
     ${row}=    Get Table Row With    ${name}
     ${source}=    Get Source
