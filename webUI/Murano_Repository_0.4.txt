@@ -13,7 +13,7 @@ ${url}            http://10.100.0.6/horizon
 *** Test Cases ***
 Create test environment
     [Tags]    night
-    Log in WebUI by AutotestUser/swordfish
+    Log in WebUI by WebTestUser/swordfish
     User click on "Create Environment"
     User set value "test" for field Environment Name
     User click on "Create"
@@ -22,7 +22,7 @@ Create test environment
 
 Check opportunity to compose a new service in repository
     [Tags]    night
-    Log in WebUI by AutotestUser/swordfish
+    Log in WebUI by WebTestUser/swordfish
     User click on "Service Definitions"
     User click on "Compose Service"
     User set value "New Test Service" for field Service_Name
@@ -41,7 +41,7 @@ Check opportunity to compose a new service in repository
 
 Check opportunity to toggle service (make it active/inactive)
     [Tags]    night
-    Log in WebUI by AutotestUser/swordfish
+    Log in WebUI by WebTestUser/swordfish
     User click on "Service Definitions"
     Select "More" for chosen service "Internet Information Services"
     Select "Toggle Active" for chosen service "Internet Information Services"
@@ -52,7 +52,7 @@ Check opportunity to toggle service (make it active/inactive)
 
 Modify Service(change name)
     [Tags]    night
-    Log in WebUI by AutotestUser/swordfish
+    Log in WebUI by WebTestUser/swordfish
     User click on "Service Definitions"
     Select "Modify Service" for chosen service "Linux Apache"
     User set value "Modified Linux Apache" for field Service_Name
@@ -65,7 +65,7 @@ Modify Service(change name)
 
 Modify Service (change version)
     [Tags]    night
-    Log in WebUI by AutotestUser/swordfish
+    Log in WebUI by WebTestUser/swordfish
     User click on "Service Definitions"
     Select "Modify Service" for chosen service "Linux Telnet"
     User set value "Linux Telnet" for field Service_Name
@@ -78,7 +78,7 @@ Modify Service (change version)
 
 Modify Service (change description)
     [Tags]    night
-    Log in WebUI by AutotestUser/swordfish
+    Log in WebUI by WebTestUser/swordfish
     User click on "Service Definitions"
     Select "Modify Service" for chosen service "Active Directory"
     User set value "1.0" for field Version
@@ -90,14 +90,14 @@ Modify Service (change description)
     Page should contain element "<strong> Active Directory </strong> Here is a new description"
 
 Download Service
-    Log in WebUI by AutotestUser/swordfish
+    Log in WebUI by WebTestUser/swordfish
     User click on "Service Definitions"
     User click on "Upload Service"
     User click on "Browse"
 
 Check opportunity to select composed service in Service Type list
     [Tags]    night
-    Log in WebUI by AutotestUser/swordfish
+    Log in WebUI by WebTestUser/swordfish
     User click on "Service Definitions"
     Compose a new service "Test service"
     Navigate To    Murano>Environments
@@ -109,7 +109,7 @@ Check opportunity to select composed service in Service Type list
 
 Check opportunity to delete service from repository
     [Tags]    night
-    Log in WebUI by AutotestUser/swordfish
+    Log in WebUI by WebTestUser/swordfish
     User click on "Service Definitions"
     Compose a new service "Service for deletion"
     Select "More" for chosen service "Service for deletion"
@@ -118,7 +118,7 @@ Check opportunity to delete service from repository
 
 Check opportunity to toggle files (make few services active/inactive)
     [Tags]    night
-    Log in WebUI by AutotestUser/swordfish
+    Log in WebUI by WebTestUser/swordfish
     User click on "Service Definitions"
     Choose Internet Information Services (set checkbox on in the 1 column)
     Choose Active Directory (set checkbox on in the 1 column)

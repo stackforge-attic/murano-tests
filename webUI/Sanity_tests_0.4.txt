@@ -13,7 +13,7 @@ ${url}            http://10.100.0.6/horizon
 *** Test Cases ***
 Create environment
     [Tags]    commit    1
-    Log in WebUI by AutotestUser/swordfish
+    Log in WebUI by WebTestUser/swordfish
     User click on "Create Environment"
     User set value "env" for field Environment Name
     User click on "Create"
@@ -23,7 +23,7 @@ Create environment
 
 Edit environment
     [Tags]    commit    2
-    Log in WebUI by AutotestUser/swordfish
+    Log in WebUI by WebTestUser/swordfish
     User click on "Create Environment"
     User set value "env1" for field Environment Name
     User click on "Create"
@@ -36,7 +36,7 @@ Edit environment
 
 Delete Environment
     [Tags]    commit    3
-    Log in WebUI by AutotestUser/swordfish
+    Log in WebUI by WebTestUser/swordfish
     User click on "Create Environment"
     User set value "env2" for field Environment Name
     User click on "Create"
@@ -47,7 +47,7 @@ Delete Environment
 
 Delete Image from repo
     [Tags]    commit    4
-    Log in WebUI by AutotestUser/swordfish
+    Log in WebUI by WebTestUser/swordfish
     User click on "Images"
     User click on "Mark Image"
     User select "ws-2012-std" from dropdown list "Image"
@@ -61,7 +61,7 @@ Delete Image from repo
 
 Rename Windows image
     [Tags]    night    commit    5
-    Log in WebUI by AutotestUser/swordfish
+    Log in WebUI by WebTestUser/swordfish
     User click on "Images"
     User click on "Mark Image"
     User select "ws-2012-std" from dropdown list "Image"
@@ -72,7 +72,7 @@ Rename Windows image
 
 Rename Linux image
     [Tags]    night    commit    5
-    Log in WebUI by AutotestUser/swordfish
+    Log in WebUI by WebTestUser/swordfish
     User click on "Images"
     User click on "Mark Image"
     User select "cloud-centos" from dropdown list "Image"

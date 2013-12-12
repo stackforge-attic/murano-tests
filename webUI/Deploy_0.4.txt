@@ -14,7 +14,7 @@ ${url}            http://10.100.0.6/horizon
 *** Test Cases ***
 Deploy environment with AD Service
     [Tags]    night    1
-    Log in WebUI by AutotestUser/swordfish
+    Log in WebUI by WebTestUser/swordfish
     User click on "Create Environment"
     User set value "deploy_one_ad" for field Environment Name
     User click on "Create"
@@ -39,7 +39,7 @@ Deploy environment with AD Service
 
 Deploy environment with IIS Service
     [Tags]    night    2
-    Log in WebUI by AutotestUser/swordfish
+    Log in WebUI by WebTestUser/swordfish
     User click on "Create Environment"
     User set value "deploy_iis" for field Environment Name
     User click on "Create"
@@ -62,7 +62,7 @@ Deploy environment with IIS Service
 
 Deploy environment with ASP.NET Service
     [Tags]    night    3
-    Log in WebUI by AutotestUser/swordfish
+    Log in WebUI by WebTestUser/swordfish
     User click on "Create Environment"
     User set value "deploy_asp" for field Environment Name
     User click on "Create"
@@ -86,7 +86,7 @@ Deploy environment with ASP.NET Service
 
 Deploy environment with IIS Farm
     [Tags]    
-    Log in WebUI by AutotestUser/swordfish
+    Log in WebUI by WebTestUser/swordfish
     User click on "Create Environment"
     User set value "deploy_iis_farm" for field Environment Name
     User click on "Create"
@@ -97,7 +97,7 @@ Deploy environment with IIS Farm
     User set value "iis_farm" for field Service Name
     User set value "P@ssw0rd" for field Administrator password
     User set value "P@ssw0rd" for field Confirm password
-    User set value "10.0.7.71" for field Load Balancer VIP
+    User set value "10.0.1.71" for field Load Balancer VIP
     User set value "iisfarm#" for field Hostname template
     User click on "Next"
     User select "Windows Server 2012 Standard" from dropdown list "Instance image"
@@ -110,7 +110,7 @@ Deploy environment with IIS Farm
 
 Deploy environment with ASP.NET Farm
     [Tags]    4
-    Log in WebUI by AutotestUser/swordfish
+    Log in WebUI by WebTestUser/swordfish
     User click on "Create Environment"
     User set value "deploy_asp_farm" for field Environment Name
     User click on "Create"
@@ -122,7 +122,7 @@ Deploy environment with ASP.NET Farm
     User set value "P@ssw0rd" for field Administrator password
     User set value "P@ssw0rd" for field Confirm password
     User set value "git://github.com/Mirantis/murano-mvc-demo.git" for field Git repository
-    User set value "10.0.7.72" for field Load Balancer VIP
+    User set value "10.0.1.72" for field Load Balancer VIP
     User set value "aspfarm#" for field Hostname template
     User click on "Next"
     User select "Windows Server 2012 Standard" from dropdown list "Instance image"
@@ -135,7 +135,7 @@ Deploy environment with ASP.NET Farm
 
 Deploy environment with MS SQL server
     [Tags]    night    5
-    Log in WebUI by AutotestUser/swordfish
+    Log in WebUI by WebTestUser/swordfish
     User click on "Create Environment"
     User set value "deploy_mssql" for field Environment Name
     User click on "Create"
@@ -160,7 +160,7 @@ Deploy environment with MS SQL server
 
 Deploy environment with MS SQL cluster
     [Tags]    night    6
-    Log in WebUI by AutotestUser/swordfish
+    Log in WebUI by WebTestUser/swordfish
     User click on "Create Environment"
     User set value "deploy_sqlcluster" for field Environment Name
     User click on "Create"
@@ -178,11 +178,11 @@ Deploy environment with MS SQL cluster
     User set value "P@ssw0rd" for field SA Password
     User set value "P@ssw0rd" for field Confirm SA password
     User click on "Next"
-    User set value "10.0.7.88" for field Cluster Static IP
+    User set value "10.0.1.88" for field Cluster Static IP
     User set value "cluster" for field Cluster Name
     User set value "AG_name" for field Availability Group Name
     User set value "AG_listener_name" for field Availability Group Listener Name
-    User set value "10.0.7.89" for field Availability Group Listener IP
+    User set value "10.0.1.89" for field Availability Group Listener IP
     User set value "user" for field SQL User Name
     User set value "P@ssw0rd" for field SQL User Password
     User set value "P@ssw0rd" for field Confirm password
@@ -200,7 +200,7 @@ Deploy environment with MS SQL cluster
 
 Deploy Telnet Service
     [Tags]    night    7
-    Log in WebUI by AutotestUser/swordfish
+    Log in WebUI by WebTestUser/swordfish
     User click on "Create Environment"
     User set value "deploy_telnet" for field Environment Name
     User click on "Create"
@@ -219,7 +219,7 @@ Deploy Telnet Service
 
 Deploy AD with 2 instances
     [Tags]    night    8
-    Log in WebUI by AutotestUser/swordfish
+    Log in WebUI by WebTestUser/swordfish
     User click on "Create Environment"
     User set value "deploy_ad_2_inst" for field Environment Name
     User click on "Create"
@@ -245,7 +245,7 @@ Deploy AD with 2 instances
 
 Create IIS and IIS Farm in domain
     [Tags]    night    9
-    Log in WebUI by AutotestUser/swordfish
+    Log in WebUI by WebTestUser/swordfish
     User click on "Create Environment"
     User set value "iis_iisfarm_in_domain" for field Environment Name
     User click on "Create"
@@ -263,7 +263,7 @@ Create IIS and IIS Farm in domain
 
 Create ASP.Net and ASP.Net Farm in domain
     [Tags]    night    10
-    Log in WebUI by AutotestUser/swordfish
+    Log in WebUI by WebTestUser/swordfish
     User click on "Create Environment"
     User set value "asp_aspfarm_in_domain" for field Environment Name
     User click on "Create"
@@ -280,7 +280,7 @@ Create ASP.Net and ASP.Net Farm in domain
     Delete environment "asp_aspfarm_in_domain" after test
 
 Deploy IIS Farm and ASP.NET Farm in 2 domains
-    Log in WebUI by AutotestUser/swordfish
+    Log in WebUI by WebTestUser/swordfish
     User click on "Create Environment"
     User set value "farms_in_domains" for field Environment Name
     User click on "Create"
@@ -303,7 +303,7 @@ Deploy IIS Farm and ASP.NET Farm in 2 domains
 
 Deploy MS SQL server and IIS in domain
     [Tags]    night    11
-    Log in WebUI by AutotestUser/swordfish
+    Log in WebUI by WebTestUser/swordfish
     User click on "Create Environment"
     User set value "iis_sqlserver_in_domain" for field Environment Name
     User click on "Create"
@@ -325,7 +325,7 @@ Deploy MS SQL server and IIS in domain
 
 Deploy Apache service
     [Tags]    night    12
-    Log in WebUI by AutotestUser/swordfish
+    Log in WebUI by WebTestUser/swordfish
     User click on "Create Environment"
     User set value "deploy_apache" for field Environment Name
     User click on "Create"
@@ -432,7 +432,7 @@ User create IIS Farm with name "${name}" ${join} "${domain}"
     User set value "P@ssw0rd" for field Administrator password
     User set value "P@ssw0rd" for field Confirm password
     User select "${domain}" from dropdown list "Domain"
-    User set value "10.0.7.78" for field Load Balancer VIP
+    User set value "10.0.1.78" for field Load Balancer VIP
     User set value "iisfarm#" for field Hostname template
     User click on "Next"
     User select "Windows Server 2012 Standard" from dropdown list "Instance image"
@@ -447,7 +447,7 @@ User create ASP.NET Farm with name "${name}" ${join} "${domain}"
     User set value "P@ssw0rd" for field Confirm password
     User select "${domain}" from dropdown list "Domain"
     User set value "git://github.com/Mirantis/murano-mvc-demo.git" for field Git repository
-    User set value "10.0.7.79" for field Load Balancer VIP
+    User set value "10.0.1.79" for field Load Balancer VIP
     User set value "aspfarm#" for field Hostname template
     User click on "Next"
     User select "Windows Server 2012 Standard" from dropdown list "Instance image"
@@ -482,11 +482,11 @@ User create MS SQL cluster with name "${name}" ${join} "${domain}"
     User set value "P@ssw0rd" for field SA Password
     User set value "P@ssw0rd" for field Confirm SA password
     User click on "Next"
-    User set value "10.0.7.90" for field Cluster Static IP
+    User set value "10.0.1.90" for field Cluster Static IP
     User set value "cluster" for field Cluster Name
     User set value "AG_name" for field Availability Group Name
     User set value "AG_listener_name" for field Availability Group Listener Name
-    User set value "10.0.7.89" for field Availability Group Listener IP
+    User set value "10.0.1.89" for field Availability Group Listener IP
     User set value "user" for field SQL User Name
     User set value "P@ssw0rd" for field SQL User Password
     User set value "P@ssw0rd" for field Confirm password
