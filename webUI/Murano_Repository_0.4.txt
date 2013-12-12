@@ -5,10 +5,12 @@ Test Setup        Open Browser    ${url}    remote_url=http://172.18.124.233:444
 Test Teardown     Close All Browsers
 Library           String
 Library           Boffin.WebUIlib    0    20    # Boffin framework library
+Resource          Resources/objrepo/keywords.txt
 
 *** Variables ***
 ${resources_path}    Resources/
 ${url}            http://10.100.0.6/horizon
+${files_path}     /Files_for_autotests/
 
 *** Test Cases ***
 Create test environment
@@ -131,69 +133,3 @@ Check opportunity to toggle files (make few services active/inactive)
     Check that Active of element "Internet Information Services" is "True"
     Check that Active of element "Active Directory" is "True"
 
-*** Keywords ***
-Log in WebUI by ${user}/${password}
-    Fill Field    User Name    ${user}
-    Fill Field    Password    ${password}
-    Click on    Sign In
-    Navigate to    Murano>Environments
-
-User set value "${value}" for field ${field}
-    Fill Field    ${field}    ${value}
-
-User click on "${element}"
-    Click on    ${element}
-
-Page should contain element "${element}"
-    Page Should Contain    ${element}
-
-Page should not contain element "${element}"
-    Reload Page
-    Page Should Not Contain    ${element}
-
-Select "${action}" for chosen ${type} "${env}"
-    Sleep    5s
-    ${xpath}=    Find Associated Element    ${env}    ${action}
-    Click Element    ${xpath}
-
-Delete environment "${name}" after test
-    Navigate To    Murano>Environments
-    Select "More" for chosen environment "${name}"
-    Select "Delete Environment" for chosen environment "${name}"
-    User confirms deletion
-    Page should not contain element "${name}"
-
-Check that ${subject} of ${element} "${name}" is "${status}"
-    Wait For Page Loaded
-    ${row}=    Get Table Row With    ${name}
-    ${source}=    Get Source
-    ${cell}=    Get Web Element Selector    ${subject}    ${source}    th    this
-    ${#_of_column}=    Get Substring    ${cell}    -2    -1
-    ${text}=    Get Text    xpath=${row}/td[${#_of_column}]
-    Should Contain    ${text}    ${status}
-
-User select "${item}" from dropdown list "${menu}"
-    Select Item From List    ${menu}    ${item}
-
-User confirms deletion
-    Click On    Confirm deletion
-
-Choose ${name} (set checkbox on in the ${num} column)
-    ${row}=    Get Table Row With    ${name}
-    Click Element    xpath=${row}/td[${num}]/input
-
-Compose a new service "${name}"
-    User click on "Compose Service"
-    User set value "${name}" for field Service_Name
-    User set value "newService" for field Fully Qualified Service Name
-    User set value "<strong> New Test Service </strong> Here is a new description" for field Description
-    User click on "UI Files"
-    Choose Demo.yaml (set checkbox on in the 3 column)
-    User click on "Workflows"
-    Choose Demo.xml (set checkbox on in the 3 column)
-    User click on "Heat Templates"
-    Choose Demo.template (set checkbox on in the 3 column)
-    User click on "Scripts"
-    Choose CopyPrerequisites.ps1 (set checkbox on in the 3 column)
-    User click on "Submit"
-    Page should contain element "${name}"

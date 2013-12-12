@@ -5,6 +5,7 @@ Test Setup        Open Browser    ${url}    remote_url=http://172.18.124.233:444
 Test Teardown     Close All Browsers
 Library           String
 Library           Boffin.WebUIlib    0    20    # Boffin framework library
+Resource          Resources/objrepo/keywords.txt
 
 *** Variables ***
 ${resources_path}    Resources/
@@ -81,7 +82,7 @@ Create and Delete ASP.NET service
     Delete environment "create_delete_asp" after test
 
 Create and Delete IIS Farm service
-    [Tags]    commit    10
+    [Tags]    10
     Log in WebUI by WebTestUser/swordfish
     User click on "Create Environment"
     User set value "create_delete_iis_farm" for field Environment Name
@@ -104,7 +105,7 @@ Create and Delete IIS Farm service
     Delete environment "create_delete_iis_farm" after test
 
 Create and Delete ASP.NET Farm service
-    [Tags]    commit    11
+    [Tags]    11
     Log in WebUI by WebTestUser/swordfish
     User click on "Create Environment"
     User set value "create_delete_asp_farm" for field Environment Name
@@ -152,7 +153,7 @@ Create and Delete MS SQL server
     Delete environment "create_delete_mssql" after test
 
 Create and Delete MS SQL Cluster
-    [Tags]    commit    13
+    [Tags]    13
     Log in WebUI by WebTestUser/swordfish
     User click on "Create Environment"
     User set value "create_delete_sqlcluster" for field Environment Name
@@ -252,56 +253,3 @@ Check opportunity to choose Instance Flavor
     User select "m1.medium" from dropdown list "Instance flavor"
     Delete environment "env_inst_flavor" after test
 
-*** Keywords ***
-Log in WebUI by ${user}/${password}
-    Fill Field    User Name    ${user}
-    Fill Field    Password    ${password}
-    Click on    Sign In
-    Navigate to    Murano>Environments
-
-User set value "${value}" for field ${field}
-    Fill Field    ${field}    ${value}
-
-Check the status of environment "${name}" (should be "${status}")
-    Navigate to    Murano>Environments
-    Wait Until Keyword Succeeds    40 min    5s    Check that Status of environment "${name}" is "${status}"
-
-User click on "${element}"
-    Click on    ${element}
-
-Page should contain element "${element}"
-    Page Should Contain    ${element}
-
-Page should not contain element "${element}"
-    Reload Page
-    Page Should Not Contain    ${element}
-
-User select "${item}" from dropdown list "${menu}"
-    Select Item From List    ${menu}    ${item}
-
-User confirms deletion
-    Click On    Confirm deletion
-
-User create Active Directory with domain name "${name}"
-    User select "Active Directory" from dropdown list "Service Type"
-    User click on "Next"
-    User set value "${name}" for field Domain Name
-    User set value "P@ssw0rd" for field Administrator password
-    User set value "P@ssw0rd" for field Confirm password
-    User set value "P@ssw0rd" for field Recovery password
-    User set value "P@ssw0rd" for field Confirm recovery password
-    User set value "${name}" for field Hostname template
-    User click on "Next"
-    User select "Windows Server 2012 Standard" from dropdown list "Instance image"
-    User click on "Create"
-
-Select "${action}" for chosen ${type} "${env}"
-    ${xpath}=    Find Associated Element    ${env}    ${action}
-    Click Element    ${xpath}
-
-Delete environment "${name}" after test
-    Navigate To    Murano>Environments
-    Select "More" for chosen environment "${name}"
-    Select "Delete Environment" for chosen environment "${name}"
-    User confirms deletion
-    Page should not contain element "${name}"

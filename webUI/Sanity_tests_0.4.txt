@@ -5,6 +5,7 @@ Test Setup        Open Browser    ${url}    remote_url=http://172.18.124.233:444
 Test Teardown     Close All Browsers
 Library           String
 Library           Boffin.WebUIlib    0    20    # Boffin framework library
+Resource          Resources/objrepo/keywords.txt
 
 *** Variables ***
 ${resources_path}    Resources/
@@ -81,39 +82,3 @@ Rename Linux image
     User click on "Mark"
     Page should contain element "Linux Image"
 
-*** Keywords ***
-Log in WebUI by ${user}/${password}
-    Fill Field    User Name    ${user}
-    Fill Field    Password    ${password}
-    Click on    Sign In
-    Navigate to    Murano>Environments
-
-User set value "${value}" for field ${field}
-    Fill Field    ${field}    ${value}
-
-Select "${action}" for chosen ${type} "${env}"
-    ${xpath}=    Find Associated Element    ${env}    ${action}
-    Click Element    ${xpath}
-
-User click on "${element}"
-    Click on    ${element}
-
-Page should contain element "${element}"
-    Page Should Contain    ${element}
-
-Page should not contain element "${element}"
-    Reload Page
-    Page Should Not Contain    ${element}
-
-User select "${item}" from dropdown list "${menu}"
-    Select Item From List    ${menu}    ${item}
-
-User confirms deletion
-    Click On    Confirm deletion
-
-Delete environment "${name}" after test
-    Navigate To    Murano>Environments
-    Select "More" for chosen environment "${name}"
-    Select "Delete Environment" for chosen environment "${name}"
-    User confirms deletion
-    Page should not contain element "${name}"

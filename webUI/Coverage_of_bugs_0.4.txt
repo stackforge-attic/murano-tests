@@ -5,6 +5,7 @@ Test Setup        Open Browser    ${url}    remote_url=http://172.18.124.233:444
 Test Teardown     Close All Browsers
 Library           String
 Library           Boffin.WebUIlib    0    5    # Boffin framework library
+Resource          Resources/objrepo/keywords.txt
 
 *** Variables ***
 ${resources_path}    Resources/
@@ -12,7 +13,7 @@ ${url}            http://10.100.0.6/horizon
 
 
 *** Test Cases ***
-Create IIS+ ASP Farm + AD + IIS
+Create IIS + AD + IIS
     [Tags]    night    13
     Log in WebUI by WebTestUser/swordfish
     User click on "Create Environment"
@@ -22,15 +23,13 @@ Create IIS+ ASP Farm + AD + IIS
     User click on "Create Service"
     User create IIS with name "iis1" and don't join to domain, select "Not in domain"
     User click on "Create Service"
-    User create ASP.NET Farm with name "asp-farm" and don't join to domain, select "Not in domain"
-    User click on "Create Service"
     User create Active Directory with domain name "singleAD.domain"
     User click on "Create Service"
     User create IIS with name "iis2" and don't join to domain, select "Not in domain"
     Delete environment "complex_env" after test
 
 Create ASP.FARM + SQL Cluster + SQL + AD
-    [Tags]    night    14
+    [Tags]    14
     Log in WebUI by WebTestUser/swordfish
     User click on "Create Environment"
     User set value "ASP.FARM + SQL Cluster + SQL + AD" for field Environment Name
@@ -44,13 +43,13 @@ Create ASP.FARM + SQL Cluster + SQL + AD
     User create MS SQL server with name "sql-server" and join to domain, select "Not in domain"
     Delete environment "ASP.FARM + SQL Cluster + SQL + AD" after test
 
-Create IIS + AD + SQL + SQL Cluster + ASP.FARM
+Create IIS + AD + SQL
     [Tags]    night    15
     Log in WebUI by WebTestUser/swordfish
     User click on "Create Environment"
-    User set value "IIS + AD + SQL + SQL Cluster + ASP.FARM" for field Environment Name
+    User set value "IIS + AD + SQM" for field Environment Name
     User click on "Create"
-    User click on "IIS + AD + SQL + SQL Cluster + ASP.FARM"
+    User click on "IIS + AD + SQL"
     User click on "Create Service"
     User create IIS with name "iis" and don't join to domain, select "Not in domain"
     User click on "Create Service"
@@ -58,13 +57,10 @@ Create IIS + AD + SQL + SQL Cluster + ASP.FARM
     User click on "Create Service"
     User create MS SQL server with name "mssql" and don't join to domain, select "Not in domain"
     User click on "Create Service"
-    User create MS SQL cluster with name "sql-cluster" and join in domain "sqlAD.domain"
-    User click on "Create Service"
-    User create ASP.NET Farm with name "asp-farm" and don't join to domain, select "Not in domain"
-    Delete environment "IIS + AD + SQL + SQL Cluster + ASP.FARM" after test
+    Delete environment "IIS + AD + SQL" after test
 
 Create 4 MS SQL clusters
-    [Tags]    night    16
+    [Tags]    16
     Log in WebUI by WebTestUser/swordfish
     User click on "Create Environment"
     User set value "4 SQL Clusters" for field Environment Name
@@ -80,23 +76,23 @@ Create 4 MS SQL clusters
     User create MS SQL cluster with name "sql4-cluster" and join in domain "sql4.domain"
     Delete environment "4 SQL Clusters" after test
 
-Create IIS + SQL + ASP.FARM delete IIS
+Create IIS + SQL + ASP delete IIS
     [Tags]    night    17
     Log in WebUI by WebTestUser/swordfish
     User click on "Create Environment"
-    User set value "IIS + SQL + ASP.FARM" for field Environment Name
+    User set value "IIS + SQL + ASP" for field Environment Name
     User click on "Create"
-    User click on "IIS + SQL + ASP.FARM"
+    User click on "IIS + SQL + ASP"
     User click on "Create Service"
     User create IIS with name "iis" and don't join to domain, select "Not in domain"
     User click on "Create Service"
     User create MS SQL server with name "sql-server" and don't join to domain, select "Not in domain"
     User click on "Create Service"
-    User create ASP.NET Farm with name "asp-farm" and don't join to domain, select "Not in domain"
+    User create ASP.NET App with name "asp-farm" and don't join to domain, select "Not in domain"
     Select "Delete Service" for chosen service "iis"
     User confirms deletion
     Page should not contain element "iis"
-    Delete environment "IIS + SQL + ASP.FARM" after test
+    Delete environment "IIS + SQL + ASP" after test
 
 Add service in deployed env
     [Tags]    night    18
@@ -222,182 +218,3 @@ Check that there is instance url in service info (after deploy)
     User click on "iis"
     Page should contain element "Service instance name"
 
-*** Keywords ***
-Log in WebUI by ${user}/${password}
-    Fill Field    User Name    ${user}
-    Fill Field    Password    ${password}
-    Click on    Sign In
-    Navigate to    Murano>Environments
-
-User set value "${value}" for field ${field}
-    Fill Field    ${field}    ${value}
-
-Check the status of environment "${name}" (should be "${status}")
-    Navigate to    Murano>Environments
-    Wait Until Keyword Succeeds    40 min    5s    Check that Status of environment "${name}" is "${status}"
-
-User click on "${element}"
-    Click on    ${element}
-
-Page should contain element "${element}"
-    Page Should Contain    ${element}
-
-Page should not contain element "${element}"
-    Reload Page
-    Page Should Not Contain    ${element}
-
-User select "${item}" from dropdown list "${menu}"
-    Select Item From List    ${menu}    ${item}
-
-User confirms deletion
-    Click On    Confirm deletion
-
-User create Active Directory with domain name "${name}"
-    User select "Active Directory" from dropdown list "Service Type"
-    User click on "Next"
-    User set value "${name}" for field Domain Name
-    User set value "P@ssw0rd" for field Administrator password
-    User set value "P@ssw0rd" for field Confirm password
-    User set value "P@ssw0rd" for field Recovery password
-    User set value "P@ssw0rd" for field Confirm recovery password
-    User set value "${name}" for field Hostname template
-    User click on "Next"
-    User select "Windows Server 2012 Standard" from dropdown list "Instance image"
-    User click on "Create"
-
-Select "${action}" for chosen ${type} "${env}"
-    ${xpath}=    Find Associated Element    ${env}    ${action}
-    Click Element    ${xpath}
-
-Check that deploy "${env}" finished
-    Navigate To    Murano>Environments
-    Select "More" for chosen environment "${env}"
-    Select "Show Deployments" for chosen environment "${env}"
-    Reload Page
-    ${text}=    Get Text    xpath=/html/body/div/div[2]/div[3]/form/table/tbody/tr/td[3]
-    Run Keyword If    '${text}'== 'Failed'    Take a screenshot of the failed deploy
-    Should Be Equal As Strings    ${text}    Successful
-
-User create IIS with name "${name}" ${join} "${domain}"
-    User select "Internet Information Services" from dropdown list "Service Type"
-    User click on "Next"
-    User set value "${name}" for field Service Name
-    User set value "P@ssw0rd" for field Administrator password
-    User set value "P@ssw0rd" for field Confirm password
-    User select "${domain}" from dropdown list "Domain"
-    User set value "iis" for field Hostname template
-    User click on "Next"
-    User select "Windows Server 2012 Standard" from dropdown list "Instance image"
-    User click on "Create"
-    Page Should Contain    ${name}
-
-User create ASP.NET App with name "${name}" ${join} "${domain}"
-    User select "ASP.NET Application" from dropdown list "Service Type"
-    User click on "Next"
-    User set value "${name}" for field Service Name
-    User set value "P@ssw0rd" for field Administrator password
-    User set value "P@ssw0rd" for field Confirm password
-    User select "${domain}" from dropdown list "Domain"
-    User set value "git://github.com/Mirantis/murano-mvc-demo.git" for field Git repository
-    User set value "asp" for field Hostname template
-    User click on "Next"
-    User select "Windows Server 2012 Standard" from dropdown list "Instance image"
-    User click on "Create"
-    Page should contain element "${name}"
-
-User create IIS Farm with name "${name}" ${join} "${domain}"
-    User select "Internet Information Services Web Farm" from dropdown list "Service Type"
-    User click on "Next"
-    User set value "${name}" for field Service Name
-    User set value "P@ssw0rd" for field Administrator password
-    User set value "P@ssw0rd" for field Confirm password
-    User select "${domain}" from dropdown list "Domain"
-    User set value "10.0.1.77" for field Load Balancer VIP
-    User set value "iisfarm#" for field Hostname template
-    User click on "Next"
-    User select "Windows Server 2012 Standard" from dropdown list "Instance image"
-    User click on "Create"
-    Page should contain element "${name}"
-
-User create ASP.NET Farm with name "${name}" ${join} "${domain}"
-    User select "ASP.NET Application Web Farm" from dropdown list "Service Type"
-    User click on "Next"
-    User set value "${name}" for field Service Name
-    User set value "P@ssw0rd" for field Administrator password
-    User set value "P@ssw0rd" for field Confirm password
-    User select "${domain}" from dropdown list "Domain"
-    User set value "git://github.com/Mirantis/murano-mvc-demo.git" for field Git repository
-    User set value "10.0.1.78" for field Load Balancer VIP
-    User set value "aspfarm#" for field Hostname template
-    User click on "Next"
-    User select "Windows Server 2012 Standard" from dropdown list "Instance image"
-    User click on "Create"
-    Page should contain element "${name}"
-
-User create MS SQL server with name "${name}" ${join} "${domain}"
-    User select "MS SQL Server" from dropdown list "Service Type"
-    User click on "Next"
-    User set value "${name}" for field Service Name
-    User set value "P@ssw0rd" for field Administrator password
-    User set value "P@ssw0rd" for field Confirm password
-    User select "${domain}" from dropdown list "Domain"
-    User set value "P@ssw0rd" for field SA Password
-    User set value "P@ssw0rd" for field Confirm SA password SQL
-    User set value "sql" for field Hostname template
-    User click on "Next"
-    User select "Windows Server 2012 Standard" from dropdown list "Instance image"
-    User click on "Create"
-    Page should contain element "${name}"
-
-User create MS SQL cluster with name "${name}" ${join} "${domain}"
-    User create Active Directory with domain name "${domain}"
-    Page should contain element "${domain}"
-    User click on "Create Service"
-    User select "MS SQL Server Cluster" from dropdown list "Service Type"
-    User click on "Next"
-    User set value "${name}" for field Service Name
-    User set value "P@ssw0rd" for field Administrator password
-    User set value "P@ssw0rd" for field Confirm password
-    User select "${domain}" from dropdown list "Domain"
-    User set value "P@ssw0rd" for field SA Password
-    User set value "P@ssw0rd" for field Confirm SA password
-    User click on "Next"
-    User set value "10.0.1.98" for field Cluster Static IP
-    User set value "cluster" for field Cluster Name
-    User set value "AG_name" for field Availability Group Name
-    User set value "AG_listener_name" for field Availability Group Listener Name
-    User set value "10.0.1.99" for field Availability Group Listener IP
-    User set value "user" for field SQL User Name
-    User set value "P@ssw0rd" for field SQL User Password
-    User set value "P@ssw0rd" for field Confirm password
-    User set value "sqlcluster#" for field Hostname template
-    User click on "Next"
-    User set value "testbase" for field Database list
-    User click on "Next"
-    User select "Windows Server 2012 Standard" from dropdown list "Instance image"
-    User click on "Create"
-    Page should contain element "${name}"
-
-Check that service "${service}" was joined in domain "${domain}"
-    User click on "${service}"
-    Page should contain element "${domain}"
-
-Delete environment "${name}" after test
-    Navigate To    Murano>Environments
-    Select "More" for chosen environment "${name}"
-    Select "Delete Environment" for chosen environment "${name}"
-    User confirms deletion
-    Page should not contain element "${name}"
-
-Check that ${subject} of ${element} "${name}" is "${status}"
-    ${row}=    Get Table Row With    ${name}
-    ${source}=    Get Source
-    ${cell}=    Get Web Element Selector    ${subject}    ${source}    th    this
-    ${#_of_column}=    Get Substring    ${cell}    -2    -1
-    ${text}=    Get Text    xpath=${row}/td[${#_of_column}]
-    Should Contain    ${text}    ${status}
-
-Take a screenshot of the failed deploy
-    User click on "Show Details"
-    User click on "Logs"
-    Capture Page Screenshot

@@ -1,0 +1,18 @@
+agent:
+- AgentTemplate.template
+author: 'User'
+description: <strong> The new service uploaded by user </strong> 
+enabled: true
+full_service_name: myService
+heat:
+- ServiceHeatTemplate.template
+scripts:
+- ServiceScript.ps1
+service_display_name: My Service
+service_version: ''
+ui:
+- Yaml.yaml
+version: '0.1'
+workflows:
+- XMLWorkflow.xml
+
