@@ -88,5 +88,7 @@ send -- "echo \"LANGUAGE_CODE='en'\" >> /etc/openstack-dashboard/local_settings.
 expect "@murano"
 send -- "service apache2 restart\n"
 expect "@murano"
+send -- "rm -rf /tmp/muranoconductor-cache/* /tmp/muranorepository-cache/*\n"
+expect "@murano"
 
 send -- "exit\n"
