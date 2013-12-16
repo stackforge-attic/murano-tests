@@ -66,7 +66,7 @@ expect "@murano"
 
 send -- "sed -i \"s/ssl = False/ssl = "
 send -- [lindex $argv 5]
-send -- "/\" /etc/murano/conductor.conf\n"
+send -- "/\" /etc/murano/murano-conductor.conf\n"
 expect "@murano"
 
 send -- "sed -i \"s/\\\"BootFromVolume\\\": true,//\" /etc/murano-conductor/data/templates/cf/Linux.template\n"
@@ -76,7 +76,7 @@ expect "@murano"
 
 send -- "sed -i \"s/murano_metadata_url = http:\\/\\/localhost:8084\\/v1/murano_metadata_url = http:\\/\\/"
 send -- [lindex $argv 1]
-send -- ":8084\\/v1/\" /etc/murano/conductor.conf\n"
+send -- ":8084\\/v1/\" /etc/murano/murano-conductor.conf\n"
 expect "@murano"
 
 send -- "service murano-api restart\n"
