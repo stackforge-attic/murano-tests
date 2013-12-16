@@ -24,12 +24,16 @@ parser.add_argument("-heat_url",  dest='heat_url',  type=str,
                     help="Heat url",
                     default='http://172.18.124.203:8004'
                             '/v1/72239681556748a3b9b74b44d081b84b')
+parser.add_argument("-create_new_router", dest='create_new_router', type=bool,
+                    help="Create or not create router after script",
+                    default=False)
 args = parser.parse_args()
 
 user = args.openstack_user
 password = args.openstack_password
 tenant = args.openstack_tenant
 keystone_url = args.keystone_url
+create_router = args.create_new_router
 keystone_client = ksclient.Client(username=user, password=password,
                                   tenant_name=tenant, auth_url=keystone_url)
 nova = nvclient.Client(user, password, tenant, keystone_url,
@@ -87,3 +91,10 @@ for i in nova.servers.list():
 for i in nova.security_groups.list():
     if i.tenant_id == cool and i.name !='default':
         nova.security_groups.delete(i)
+if create_router:
+    for i in neutron.list_networks()['networks']:
+        if i['router:external']:
+            a = neutron.create_router({'router': {'name': 'ROUTER',
+                                                  'external_gateway_info':
+                                                  {'network_id': i['id'],
+                                                  'enable_snat': True}}})
