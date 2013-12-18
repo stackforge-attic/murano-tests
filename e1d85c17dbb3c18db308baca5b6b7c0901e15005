@@ -1,0 +1,9 @@
+Verified+2: Jenkins
+Code-Review+2: Timur Nurlygayanov <tnurlygayanov@mirantis.com>
+Approved+1: Sergey Murashov <smurashov@mirantis.com>
+Code-Review+2: Sergey Murashov <smurashov@mirantis.com>
+Submitted-by: Jenkins
+Submitted-at: Wed, 18 Dec 2013 09:53:19 +0000
+Reviewed-on: https://review.openstack.org/62376
+Project: stackforge/murano-tests
+Branch: refs/heads/master
