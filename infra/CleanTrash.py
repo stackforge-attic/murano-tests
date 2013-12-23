@@ -91,6 +91,7 @@ for i in nova.servers.list():
 for i in nova.security_groups.list():
     if i.tenant_id == cool and i.name !='default':
         nova.security_groups.delete(i)
+routers = neutron.list_routers()
 for m in routers['routers']:
     if m['tenant_id'] == cool:
         create_router = False
