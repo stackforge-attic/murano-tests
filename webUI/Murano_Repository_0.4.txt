@@ -65,25 +65,11 @@ Modify Service(change name)
     User click on "Create Service"
     Page should contain element "Modified Linux Apache"
 
-Modify Service (change version)
-    [Tags]    night
-    Log in WebUI by WebTestUser/swordfish
-    User click on "Service Definitions"
-    Select "Modify Service" for chosen service "Linux Telnet"
-    User set value "Linux Telnet" for field Service_Name
-    User set value "version1" for field Version
-    User click on "Submit"
-    Select "More" for chosen service "Linux Telnet"
-    Select "Manage Service" for chosen service "Linux Telnet"
-    Page should contain element "Version"
-    Page should contain element "version1"
-
 Modify Service (change description)
     [Tags]    night
     Log in WebUI by WebTestUser/swordfish
     User click on "Service Definitions"
     Select "Modify Service" for chosen service "Active Directory"
-    User set value "1.0" for field Version
     User set value "<strong> Active Directory </strong> Here is a new description" for field Description
     User click on "Submit"
     Select "More" for chosen service "Active Directory"
@@ -132,4 +118,3 @@ Check opportunity to toggle files (make few services active/inactive)
     User click on "Toggle Active"
     Check that Active of element "Internet Information Services" is "True"
     Check that Active of element "Active Directory" is "True"
-
