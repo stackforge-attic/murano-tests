@@ -11,7 +11,6 @@ Resource          Resources/objrepo/keywords.txt
 ${resources_path}    Resources/
 ${url}            http://10.100.0.6/horizon
 
-
 *** Test Cases ***
 Deploy environment with AD Service
     [Tags]    night    1
@@ -86,7 +85,7 @@ Deploy environment with ASP.NET Service
     Delete environment "deploy_asp" after test
 
 Deploy environment with IIS Farm
-    [Tags]    
+    [Tags]
     Log in WebUI by WebTestUser/swordfish
     User click on "Create Environment"
     User set value "deploy_iis_farm" for field Environment Name
@@ -311,10 +310,8 @@ Deploy MS SQL server and IIS
     User click on "iis_sqlserver"
     User click on "Create Service"
     User create IIS with name "iis-service" and don't join to domain, select "Not in domain"
-    User click on "environment iis_sqlserver"
     User click on "Create Service"
     User create MS SQL server with name "mssql" and don't join to domain, select "Not in domain"
-    User click on "environment iis_sqlserver"
     User click on "Deploy This Environment"
     Check the status of environment "iis_sqlserver" (should be "Ready")
     Check that deploy "iis_sqlserver" finished
@@ -338,4 +335,3 @@ Deploy Apache service
     User click on "Deploy This Environment"
     Check the status of environment "deploy_apache" (should be "Ready")
     Check that deploy "deploy_apache" finished
-
