@@ -15,6 +15,7 @@ User set value "${value}" for field ${field}
 Select "${action}" for chosen ${type} "${env}"
     ${xpath}=    Find Associated Element    ${env}    ${action}
     Click Element    ${xpath}
+    Sleep    5
 
 User click on "${element}"
     Click on    ${element}
@@ -66,6 +67,7 @@ Check that deploy "${env}" finished
     Run Keyword If    '${text}'== 'Failed'    Take a screenshot of the failed deploy
 
 Check that ${subject} of ${element} "${name}" is "${status}"
+    Sleep    10
     ${row}=    Get Table Row With    ${name}
     ${source}=    Get Source
     ${cell}=    Get Web Element Selector    ${subject}    ${source}    th    this
@@ -199,6 +201,7 @@ Compose a new service "${name}"
     User click on "Compose Service"
     User set value "${name}" for field Service_Name
     User set value "newService" for field Fully Qualified Service Name
+    User set value "WebTestUser" for field Author
     User set value "<strong> New Test Service </strong> Here is a new description" for field Description
     User click on "UI Files"
     Choose Demo.yaml (set checkbox on in the 3 column)
@@ -216,9 +219,4 @@ Choose and download file "${file_name}" to repository
     Choose File    id_file    ${files_path}${file_name}
     Sleep    5s
     User click on "Upload"
-
-
-
-
-
-
+    Sleep    5s

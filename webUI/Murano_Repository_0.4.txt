@@ -13,17 +13,8 @@ ${url}            http://10.100.0.6/horizon
 ${files_path}     /Files_for_autotests/
 
 *** Test Cases ***
-Create test environment
-    [Tags]    night
-    Log in WebUI by WebTestUser/swordfish
-    User click on "Create Environment"
-    User set value "test" for field Environment Name
-    User click on "Create"
-    Reload Page
-    Page should contain element "test"
-
 Check opportunity to compose a new service in repository
-    [Tags]    night
+    [Tags]    night    commit
     Log in WebUI by WebTestUser/swordfish
     User click on "Service Definitions"
     User click on "Compose Service"
@@ -53,17 +44,21 @@ Check opportunity to toggle service (make it active/inactive)
     Check that Active of element "Internet Information Services" is "True"
 
 Modify Service(change name)
-    [Tags]    night
+    [Tags]    night    commit
     Log in WebUI by WebTestUser/swordfish
-    User click on "Service Definitions"
+    User click on "Create Environment"
+    User set value "test" for field Environment Name
+    User click on "Create"
+    Navigate to    Murano>Service Definitions
     Select "Modify Service" for chosen service "Linux Apache"
-    User set value "Modified Linux Apache" for field Service_Name
+    User set value "Linux Apache2" for field Service_Name
     User click on "Submit"
-    Check that Active of element "Modified Linux Apache" is "True"
-    User click on "Environments"
+    Navigate to    Murano>Environments
     User click on "test"
     User click on "Create Service"
-    Page should contain element "Modified Linux Apache"
+    User select "Linux Apache2" from dropdown list "Service Type"
+    User click on "Next"
+    Page should contain element "Linux Apache2"
 
 Modify Service (change description)
     [Tags]    night
@@ -76,12 +71,6 @@ Modify Service (change description)
     Select "Manage Service" for chosen service "Active Directory"
     Page should contain element "Description"
     Page should contain element "<strong> Active Directory </strong> Here is a new description"
-
-Download Service
-    Log in WebUI by WebTestUser/swordfish
-    User click on "Service Definitions"
-    User click on "Upload Service"
-    User click on "Browse"
 
 Check opportunity to select composed service in Service Type list
     [Tags]    night
@@ -96,12 +85,13 @@ Check opportunity to select composed service in Service Type list
     Page should contain element "Service Name"
 
 Check opportunity to delete service from repository
-    [Tags]    night
+    [Tags]    night    commit
     Log in WebUI by WebTestUser/swordfish
     User click on "Service Definitions"
     Compose a new service "Service for deletion"
     Select "More" for chosen service "Service for deletion"
     Select "Delete Service" for chosen service "Service for deletion"
+    User confirms deletion
     Page should not contain element "Service for deletion"
 
 Check opportunity to toggle files (make few services active/inactive)
@@ -118,3 +108,56 @@ Check opportunity to toggle files (make few services active/inactive)
     User click on "Toggle Active"
     Check that Active of element "Internet Information Services" is "True"
     Check that Active of element "Active Directory" is "True"
+
+Check opportunity to download service in repository
+    [Tags]    don'twork
+    Log in WebUI by WebTestUser/swordfish
+    User click on "Service Definitions"
+    User click on "Upload Service"
+    Choose and download file "myService.tar.gz" to repository
+    Page should contain element "My Service"
+
+Check opportunity to manage service (add files to existing service)
+    [Tags]    don'twork
+    Log in WebUI by WebTestUser/swordfish
+    User click on "Service Definitions"
+    Compose a new service "Service"
+    Select "More" for chosen service "Service"
+    Select "Manage Service" for chosen service "Service"
+    User click on "Heat Templates"
+    Choose and download file "myHeatTemplate.template" to repository
+    Page should contain element "myHeatTemplate.template"
+    User click on "Scripts"
+    Choose and download file "myScript.ps1" to repository
+    Page should contain element "myScript.ps1"
+
+Check opportunity to manage service (delete component from existing service)
+    [Tags]    night
+    Log in WebUI by WebTestUser/swordfish
+    User click on "Service Definitions"
+    Select "More" for chosen service "Service"
+    Select "Manage Service" for chosen service "Service"
+    Select "More" for chosen file "Demo.template"
+    Select "Delete File" for chosen file "Demo.template"
+    User confirms deletion
+    Page should not contain element "Demo.template"
+
+Manage Files (Check ability to add file to repository)
+    [Tags]    don'twork
+    Log in WebUI by WebTestUser/swordfish
+    User click on "Service Definitions"
+    User click on "Manage Files"
+    User click on "Upload File"
+    User select "UI Definition (*.yaml)" from dropdown list "File data type"
+    Choose and download file "myYaml.yaml" to repository
+    Page should contain element "myYaml.yaml"
+
+Manage Files (Check ability to delete file from repository)
+    [Tags]    night
+    Log in WebUI by WebTestUser/swordfish
+    User click on "Service Definitions"
+    User click on "Manage Files"
+    Choose Demo.yaml (set checkbox on in the 1 column)
+    User click on "Delete Files"
+    User confirms deletion
+    Page should not contain element "Demo.yaml"
