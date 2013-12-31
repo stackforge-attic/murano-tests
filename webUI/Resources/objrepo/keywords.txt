@@ -18,9 +18,12 @@ Select "${action}" for chosen ${type} "${env}"
     Sleep    5
 
 User click on "${element}"
+    Wait For Page Loaded
     Click on    ${element}
+    Wait For Page Loaded
 
 Page should contain element "${element}"
+    Wait For Page Loaded
     Page Should Contain    ${element}
 
 Page should not contain element "${element}"
