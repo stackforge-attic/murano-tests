@@ -136,11 +136,11 @@ Check opportunity to manage service (delete component from existing service)
     Log in WebUI by WebTestUser/swordfish
     User click on "Service Definitions"
     Select "More" for chosen service "Service"
-    Select "Manage Service" for chosen service "Service"
-    Select "More" for chosen file "Demo.template"
-    Select "Delete File" for chosen file "Demo.template"
+    Select "Manage Service" for chosen service "MS SQL Server Cluster"
+    Select "More" for chosen file "SQLCluster.template"
+    Select "Delete File" for chosen file "SQLCluster.template"
     User confirms deletion
-    Page should not contain element "Demo.template"
+    Page should not contain element "SQLCluster.template"
 
 Manage Files (Check ability to add file to repository)
     [Tags]    don'twork
