@@ -1,0 +1,9 @@
+Verified+2: Jenkins
+Approved+1: Timur Nurlygayanov <tnurlygayanov@mirantis.com>
+Code-Review+2: Timur Nurlygayanov <tnurlygayanov@mirantis.com>
+Code-Review+2: Anastasia Kuznetsova <akuznetsova@mirantis.com>
+Submitted-by: Jenkins
+Submitted-at: Tue, 31 Dec 2013 10:08:37 +0000
+Reviewed-on: https://review.openstack.org/64516
+Project: stackforge/murano-tests
+Branch: refs/heads/master
