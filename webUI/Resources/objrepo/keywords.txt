@@ -210,7 +210,7 @@ Compose a new service "${name}"
     Choose Demo.yaml (set checkbox on in the 3 column)
     User click on "Workflows"
     Choose Demo.xml (set checkbox on in the 3 column)
-    User click on "Heat Templates"
+    User click on "Agent Templates"
     Choose Demo.template (set checkbox on in the 3 column)
     User click on "Scripts"
     Choose CopyPrerequisites.ps1 (set checkbox on in the 3 column)
