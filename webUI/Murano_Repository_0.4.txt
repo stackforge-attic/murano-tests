@@ -9,7 +9,7 @@ Resource          Resources/objrepo/keywords.txt
 
 *** Variables ***
 ${resources_path}    Resources/
-${url}            http://10.100.0.6/horizon
+${url}            http://10.100.0.58/horizon
 ${files_path}     /Files_for_autotests/
 
 *** Test Cases ***
@@ -25,7 +25,7 @@ Check opportunity to compose a new service in repository
     Choose Demo.yaml (set checkbox on in the 3 column)
     User click on "Workflows"
     Choose Demo.xml (set checkbox on in the 3 column)
-    User click on "Agent Templates"
+    User click on "Heat Templates"
     Choose Demo.template (set checkbox on in the 3 column)
     User click on "Scripts"
     Choose CopyPrerequisites.ps1 (set checkbox on in the 3 column)
@@ -61,16 +61,16 @@ Modify Service(change name)
     Page should contain element "Linux Apache2"
 
 Modify Service (change description)
-    [Tags]    night
+    [Tags]    don'twork
     Log in WebUI by WebTestUser/swordfish
     User click on "Service Definitions"
     Select "Modify Service" for chosen service "Active Directory"
-    User set value "Here is a new description" for field Description
+    User set value "<strong> Active Directory </strong> Here is a new description" for field Description
     User click on "Submit"
     Select "More" for chosen service "Active Directory"
     Select "Manage Service" for chosen service "Active Directory"
-    Page should contain element "UI Description"
-    Page should contain element "Here is a new description"
+    Page should contain element "Description"
+    Page should contain element "<strong> Active Directory </strong> Here is a new description"
 
 Check opportunity to select composed service in Service Type list
     [Tags]    night
