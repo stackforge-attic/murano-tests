@@ -146,7 +146,7 @@ class _ArtificialIntelligence:
                     element = label_element.parent.find_previous(element_type)
 
                 elif method == 'associated':
-                    for t in ['a', 'button', 'input', 'select']:
+                    for t in ['a', 'button', 'input', 'select', 'span']:
                         elements = label_element.parent.find_all_next(t)
                         for e in reversed(elements):
                             if element_type in e.text:
