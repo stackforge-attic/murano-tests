@@ -52,6 +52,8 @@ send -- "cd murano-deployment/devbox-scripts/\n"
 expect "@murano"
 send -- "./murano-git-install.sh prerequisites\n"
 expect "@murano"
+send -- "pip install --upgrade pip==1.4.1\n"
+expect "@murano"
 send -- "./murano-git-install.sh install\n"
 expect "@murano"
 
