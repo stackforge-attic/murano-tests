@@ -58,7 +58,7 @@ expect "@mistral"
 send -- "sed -i \"s/admin_tenant_name=admin/admin_tenant_name=AutotestProject/\" mistral/etc/mistral.conf\n"
 expect "@mistral"
 
-send -- "cd mistral"
+send -- "cd mistral\n"
 expect "@mistral"
 send -- "tox -evenv -- python mistral/cmd/api.py --config-file etc/mistral.conf &\n"
 send -- "\n"
