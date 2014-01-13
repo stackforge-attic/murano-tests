@@ -1,4 +1,4 @@
-set timeout 30
+set timeout 200
 
 send_user "\n\nStart to login to the test bed...\n\n"
 
