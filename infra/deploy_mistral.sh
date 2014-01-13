@@ -60,5 +60,5 @@ expect "@mistral"
 
 send -- "cd mistral\n"
 expect "@mistral"
-send -- "su -m root -c 'tox -evenv -- python mistral/cmd/api.py --config-file etc/mistral.conf'\n"
+send -- "screen -d -m bash -c 'tox -evenv -- python mistral/cmd/api.py --config-file etc/mistral.conf'"
 sleep 120
