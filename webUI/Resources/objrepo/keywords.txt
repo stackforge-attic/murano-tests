@@ -56,6 +56,7 @@ User create Active Directory with domain name "${name}"
     User click on "Next"
     User select "Windows Server 2012 Standard" from dropdown list "Instance image"
     User click on "Create"
+    Sleep    5s
 
 Check that deploy "${env}" finished
     Navigate To    Murano>Environments
@@ -233,3 +234,8 @@ Set IP address from the subnet where ${component} is running
     @{IP}    Split String    @{words}[6]    .
     ${last_byte}=    Generate Random String    2    [NUMBERS]
     User set value "@{IP}[0].@{IP}[1].@{IP}[2].${last_byte}" for field ${component}
+
+Set Checkbox "${name}"
+    ${checkbox}    Wait For Element Found    ${name}    input    previous
+    Click Element    ${checkbox}
+    Sleep    2s
