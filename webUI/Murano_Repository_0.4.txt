@@ -10,7 +10,7 @@ Resource          Resources/objrepo/keywords.txt
 *** Variables ***
 ${resources_path}    Resources/
 ${url}            http://10.100.0.6/horizon
-${files_path}     /Files_for_autotests/
+${files_path}     Files_for_autotests/
 
 *** Test Cases ***
 Check opportunity to compose a new service in repository
