@@ -85,7 +85,7 @@ Deploy environment with ASP.NET Service
     Delete environment "deploy_asp" after test
 
 Deploy environment with IIS Farm
-    [Tags]
+    [Tags]    
     Log in WebUI by WebTestUser/swordfish
     User click on "Create Environment"
     User set value "deploy_iis_farm" for field Environment Name
@@ -244,7 +244,7 @@ Deploy AD with 2 instances
     Delete environment "deploy_ad_2_inst" after test
 
 Create IIS and IIS Farm in domain
-    [Tags]    9
+    [Tags]    night 
     Log in WebUI by WebTestUser/swordfish
     User click on "Create Environment"
     User set value "iis_iisfarm_in_domain" for field Environment Name
@@ -262,7 +262,7 @@ Create IIS and IIS Farm in domain
     Delete environment "iis_iisfarm_in_domain" after test
 
 Create ASP.Net and ASP.Net Farm in domain
-    [Tags]    10
+    [Tags]    night
     Log in WebUI by WebTestUser/swordfish
     User click on "Create Environment"
     User set value "asp_aspfarm_in_domain" for field Environment Name

@@ -1,0 +1,189 @@
+*** Settings ***
+Suite Setup
+Suite Teardown    Close All Browsers
+Test Setup        Open Browser    ${url}    remote_url=http://172.18.124.233:4444/wd/hub    browser=firefox    ff_profile_dir=ffprofile
+Test Teardown     Close All Browsers
+Library           String
+Library           Boffin.WebUIlib    0    20    # Boffin framework library
+Resource          Resources/objrepo/keywords.txt
+
+*** Variables ***
+${resources_path}    Resources/
+${url}            http://10.100.0.6/horizon
+
+*** Test Cases ***
+Creating test env
+    [Tags]    night
+    Log in WebUI by WebTestUser/swordfish
+    User click on "Create Environment"
+    User set value "test_env" for field Environment Name
+    User click on "Create"
+    Page should contain element "test_env"
+
+Check regex exspression for AD's name
+    [Tags]    night
+    Log in WebUI by WebTestUser/swordfish
+    User click on "test_env"
+    User click on "Create Service"
+    User select "Active Directory" from dropdown list "Service Type"
+    User click on "Next"
+    User set value "a" for field Domain Name
+    User click on "Next"
+    Page should contain element "Ensure this value has at least 2 characters (it has 1)."
+    User set value "@ct!v3" for field Domain Name
+    User click on "Next"
+    Page should contain element "Only letters, numbers and dashes in the middle are allowed."
+    User set value "domain" for field Domain Name
+    User click on "Next"
+    Page should contain element "Single-level domain is not appropriate."
+    User set value "morethan15symbols.beforedot" for field Domain Name
+    User click on "Next"
+    Page should contain element "NetBIOS name cannot be shorter than 1 symbol and longer than 15 symbols."
+    User set value ".domain.local" for field Domain Name
+    User click on "Next"
+    Page should contain element "Period characters are allowed only when they are used to delimit the components of domain style names."
+
+Check regex for IIS's name
+    [Tags]    night
+    Log in WebUI by WebTestUser/swordfish
+    User click on "test_env"
+    User click on "Create Service"
+    User select "Internet Information Services" from dropdown list "Service Type"
+    User click on "Next"
+    User set value "a" for field Service Name
+    User click on "Next"
+    Page should contain element "Ensure this value has at least 2 characters (it has 1)."
+    User set value "@ct!v3" for field Service Name
+    User click on "Next"
+    Page should contain element "Just letters, numbers, underscores and hyphens are allowed."
+
+Check reges for Git repository
+    [Tags]    night
+    Log in WebUI by WebTestUser/swordfish
+    User click on "test_env"
+    User click on "Create Service"
+    User select "ASP.NET Application" from dropdown list "Service Type"
+    User click on "Next"
+    User set value "a" for field Git repository
+    User click on "Next"
+    Page should contain element "Enter correct git repository url"
+    User set value "://@:" for field Git repository
+    User click on "Next"
+    Page should contain element "Enter correct git repository url"
+
+InValid image types
+    [Tags]    night
+    Log in WebUI by WebTestUser/swordfish
+    Navigate to    Murano>Images
+    Select "Delete Metadata" for chosen image "cirros-x86_64-murano"
+    User confirms deletion
+    Navigate to    Murano>Environments
+    User click on "test_env"
+    User click on "Create Service"
+    Page should contain element "Murano image type "cirros.demo" is not registered"
+    User click on "X"
+    Navigate to    Murano>Images
+    User click on "Mark Image"
+    User select "cirros-x86_64-murano" from dropdown list "Image"
+    User set value "Demo" for field Title
+    User select "Murano Demo" from dropdown list "with supported types of images"
+    User click on "Mark"
+
+Positive scenario №1 for the MS SQL Cluster Form
+    [Documentation]    Scenario 1: \ External AD and Mixed-Mode Auth checkboxes are not selected. User select created earlier domain.
+    [Tags]    night
+    Log in WebUI by WebTestUser/swordfish
+    User click on "Create Environment"
+    User set value "scenario_1" for field Environment Name
+    User click on "Create"
+    User click on "scenario_1"
+    User click on "Create Service"
+    User create Active Directory with domain name "murano.domain"
+    User click on "Create Service"
+    User select "MS SQL Server Cluster" from dropdown list "Service Type"
+    User click on "Next"
+    User set value "test_cluster" for field Service Name
+    User set value "P@ssw0rd" for field Administrator password
+    User set value "P@ssw0rd" for field Confirm password
+    User select "murano.domain" from dropdown list "Domain"
+    Set checkbox "Mixed-mode Authentication"
+    User click on "Next"
+    Page should contain element "Hostname template"
+
+Positive scenario №2 for MQ SQL Cluster
+    [Documentation]    Scenario 2: \ External AD field is selected (and user fill all fields )and Mixed-Mode Auth checkbox is not selected.
+    [Tags]    night
+    Log in WebUI by WebTestUser/swordfish
+    User click on "Create Environment"
+    User set value "scenario_2" for field Environment Name
+    User click on "Create"
+    User click on "scenario_2"
+    User click on "Create Service"
+    User select "MS SQL Server Cluster" from dropdown list "Service Type"
+    User click on "Next"
+    User set value "test_cluster" for field Service Name
+    User set value "P@ssw0rd" for field Administrator password
+    User set value "P@ssw0rd" for field Confirm password
+    Set checkbox "Active Directory is configured by the System Administrator"
+    User set value "user" for field Active Directory User
+    User set value "P@ssw0rd" for field Active Directory Password
+    User set value "P@ssw0rd" for field Confirm AD password
+    Set checkbox "Mixed-mode Authentication"
+    User click on "Next"
+    Page should contain element "Hostname template"
+
+Positive scenario №3 for the MS SQL Cluster Form
+    [Documentation]    Scenario 3: \ External AD and Mixed-Mode Auth checkboxes are \ selected. User have to fill all reguired fields.
+    [Tags]    night
+    Log in WebUI by WebTestUser/swordfish
+    User click on "Create Environment"
+    User set value "scenario_3" for field Environment Name
+    User click on "Create"
+    User click on "scenario_3"
+    User click on "Create Service"
+    User select "MS SQL Server Cluster" from dropdown list "Service Type"
+    User click on "Next"
+    User set value "test_cluster" for field Service Name
+    User set value "P@ssw0rd" for field Administrator password
+    User set value "P@ssw0rd" for field Confirm password
+    Set checkbox "Active Directory is configured by the System Administrator"
+    User set value "user" for field Active Directory User
+    User set value "P@ssw0rd" for field Active Directory Password
+    User set value "P@ssw0rd" for field Confirm AD password
+    User set value "P@ssw0rd" for field SA Password
+    User set value "P@ssw0rd" for field Confirm SA password
+    User click on "Next"
+    Page should contain element "Hostname template"
+
+Bool field validation
+    [Tags]    night
+    Log in WebUI by WebTestUser/swordfish
+    User click on "Create Environment"
+    User set value "bool_validation" for field Environment Name
+    User click on "Create"
+    User click on "bool_validation"
+    User click on "Create Service"
+    User select "MS SQL Server Cluster" from dropdown list "Service Type"
+    User click on "Next"
+    User set value "test_cluster" for field Service Name
+    User set value "P@ssw0rd" for field Administrator password
+    User set value "P@ssw0rd" for field Confirm password
+    Set checkbox "Active Directory is configured by the System Administrator"
+    User set value "user" for field Active Directory User
+    User set value "P@ssw0rd" for field Active Directory Password
+    User set value "anotherP@ssw0rd" for field Confirm AD password
+    User set value "P@ssw0rd" for field SA Password
+    User set value "P@ssw0rd" for field Confirm SA Password
+    User click on "Next"
+    Page should contain element "Active Directory Passwords don't match"
+    Set checkbox "Active Directory is configured by the System Administrator"
+    User click on "Next"
+    Page should contain element "This field is required."
+
+Delete test env
+    [Tags]    night
+    Log in WebUI by WebTestUser/swordfish
+    Select "More" for chosen environment "test_env"
+    Select "Delete Environment" for chosen environment "test_env"
+    User confirms deletion
+    Page should not contain element "test_env"
