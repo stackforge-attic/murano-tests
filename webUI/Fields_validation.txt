@@ -75,18 +75,18 @@ InValid image types
     [Tags]    night
     Log in WebUI by WebTestUser/swordfish
     Navigate to    Murano>Images
-    Select "Delete Metadata" for chosen image "cirros-x86_64-murano"
+    Select "Delete Metadata" for chosen image "ws-2012-std"
     User confirms deletion
     Navigate to    Murano>Environments
     User click on "test_env"
     User click on "Create Service"
-    Page should contain element "Murano image type "cirros.demo" is not registered"
+    Page should contain element "Murano image type "windows" is not registered"
     User click on "X"
     Navigate to    Murano>Images
     User click on "Mark Image"
-    User select "cirros-x86_64-murano" from dropdown list "Image"
-    User set value "Demo" for field Title
-    User select "Murano Demo" from dropdown list "with supported types of images"
+    User select "ws-2012-std" from dropdown list "Image"
+    User set value "Windows Server 2012 Standard" for field Title
+    User select "Windows Server 2012" from dropdown list "with supported types of images"
     User click on "Mark"
 
 Positive scenario №1 for the MS SQL Cluster Form
@@ -179,6 +179,20 @@ Bool field validation
     Set checkbox "Active Directory is configured by the System Administrator"
     User click on "Next"
     Page should contain element "This field is required."
+
+Check validation of "Hostname template" field
+    Log in WebUI by WebTestUser/swordfish
+    User click on "test_env"
+    User click on "Create Service"
+    User select "Demo Service" from dropdown list "Service Type"
+    User click on "Next"
+    User set value "demo_service" for field Service Name
+    User set value "demo" for field Hostname template
+    User click on "Next"
+    Page should contain element "Incrementation symbol "#" is required"
+    User set value "1" for field Instance Count
+    User click on "Next"
+    Page should contain element "Instance Configuration"
 
 Delete test env
     [Tags]    night
