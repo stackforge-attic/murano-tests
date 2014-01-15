@@ -40,7 +40,7 @@ send -- [lindex $argv 3]
 send -- " restart\n"
 expect "@murano"
 
-set folders ['repository-data', 'repository-cache', 'dashboard-cache', 'conductor-cache']
+array set folders ['repository-data', 'repository-cache', 'dashboard-cache', 'conductor-cache']
 
 foreach folder $folders
 {
