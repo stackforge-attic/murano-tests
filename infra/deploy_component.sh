@@ -40,4 +40,16 @@ send -- [lindex $argv 3]
 send -- " restart\n"
 expect "@murano"
 
+set folders ['repository-data', 'repository-cache', 'dashboard-cache', 'conductor-cache']
+
+foreach folder $folders
+{
+    send -- "cd /tmp/murano$folder ; rm -rf *\n"
+    expect "@murano"
+}
+
+send -- "service murano-repository restart\n"
+send -- "service murano-conductor restart\n"
+send -- "service apache2 restart\n"
+
 send -- "exit\n"
