@@ -40,4 +40,21 @@ send -- [lindex $argv 3]
 send -- " restart\n"
 expect "@murano"
 
+send -- "cd /tmp/muranorepository-data\n"
+expect "@murano"
+send -- "rm -rf *\n"
+send -- "cd /tmp/muranorepository-cache\n"                                       
+expect "@murano"                                                                
+send -- "rm -rf *\n" 
+send -- "cd /tmp/muranodashboard-cache\n"                                       
+expect "@murano"                                                                
+send -- "rm -rf *\n" 
+send -- "cd /tmp/muranoconductor-cache\n"                                       
+expect "@murano"                                                                
+send -- "rm -rf *\n" 
+
+send -- "service murano-repository restart\n"
+send -- "service murano-conductor restart\n"
+send -- "service apache2 restart\n"
+
 send -- "exit\n"
