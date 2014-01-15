@@ -40,13 +40,14 @@ send -- [lindex $argv 3]
 send -- " restart\n"
 expect "@murano"
 
-array set folders ['repository-data', 'repository-cache', 'dashboard-cache', 'conductor-cache']
-
-foreach folder $folders
-{
-    send -- "cd /tmp/murano$folder ; rm -rf *\n"
-    expect "@murano"
-}
+send -- "cd /tmp/muranorepository-data ; rm -rf *\n"
+expect "@murano"
+send -- "cd /tmp/muranorepository-cache ; rm -rf *\n"                            
+expect "@murano"
+send -- "cd /tmp/muranodashboard-cache ; rm -rf *\n"
+expect "@murano"
+send -- "cd /tmp/muranoconductor-cache ; rm -rf *\n"
+expect "@murano"
 
 send -- "service murano-repository restart\n"
 send -- "service murano-conductor restart\n"
