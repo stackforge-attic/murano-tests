@@ -23,12 +23,12 @@ msg = """
 import sys
 from dateutil import parser
 from bs4 import BeautifulSoup
-
+import codecs
 
 files = []
 for i in range(len(sys.argv) - 1):
     try:
-        f = open(sys.argv[i + 1], 'r').read()
+        f = codecs.open(sys.argv[i + 1], 'r', 'utf-8').read()
         res = BeautifulSoup(f)
         files.append(res)
     except:
