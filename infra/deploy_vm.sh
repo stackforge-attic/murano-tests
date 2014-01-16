@@ -81,9 +81,14 @@ expect "@murano"
 
 send -- "echo \"LANGUAGE_CODE='en'\" >> /etc/openstack-dashboard/local_settings.py\n"
 expect "@murano"
+send -- "sed -i \"s/DEBUG = False/DEBUG = True/\" /etc/openstack-dashboard/local_settings.py\n"
+expect -- "@murano"
 send -- "service apache2 restart\n"
 expect "@murano"
 send -- "rm -rf /tmp/muranoconductor-cache/* /tmp/muranorepository-cache/*\n"
+expect "@murano"
+
+send -- "sed -i \"s/disable_rollback=False/disable_rollback=True/\" /usr/local/lib/python2.7/dist-packages/muranoconductor/commands/cloud_formation.py\n"
 expect "@murano"
 
 send -- "service murano-api restart\n"
