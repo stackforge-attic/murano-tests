@@ -13,6 +13,16 @@ expect "@murano"
 send -- "sudo su\n"
 expect "@murano"
 
+send -- "cd /opt/git/ ; rm -rf "
+send -- [lindex $argv 3]
+send -- "\n"
+expect "@murano"
+
+send -- "git clone https://github.com/stackforge/"
+send -- [lindex $argv 3]
+send -- "\n"
+expect "@murano"
+
 send -- "cd /opt/git/"
 send -- [lindex $argv 3]
 send -- "\n"
