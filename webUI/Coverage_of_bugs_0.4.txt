@@ -11,7 +11,6 @@ Resource          Resources/objrepo/keywords.txt
 ${resources_path}    Resources/
 ${url}            http://10.100.0.6/horizon
 
-
 *** Test Cases ***
 Create IIS + AD + IIS
     [Tags]    night    13
@@ -56,7 +55,6 @@ Create IIS + AD + SQL
     User create Active Directory with domain name "singleAD.domain"
     User click on "Create Service"
     User create MS SQL server with name "mssql" and don't join to domain, select "Not in domain"
-    User click on "Create Service"
     Delete environment "IIS + AD + SQL" after test
 
 Create 4 MS SQL clusters
@@ -134,7 +132,7 @@ Check that service can be joined to domain
     Delete environment "re-deploy" after test
 
 Deploy instance with different flavor
-    [Tags]    night    20
+    [Tags]    20
     Log in WebUI by WebTestUser/swordfish
     User click on "Create Environment"
     User set value "different_flavor" for field Environment Name
@@ -213,7 +211,7 @@ Checking type and last operation
     Delete environment "test" after test
 
 Check that there is instance url in service info (after deploy)
-    [Tags]    23
+    [Tags]    23    night
     Log in WebUI by WebTestUser/swordfish
     User click on "Create Environment"
     User set value "instance_url" for field Environment Name
@@ -228,4 +226,3 @@ Check that there is instance url in service info (after deploy)
     User click on "instance_url"
     User click on "iis"
     Page should contain element "Service instance name"
-
