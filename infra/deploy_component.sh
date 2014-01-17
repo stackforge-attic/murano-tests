@@ -50,7 +50,7 @@ send -- [lindex $argv 3]
 send -- " restart\n"
 expect "@murano"
 
-send -- "cd /tmp/muranorepository-data ; rm -rf *\n"
+send -- "cd /tmp/muranorepository-data/cache ; rm -rf *\n"
 expect "@murano"
 send -- "cd /tmp/muranorepository-cache ; rm -rf *\n"                            
 expect "@murano"
