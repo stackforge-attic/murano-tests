@@ -59,6 +59,9 @@ expect "@murano"
 send -- "cd /tmp/muranoconductor-cache ; rm -rf *\n"
 expect "@murano"
 
+send -- "python /usr/share/openstack-dashboard/manage.py syncdb --noinput\n"
+expect "@murano"
+
 send -- "service murano-repository restart\n"
 send -- "service murano-conductor restart\n"
 send -- "service apache2 restart\n"
