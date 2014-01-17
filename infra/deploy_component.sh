@@ -39,6 +39,11 @@ send -- [lindex $argv 2]
 send -- " && git checkout FETCH_HEAD\n"
 expect "@murano"
 
+send -- "chown horizon:horizon /var/lib/openstack-dashboard/secret_key\n"
+expect "@murano"
+send -- "chmod 600 /var/lib/openstack-dashboard/secret_key\n"
+expect "@murano"
+
 send -- "chmod +x ./setupV2.sh ; ./setupV2.sh install > 4.log\n"
 expect "@murano"
 send -- "sed -i \"s/\\\"BootFromVolume\\\": true,//\" /etc/murano-conductor/data/templates/cf/Linux.template\n"
