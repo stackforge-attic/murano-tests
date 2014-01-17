@@ -111,7 +111,7 @@ Add service in deployed env
     Delete environment "add_service_in_deployed_env" after test
 
 Check that service can be joined to domain
-    [Tags]    night    19
+    [Tags]    19
     Log in WebUI by WebTestUser/swordfish
     User click on "Create Environment"
     User set value "re-deploy" for field Environment Name
