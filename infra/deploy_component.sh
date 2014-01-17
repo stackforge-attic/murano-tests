@@ -13,6 +13,9 @@ expect "@murano"
 send -- "sudo su\n"
 expect "@murano"
 
+send -- "rm -rf /tmp/keystone-signing-muranoapi\n"
+expect "@murano"
+
 send -- "cd /opt/git/ ; rm -rf "
 send -- [lindex $argv 3]
 send -- "\n"
