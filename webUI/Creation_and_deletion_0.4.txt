@@ -202,10 +202,10 @@ Create and Delete Telnet Service
     User select "Linux Telnet" from dropdown list "Service Type"
     User click on "Next"
     User set value "telnet-service" for field Service Name
-    User select "murano-lb-key" from dropdown list "Key Pair"
     User set value "telnet" for field Hostname
     User click on "Next"
     User select "Linux Image" from dropdown list "Instance image"
+    User select "murano-lb-key" from dropdown list "Key Pair"
     User click on "Create"
     User click on "Delete Service"
     User confirms deletion
@@ -226,6 +226,7 @@ Create and Delete Apache service
     User set value "apache" for field Hostname
     User click on "Next"
     User select "Linux Image" from dropdown list "Instance image"
+    User select "murano-lb-key" from dropdown list "Key Pair"
     User click on "Create"
     User click on "Delete Service"
     User confirms deletion

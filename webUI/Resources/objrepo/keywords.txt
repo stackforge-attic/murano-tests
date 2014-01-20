@@ -188,10 +188,10 @@ User create Telnet with name "${name}"
     User select "Linux Telnet" from dropdown list "Service Type"
     User click on "Next"
     User set value "${name}" for field Service Name
-    User select "murano-lb-key" from dropdown list "Key Pair"
     User set value "telnet" for field Hostname
     User click on "Next"
     User select "Linux Image" from dropdown list "Instance image"
+    User select "murano-lb-key" from dropdown list "Key Pair"
     User click on "Create"
     Wait For Page Loaded
 
@@ -206,7 +206,7 @@ Choose ${name} (set checkbox on in the ${num} column)
 Compose a new service "${name}"
     User click on "Compose Service"
     User set value "${name}" for field Service_Name
-    User set value "newService" for field Fully Qualified Service Name
+    User set value "${name}Service" for field Fully Qualified Service Name
     User set value "WebTestUser" for field Author
     User set value "<strong> New Test Service </strong> Here is a new description" for field Description
     User click on "UI Files"
