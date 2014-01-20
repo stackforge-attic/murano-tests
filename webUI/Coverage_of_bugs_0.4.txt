@@ -4,7 +4,7 @@ Suite Teardown    Close All Browsers
 Test Setup        Open Browser    ${url}    remote_url=http://172.18.124.233:4444/wd/hub    browser=firefox    ff_profile_dir=ffprofile
 Test Teardown     Close All Browsers
 Library           String
-Library           Boffin.WebUIlib    0    5    # Boffin framework library
+Library           Boffin.WebUIlib    60    60    # Boffin framework library
 Resource          Resources/objrepo/keywords.txt
 
 *** Variables ***
