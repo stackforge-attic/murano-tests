@@ -1,0 +1,165 @@
+*** Settings ***
+Suite Setup
+Suite Teardown    Close All Browsers
+Test Setup        Open Browser    https://wiki.openstack.org/wiki/Murano
+Test Teardown     Close All Browsers
+Library           String
+Library           Boffin.WebUIlib    0    20    # Boffin framework library
+
+*** Variables ***
+${resources_path}    Resources/
+
+*** Test Cases ***
+Check that main page includes Documentation section
+    Page should contain element "Documentation"
+
+Check that docs per releases are availiable
+    Page should contain element "documentation per release"
+    User click on "documentation per release"
+    Page should contain element "Release"
+
+Release 0.1: Murano Manual
+    Page should contain element "documentation per release"
+    User click on "documentation per release"
+    Go to "Release v0.1" > "Murano Manual" (1 link)
+    Page Should Not Contain    404
+
+Release 0.1: Murano Deployment Guide
+    Page should contain element "documentation per release"
+    User click on "documentation per release"
+    Go to "Release v0.1" > "Murano Deployment Guide" (2 link)
+    Page Should Not Contain    404
+
+Release 0.2: Developer Guide
+    Page should contain element "documentation per release"
+    User click on "documentation per release"
+    Go to "Release v0.2" > "Developers Guide" (1 link)
+    Page Should Not Contain    404
+
+Release 0.2: Administrator Guide
+    Page should contain element "documentation per release"
+    User click on "documentation per release"
+    Go to "Release v0.2" > "Administrator Guide" (2 link)
+    Page Should Not Contain    404
+
+Release 0.2: Installation Guide
+    Page should contain element "documentation per release"
+    User click on "documentation per release"
+    Go to "Release v0.2" > "Installation Guide" (3 link)
+    Page Should Not Contain    404
+
+Release 0.2.11: Getting Started Guide
+    Page should contain element "documentation per release"
+    User click on "documentation per release"
+    Go to "Release v0.2.11" > "Getting Started Guide" (1 link)
+    Page Should Not Contain    404
+
+Release 0.2.11: Installation Guide
+    Page should contain element "documentation per release"
+    User click on "documentation per release"
+    Go to "Release v0.2.11" > "Installation Guide" (2 link)
+    Page Should Not Contain    404
+
+Release 0.2.11: Developer Guide
+    Page should contain element "documentation per release"
+    User click on "documentation per release"
+    Go to "Release v0.2.11" > "Developer Guide" (3 link)
+    Page Should Not Contain    404
+
+Release 0.2.11: User Guide
+    Page should contain element "documentation per release"
+    User click on "documentation per release"
+    Go to "Release v0.2.11" > "User Guide" (4 link)
+    Page Should Not Contain    404
+
+Release 0.2.11: Administrator Guide
+    Page should contain element "documentation per release"
+    User click on "documentation per release"
+    Go to "Release v0.2.11" > "Administrator Guide" (5 link)
+    Page Should Not Contain    404
+
+Release 0.3: Getting Started Guide
+    Page should contain element "documentation per release"
+    User click on "documentation per release"
+    Go to "Release v0.3" > "Getting Started Guide" (1 link)
+    Page Should Not Contain    404
+
+Release 0.3: Installation Guide
+    Page should contain element "documentation per release"
+    User click on "documentation per release"
+    Go to "Release v0.3" > "Installation Guide" (2 link)
+    Page Should Not Contain    404
+
+Release 0.3: Developer Guide
+    Page should contain element "documentation per release"
+    User click on "documentation per release"
+    Go to "Release v0.3" > "Developer Guide" (3 link)
+    Page Should Not Contain    404
+
+Release 0.3: User Guide
+    Page should contain element "documentation per release"
+    User click on "documentation per release"
+    Go to "Release v0.3" > "User Guide" (4 link)
+    Page Should Not Contain    404
+
+Release 0.3: Administrator Guide
+    Page should contain element "documentation per release"
+    User click on "documentation per release"
+    Go to "Release v0.3" > "Administrator Guide" (5 link)
+    Page Should Not Contain    404
+
+Release 0.4: Getting Started Guide
+    Page should contain element "documentation per release"
+    User click on "documentation per release"
+    Go to "Release v0.4" > "Getting Started Guide" (1 link)
+    Page Should Not Contain    404
+
+Release 0.4: Installation Guide
+    Page should contain element "documentation per release"
+    User click on "documentation per release"
+    Go to "Release v0.4" > "Installation Guide" (2 link)
+    Page Should Not Contain    404
+
+Release 0.4: Developer Guide
+    Page should contain element "documentation per release"
+    User click on "documentation per release"
+    Go to "Release v0.4" > "Developer Guide" (3 link)
+    Page Should Not Contain    404
+
+Release 0.4: User Guide
+    Page should contain element "documentation per release"
+    User click on "documentation per release"
+    Go to "Release v0.4" > "User Guide" (4 link)
+    Page Should Not Contain    404
+
+Release 0.4: Administrator Guide
+    Page should contain element "documentation per release"
+    User click on "documentation per release"
+    Go to "Release v0.4" > "Administrator Guide" (5 link)
+    Page Should Not Contain    404
+
+*** Keywords ***
+User click on "${element}"
+    Wait For Page Loaded
+    Click on    ${element}
+    Wait For Page Loaded
+
+Page should contain element "${element}"
+    Wait For Page Loaded
+    Page Should Contain    ${element}
+
+Go to "${release}" > "${docs}" (${position} link)
+    ${source}    Get Source
+    ${key_element}    Get Web Element Selector    Murano Manual    ${source}    a    this
+    @{xpath_blocks}=    Split String    ${key_element}    ]
+    ${num}    Get Substring    @{xpath_blocks}[3]    -1
+    ${num1}=    Evaluate    ${num}-1
+    ${num2}=    Evaluate    ${num}-2
+    ${num3}=    Evaluate    ${num}-3
+    ${num4}=    Evaluate    ${num}-4
+    ${var} =    Set Variable If    '${release}' == 'Release v0.1'    ${num}
+    ...    '${release}' == 'Release v0.2'    ${num1}
+    ...    '${release}' == 'Release v0.2.11'    ${num2}
+    ...    '${release}' == 'Release v0.3'    ${num3}
+    ...    '${release}' == 'Release v0.4'    ${num4}
+    Click Element    xpath=.//*[@id='mw-content-text']/ul[${var}]/li[${position}]/a
