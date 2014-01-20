@@ -47,16 +47,25 @@ expect "@murano"
 send -- "chmod 600 /var/lib/openstack-dashboard/secret_key\n"
 expect "@murano"
 
-send -- "chmod +x ./setupV2.sh ; ./setupV2.sh install > 4.log\n"
+send -- "chmod +x ./setup.sh ; ./setup.sh install > old.log\n"
 expect "@murano"
+send -- "chmod +x ./setupV2.sh ; ./setupV2.sh install > new.log\n"                
+expect "@murano"
+
 send -- "sed -i \"s/\\\"BootFromVolume\\\": true,//\" /etc/murano-conductor/data/templates/cf/Linux.template\n"
 expect "@murano"
 send -- "sed -i \"s/\\\"BootFromVolume\\\": true,//\" /etc/murano-conductor/data/templates/cf/Windows.template\n"
 expect "@murano"
+
 send -- "service "
 send -- [lindex $argv 3]
 send -- " restart\n"
 expect "@murano"
+send -- "service openstack-"
+send -- [lindex $argv 3]
+send -- " restart\n"
+expect "@murano"
+
 
 send -- "cd /tmp/muranorepository-data/cache ; rm -rf *\n"
 expect "@murano"
