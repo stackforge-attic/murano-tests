@@ -1,7 +1,7 @@
 *** Settings ***
 Suite Setup
 Suite Teardown    Close All Browsers
-Test Setup        Open Browser    https://wiki.openstack.org/wiki/Murano
+Test Setup        Open Browser    https://wiki.openstack.org/wiki/Murano    remote_url=http://172.18.124.233:4444/wd/hub    browser=firefox    ff_profile_dir=ffprofile
 Test Teardown     Close All Browsers
 Library           String
 Library           Boffin.WebUIlib    0    20    # Boffin framework library
