@@ -51,7 +51,7 @@ Delete Image from repo
     Log in WebUI by WebTestUser/swordfish
     User click on "Images"
     User click on "Mark Image"
-    User select "ws-2012-std" from dropdown list "Image"
+    User select "TestImageForDeletion" from dropdown list "Image"
     User set value "Image for deletion" for field Title
     User select "Windows Server 2012" from dropdown list "with supported types of images"
     User click on "Mark"
