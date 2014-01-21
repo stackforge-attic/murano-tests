@@ -1,7 +1,7 @@
 *** Settings ***
 Suite Setup
 Suite Teardown    Close All Browsers
-Test Setup        Open Browser    ${url}    remote_url=http://172.18.124.233:4444/wd/hub    browser=firefox    ff_profile_dir=ffprofile
+Test Setup        Open Browser    ${url}    #remote_url=http://172.18.124.233:4444/wd/hub    browser=firefox    ff_profile_dir=ffprofile
 Test Teardown     Close All Browsers
 Library           String
 Library           Boffin.WebUIlib    60    60    # Boffin framework library
@@ -9,7 +9,7 @@ Resource          Resources/objrepo/keywords.txt
 
 *** Variables ***
 ${resources_path}    Resources/
-${url}            http://10.100.0.6/horizon
+${url}            http://127.0.0.1/horizon
 ${files_path}     Files_for_autotests/
 
 *** Test Cases ***
@@ -88,11 +88,11 @@ Check opportunity to delete service from repository
     [Tags]    night    commit
     Log in WebUI by WebTestUser/swordfish
     User click on "Service Definitions"
-    Compose a new service "Service for deletion"
-    Select "More" for chosen service "Service for deletion"
-    Select "Delete Service" for chosen service "Service for deletion"
+    Compose a new service "ServiceForDeletion"
+    Select "More" for chosen service "ServiceForDeletion"
+    Select "Delete Service" for chosen service "ServiceForDeletion"
     User confirms deletion
-    Page should not contain element "Service for deletion"
+    Page should not contain element "ServiceForDeletion"
 
 Check opportunity to toggle files (make few services active/inactive)
     [Tags]    night
