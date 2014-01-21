@@ -47,6 +47,32 @@ send -- [lindex $argv 3]
 send -- "\n"
 expect "@murano"
 
+send -- "cd /opt/git; git clone https://github.com/stackforge/murano-api -b "
+send -- [lindex $argv 3]
+send -- "\n"
+expect "@murano"
+send -- "mkdir -p /etc/murano/ \n"
+expect "@murano"
+send -- "cp /opt/git/murano-api/etc/murano/* /etc/murano/\n"
+expect "@murano"
+send -- "cp /etc/murano/murano-api.conf.sample /etc/murano/murano-api.conf\n"
+expect "@murano"
+
+send -- "git clone https://github.com/stackforge/murano-conductor -b "
+send -- [lindex $argv 3]
+send -- " ; cp murano-conductor/etc/murano/* /etc/murano/\n"
+expect "@murano"
+send -- "cp /etc/murano/conductor.conf.sample /etc/murano/conductor.conf\n"
+expect "@murano"
+
+send -- "git clone https://github.com/stackforge/murano-repository -b "
+send -- [lindex $argv 3]
+send -- " ; cp murano-repository/etc/murano/* /etc/murano/\n"
+expect "@murano"
+send -- "cp /etc/murano/murano-repository.conf.sample /etc/murano/murano-repository.conf\n"
+expect "@murano"
+
+
 set timeout 600
 send -- "cd murano-deployment/devbox-scripts/\n"
 expect "@murano"
