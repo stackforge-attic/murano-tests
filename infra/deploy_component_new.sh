@@ -15,6 +15,8 @@ expect "@murano"
 
 send -- "rm -rf /tmp/keystone-signing-muranoapi\n"
 expect "@murano"
+send -- "rm -rf /tmp/keystone-muranorepository\n"                               
+expect "@murano"
 
 send -- "cd /opt/git/ ; rm -rf "
 send -- [lindex $argv 3]
@@ -31,16 +33,17 @@ send -- [lindex $argv 3]
 send -- "\n"
 expect "@murano"
 
-send -- "chmod +x setupV2.sh ; ./setupV2.sh uninstall > 1.log\n"
-expect "@murano"
-send -- "chmod +x setup.sh ; ./setup.sh uninstall > 2.log\n"
-expect "@murano"
-
 send -- "git fetch https://review.openstack.org/stackforge/"
 send -- [lindex $argv 3]
 send -- " "
 send -- [lindex $argv 2]
 send -- " && git checkout FETCH_HEAD\n"
+expect "@murano"
+
+send -- "mv /etc/murano/conductor.conf /etc/murano/murano-conductor.conf\n"
+expect "@murano"
+
+send -- "chmod +x setup.sh ; ./setup.sh uninstall > 2.log\n"
 expect "@murano"
 
 send -- "chown horizon:horizon /var/lib/openstack-dashboard/secret_key\n"
