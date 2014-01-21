@@ -47,6 +47,8 @@ send -- "chown horizon:horizon /var/lib/openstack-dashboard/secret_key\n"
 expect "@murano"
 send -- "chmod 600 /var/lib/openstack-dashboard/secret_key\n"
 expect "@murano"
+send -- "rm -rf /tmp/keystone-muranorepository\n"
+expect "@murano"
 
 send -- "chmod +x ./setupV2.sh ; ./setupV2.sh install > new.log\n"                
 expect "@murano"
