@@ -50,6 +50,8 @@ expect "@murano"
 
 send -- "chmod +x ./setupV2.sh ; ./setupV2.sh install > new.log\n"                
 expect "@murano"
+send -- "chmod +x setup.sh ; ./setup.sh install > old.log\n"
+expect "@murano"
 
 send -- "sed -i \"s/\\\"BootFromVolume\\\": true,//\" /etc/murano-conductor/data/templates/cf/Linux.template\n"
 expect "@murano"
