@@ -88,11 +88,11 @@ Check opportunity to delete service from repository
     [Tags]    night    commit
     Log in WebUI by WebTestUser/swordfish
     User click on "Service Definitions"
-    Compose a new service "Service for deletion"
-    Select "More" for chosen service "Service for deletion"
-    Select "Delete Service" for chosen service "Service for deletion"
+    Compose a new service "ServiceForDeletion"
+    Select "More" for chosen service "ServiceForDeletion"
+    Select "Delete Service" for chosen service "ServiceForDeletion"
     User confirms deletion
-    Page should not contain element "Service for deletion"
+    Page should not contain element "ServiceForDeletion"
 
 Check opportunity to toggle files (make few services active/inactive)
     [Tags]    night
