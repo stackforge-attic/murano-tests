@@ -97,7 +97,6 @@ Deploy environment with IIS Farm
     User set value "iis_farm" for field Service Name
     User set value "P@ssw0rd" for field Administrator password
     User set value "P@ssw0rd" for field Confirm password
-    Set IP address from the subnet where Load Balancer VIP is running
     User set value "iisfarm#" for field Hostname template
     User click on "Next"
     User select "Windows Server 2012 Standard" from dropdown list "Instance image"
@@ -122,7 +121,6 @@ Deploy environment with ASP.NET Farm
     User set value "P@ssw0rd" for field Administrator password
     User set value "P@ssw0rd" for field Confirm password
     User set value "git://github.com/Mirantis/murano-mvc-demo.git" for field Git repository
-    Set IP address from the subnet where Load Balancer VIP is running
     User set value "aspfarm#" for field Hostname template
     User click on "Next"
     User select "Windows Server 2012 Standard" from dropdown list "Instance image"
