@@ -117,7 +117,6 @@ User create IIS Farm with name "${name}" ${join} "${domain}"
     User set value "${name}" for field Service Name
     User set value "P@ssw0rd" for field Administrator password
     User set value "P@ssw0rd" for field Confirm password
-    Set IP address from the subnet where Load Balancer VIP is running
     User select "${domain}" from dropdown list "Domain"
     User set value "iisfarm#" for field Hostname template
     User click on "Next"
@@ -133,7 +132,6 @@ User create ASP.NET Farm with name "${name}" ${join} "${domain}"
     User set value "P@ssw0rd" for field Confirm password
     User select "${domain}" from dropdown list "Domain"
     User set value "git://github.com/Mirantis/murano-mvc-demo.git" for field Git repository
-    Set IP address from the subnet where Load Balancer VIP is running
     User set value "aspfarm#" for field Hostname template
     User click on "Next"
     User select "Windows Server 2012 Standard" from dropdown list "Instance image"
