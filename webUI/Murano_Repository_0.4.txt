@@ -76,11 +76,11 @@ Check opportunity to select composed service in Service Type list
     [Tags]    night
     Log in WebUI by WebTestUser/swordfish
     User click on "Service Definitions"
-    Compose a new service "Test service"
+    Compose a new service "TestService"
     Navigate To    Murano>Environments
     User click on "test"
     User click on "Create Service"
-    User select "Test service" from dropdown list "Service Type"
+    User select "TestService" from dropdown list "Service Type"
     User click on "Next"
     Page should contain element "Service Name"
 
