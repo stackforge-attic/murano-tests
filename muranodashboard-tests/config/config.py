@@ -20,7 +20,7 @@ CommonGroup = [
                default='http://172.18.124.203:5000/v2.0/',
                help='keystone url'),
     cfg.StrOpt('murano_url',
-               default='http://127.0.0.1:8082',
+               default='http://127.0.0.1:8080',
                help='murano url')
 ]
 

@@ -4,6 +4,7 @@ import ConfigParser
 from selenium import webdriver
 import selenium.webdriver.common.by as by
 import config.config as cfg
+from selenium.common.exceptions import NoSuchElementException
 
 from keystoneclient.v2_0 import client as ksclient
 from muranoclient.client import Client as mclient
@@ -94,5 +95,9 @@ class UITestCase(testtools.TestCase):
     def select_from_list(self, list_name, value):
         self.driver.find_element_by_xpath("//select[@name='%s']/option[text()='%s']" % (list_name, value)).click()
 
-
-
+    def check_element_on_page(self, method, value):
+        try:
+            self.driver.find_element(method, value)
+        except NoSuchElementException:
+            return False
+        return True
