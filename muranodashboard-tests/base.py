@@ -1,5 +1,6 @@
 import testtools
 import ConfigParser
+import random
 
 from selenium import webdriver
 import selenium.webdriver.common.by as by
@@ -29,6 +30,7 @@ class UITestCase(testtools.TestCase):
         cls.linux_image = cfg.common.linux_image
         cls.windows_image = cfg.common.windows_image
         cls.keypair = cfg.common.keypair_name
+        cls.asp_git_repository = cfg.common.asp_git_repository
 
         cls.elements = ConfigParser.RawConfigParser()
         cls.elements.read('common.ini')
@@ -173,6 +175,196 @@ class UITestCase(testtools.TestCase):
         Next = self.elements.get('button', 'Create')
         self.driver.find_element_by_xpath(Next).click()
 
+    def create_ad_service(self, service_name):
+        self.driver.find_element_by_id('services__action_CreateService').click()
+
+        self.select_from_list('service_choice-service', 'Active Directory')
+        Next = self.elements.get('button', 'Next')
+        self.driver.find_element_by_xpath(Next).click()
+
+        self.find_clean_send(
+            by.By.ID, 'id_activeDirectory-0-name', service_name)
+        self.find_clean_send(
+            by.By.ID, 'id_activeDirectory-0-adminPassword', 'P@ssw0rd')
+        self.find_clean_send(
+            by.By.ID, 'id_activeDirectory-0-adminPassword-clone', 'P@ssw0rd')
+        self.find_clean_send(
+            by.By.ID, 'id_activeDirectory-0-recoveryPassword', 'P@ssw0rd')
+        self.find_clean_send(
+            by.By.ID, 'id_activeDirectory-0-recoveryPassword-clone', 'P@ssw0rd')
+        Next = self.elements.get('button', 'Next2')
+        self.driver.find_element_by_xpath(Next).click()
+
+        self.select_from_list('activeDirectory-1-osImage', self.windows_image)
+        Next = self.elements.get('button', 'Create')
+        self.driver.find_element_by_xpath(Next).click()
+
+    def create_iis_service(self, service_name):
+        self.driver.find_element_by_id('services__action_CreateService').click()
+
+        self.select_from_list(
+            'service_choice-service', 'Internet Information Services')
+        Next = self.elements.get('button', 'Next')
+        self.driver.find_element_by_xpath(Next).click()
+
+        self.find_clean_send(by.By.ID, 'id_webServer-0-name', service_name)
+        self.find_clean_send(
+            by.By.ID, 'id_webServer-0-adminPassword', 'P@ssw0rd')
+        self.find_clean_send(
+            by.By.ID, 'id_webServer-0-adminPassword-clone', 'P@ssw0rd')
+        Next = self.elements.get('button', 'Next2')
+        self.driver.find_element_by_xpath(Next).click()
+
+        self.select_from_list('webServer-1-osImage', self.windows_image)
+        Next = self.elements.get('button', 'Create')
+        self.driver.find_element_by_xpath(Next).click()
+
+    def create_asp_service(self, service_name):
+        self.driver.find_element_by_id('services__action_CreateService').click()
+
+        self.select_from_list('service_choice-service', 'ASP.NET Application')
+        Next = self.elements.get('button', 'Next')
+        self.driver.find_element_by_xpath(Next).click()
+
+        self.find_clean_send(by.By.ID, 'id_aspNetApp-0-name', service_name)
+        self.find_clean_send(
+            by.By.ID, 'id_aspNetApp-0-adminPassword', 'P@ssw0rd')
+        self.find_clean_send(
+            by.By.ID, 'id_aspNetApp-0-adminPassword-clone', 'P@ssw0rd')
+        self.find_clean_send(
+            by.By.ID, 'id_aspNetApp-0-repository', self.asp_git_repository)
+        Next = self.elements.get('button', 'Next2')
+        self.driver.find_element_by_xpath(Next).click()
+
+        self.select_from_list('aspNetApp-1-osImage', self.windows_image)
+        Next = self.elements.get('button', 'Create')
+        self.driver.find_element_by_xpath(Next).click()
+
+    def create_iisfarm_service(self, service_name):
+        self.driver.find_element_by_id('services__action_CreateService').click()
+
+        self.select_from_list(
+            'service_choice-service', 'Internet Information Services Web Farm')
+        Next = self.elements.get('button', 'Next')
+        self.driver.find_element_by_xpath(Next).click()
+
+        self.find_clean_send(by.By.ID, 'id_webServerFarm-0-name', service_name)
+        self.find_clean_send(
+            by.By.ID, 'id_webServerFarm-0-adminPassword', 'P@ssw0rd')
+        self.find_clean_send(
+            by.By.ID, 'id_webServerFarm-0-adminPassword-clone', 'P@ssw0rd')
+        Next = self.elements.get('button', 'Next2')
+        self.driver.find_element_by_xpath(Next).click()
+
+        self.select_from_list('webServerFarm-1-osImage', self.windows_image)
+        Next = self.elements.get('button', 'Create')
+        self.driver.find_element_by_xpath(Next).click()
+
+    def create_aspfarm_service(self, service_name):
+        self.driver.find_element_by_id('services__action_CreateService').click()
+
+        self.select_from_list(
+            'service_choice-service', 'ASP.NET Application Web Farm')
+        Next = self.elements.get('button', 'Next')
+        self.driver.find_element_by_xpath(Next).click()
+
+        self.find_clean_send(by.By.ID, 'id_aspNetAppFarm-0-name', service_name)
+        self.find_clean_send(
+            by.By.ID, 'id_aspNetAppFarm-0-adminPassword', 'P@ssw0rd')
+        self.find_clean_send(
+            by.By.ID, 'id_aspNetAppFarm-0-adminPassword-clone', 'P@ssw0rd')
+        self.find_clean_send(
+            by.By.ID, 'id_aspNetAppFarm-0-repository', self.asp_git_repository)
+        Next = self.elements.get('button', 'Next2')
+        self.driver.find_element_by_xpath(Next).click()
+
+        self.select_from_list('aspNetAppFarm-1-osImage', self.windows_image)
+        Next = self.elements.get('button', 'Create')
+        self.driver.find_element_by_xpath(Next).click()
+
+    def create_mssql_service(self, service_name):
+        self.driver.find_element_by_id('services__action_CreateService').click()
+
+        self.select_from_list('service_choice-service', 'MS SQL Server')
+        Next = self.elements.get('button', 'Next')
+        self.driver.find_element_by_xpath(Next).click()
+
+        self.find_clean_send(by.By.ID, 'id_msSqlServer-0-name', service_name)
+        self.find_clean_send(
+            by.By.ID, 'id_msSqlServer-0-adminPassword', 'P@ssw0rd')
+        self.find_clean_send(
+            by.By.ID, 'id_msSqlServer-0-adminPassword-clone', 'P@ssw0rd')
+        self.find_clean_send(
+            by.By.ID, 'id_msSqlServer-0-saPassword', 'P@ssw0rd')
+        self.find_clean_send(
+            by.By.ID, 'id_msSqlServer-0-saPassword-clone', 'P@ssw0rd')
+        Next = self.elements.get('button', 'Next2')
+        self.driver.find_element_by_xpath(Next).click()
+
+        self.select_from_list('msSqlServer-1-osImage', self.windows_image)
+        Next = self.elements.get('button', 'Create')
+        self.driver.find_element_by_xpath(Next).click()
+
+    def create_sql_cluster_service(self, service_name, domain_name):
+        self.driver.find_element_by_id('services__action_CreateService').click()
+
+        self.select_from_list('service_choice-service', 'MS SQL Server Cluster')
+        Next = self.elements.get('button', 'Next')
+        self.driver.find_element_by_xpath(Next).click()
+
+        self.find_clean_send(
+            by.By.ID, 'id_msSqlClusterServer-0-name', service_name)
+        self.find_clean_send(
+            by.By.ID, 'id_msSqlClusterServer-0-adminPassword', 'P@ssw0rd')
+        self.find_clean_send(
+            by.By.ID, 'id_msSqlClusterServer-0-adminPassword-clone', 'P@ssw0rd')
+        self.select_from_list('msSqlClusterServer-0-domain', domain_name)
+        self.find_clean_send(
+            by.By.ID, 'id_msSqlClusterServer-0-saPassword', 'P@ssw0rd')
+        self.find_clean_send(
+            by.By.ID, 'id_msSqlClusterServer-0-saPassword-clone', 'P@ssw0rd')
+        Next = self.elements.get('button', 'Next2')
+        self.driver.find_element_by_xpath(Next).click()
+
+        self.find_clean_send(
+            by.By.ID, 'id_msSqlClusterServer-1-clusterIp', '1.1.1.1')
+        self.find_clean_send(
+            by.By.ID, 'id_msSqlClusterServer-1-clusterName', 'cluster')
+        self.find_clean_send(
+            by.By.ID, 'id_msSqlClusterServer-1-agGroupName', 'ag-name')
+        self.find_clean_send(
+            by.By.ID, 'id_msSqlClusterServer-1-agListenerName', 'listener_name')
+        self.find_clean_send(
+            by.By.ID, 'id_msSqlClusterServer-1-agListenerIP', 'listener_name')
+        self.find_clean_send(
+            by.By.ID, 'id_msSqlClusterServer-1-sqlServiceUserName', 'admin')
+        self.find_clean_send(
+            by.By.ID, 'id_msSqlClusterServer-1-sqlServicePassword', 'P@ssw0rd')
+        self.find_clean_send(
+            by.By.ID, 'id_msSqlClusterServer-1-sqlServicePassword-clone',
+            'P@ssw0rd')
+        Next = self.elements.get('button', 'Next2')
+        self.driver.find_element_by_xpath(Next).click()
+
+        cluster_ip = self.get_env_subnet()
+        self.find_clean_send(
+            by.By.ID, 'id_msSqlClusterServer-1-clusterIp', cluster_ip)
+        listener_ip = self.get_env_subnet()
+        self.find_clean_send(
+            by.By.ID, 'id_msSqlClusterServer-1-agListenerIP', listener_ip)
+        Next = self.elements.get('button', 'Next2')
+        self.driver.find_element_by_xpath(Next).click()
+
+        self.find_clean_send(
+            by.By.ID, 'id_msSqlClusterServer-2-databases', 'testbase')
+        Next = self.elements.get('button', 'Next2')
+        self.driver.find_element_by_xpath(Next).click()
+
+        self.select_from_list(
+            'msSqlClusterServer-3-osImage', self.windows_image)
+        Next = self.elements.get('button', 'Create')
+        self.driver.find_element_by_xpath(Next).click()
+
     def get_element_id(self, element_name):
         path = self.driver.find_element_by_link_text(
             element_name).get_attribute("href")
@@ -183,3 +375,10 @@ class UITestCase(testtools.TestCase):
         self.driver.find_element_by_id('services__row_%s__action_delete'
                                        % id).click()
         self.driver.find_element_by_link_text('Delete Service').click()
+
+    def get_env_subnet(self):
+        help_text = self.driver.find_element_by_xpath(
+            "(.//span[@class = 'help-inline'])[1]").text
+        subnet = help_text.split('.')[-2]
+        num = random.randint(0, 255)
+        return '10.0.%s.%d' % (subnet, num)
