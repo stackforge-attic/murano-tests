@@ -11,11 +11,11 @@ from muranoclient.client import Client as mclient
 
 
 class UITestCase(testtools.TestCase):
-    elements = ConfigParser.RawConfigParser()
-    elements.read('common.ini')
+
 
     @classmethod
     def setUpClass(cls):
+
         super(UITestCase, cls).setUpClass()
 
         keystone_client = ksclient.Client(username=cfg.common.user,
@@ -25,6 +25,13 @@ class UITestCase(testtools.TestCase):
 
         cls.murano_client = mclient('1', endpoint=cfg.common.murano_url,
                                     token=keystone_client.auth_token)
+
+        cls.demo_image = cfg.common.demo_image
+        cls.linux_image = cfg.common.linux_image
+        cls.windows_image = cfg.common.windows_image
+
+        cls.elements = ConfigParser.RawConfigParser()
+        cls.elements.read('common.ini')
 
     def setUp(self):
         super(UITestCase, self).setUp()
@@ -42,7 +49,7 @@ class UITestCase(testtools.TestCase):
     def log_in(self):
         self.find_clean_send(by.By.ID, 'id_username', cfg.common.user)
         self.find_clean_send(by.By.ID, 'id_password', cfg.common.password)
-        sign_in = UITestCase.elements.get('button', 'ButtonSubmit')
+        sign_in = self.elements.get('button', 'ButtonSubmit')
         self.driver.find_element_by_xpath(sign_in).click()
         self.navigate_to_environments()
 
@@ -51,13 +58,14 @@ class UITestCase(testtools.TestCase):
         self.driver.find_element(by=by_find, value=find_element).send_keys(send)
 
     def confirm_deletion(self):
-        confirm_deletion = UITestCase.elements.get('button', 'ConfirmDeletion')
+        confirm_deletion = self.elements.get('button', 'ConfirmDeletion')
         self.driver.find_element_by_xpath(confirm_deletion).click()
 
     def create_environment(self, env_name):
-        self.driver.find_element_by_id('murano__action_CreateEnvironment').click()
+        self.driver.find_element_by_id(
+            'murano__action_CreateEnvironment').click()
         self.find_clean_send(by.By.ID, 'id_name', env_name)
-        create = UITestCase.elements.get('button', 'InputSubmit')
+        create = self.elements.get('button', 'InputSubmit')
         self.driver.find_element_by_xpath(create).click()
 
     def delete_environment(self):
@@ -70,18 +78,18 @@ class UITestCase(testtools.TestCase):
         self.click_on_more()
         self.click_on_edit()
         self.find_clean_send(by.By.ID, 'id_name', new_name)
-        save = UITestCase.elements.get('button', 'InputSubmit')
+        save = self.elements.get('button', 'InputSubmit')
         self.driver.find_element_by_xpath(save).click()
 
     def click_on_more(self):
-        more = UITestCase.elements.get('button', 'More')
+        more = self.elements.get('button', 'More')
         self.driver.find_element_by_xpath(more).click()
 
     def click_on_edit(self):
         self.driver.find_element_by_link_text('Edit Environment').click()
 
     def click_on_delete(self):
-        delete = UITestCase.elements.get('button', 'ButtonSubmit')
+        delete = self.elements.get('button', 'ButtonSubmit')
         self.driver.find_element_by_xpath(delete).click()
 
     def navigate_to_environments(self):
@@ -93,7 +101,9 @@ class UITestCase(testtools.TestCase):
         self.driver.find_element_by_link_text('Images').click()
 
     def select_from_list(self, list_name, value):
-        self.driver.find_element_by_xpath("//select[@name='%s']/option[text()='%s']" % (list_name, value)).click()
+        self.driver.find_element_by_xpath(
+            "//select[@name='%s']/option[text()='%s']" %
+            (list_name, value)).click()
 
     def check_element_on_page(self, method, value):
         try:
@@ -101,3 +111,19 @@ class UITestCase(testtools.TestCase):
         except NoSuchElementException:
             return False
         return True
+
+    def create_demo_service(self, service_name):
+        self.driver.find_element_by_link_text('Services').click()
+        self.driver.find_element_by_id('services__action_CreateService').click()
+
+        self.select_from_list('service_choice-service', 'Demo Service')
+        Next = self.elements.get('button', 'Next')
+        self.driver.find_element_by_xpath(Next).click()
+
+        self.find_clean_send(by.By.ID, 'id_demoService-0-name', service_name)
+        Next = self.elements.get('button', 'Next2')
+        self.driver.find_element_by_xpath(Next).click()
+
+        self.select_from_list('demoService-1-osImage', self.demo_image)
+        Next = self.elements.get('button', 'Create')
+        self.driver.find_element_by_xpath(Next).click()

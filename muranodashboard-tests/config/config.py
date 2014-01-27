@@ -21,7 +21,16 @@ CommonGroup = [
                help='keystone url'),
     cfg.StrOpt('murano_url',
                default='http://127.0.0.1:8082',
-               help='murano url')
+               help='murano url'),
+    cfg.StrOpt('demo_image',
+               default='demo',
+               help='image for demo service'),
+    cfg.StrOpt('linux_image',
+               default='linux',
+               help='image for linux services'),
+    cfg.StrOpt('windows_image',
+               default='windows',
+               help='image for windows services')
 ]
 
 
