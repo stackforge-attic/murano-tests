@@ -29,6 +29,7 @@ class UITestCase(testtools.TestCase):
         cls.linux_image = cfg.common.linux_image
         cls.windows_image = cfg.common.windows_image
         cls.keypair = cfg.common.keypair_name
+        cls.asp_git_repository = cfg.common.asp_git_repository
 
         cls.elements = ConfigParser.RawConfigParser()
         cls.elements.read('common.ini')
@@ -170,6 +171,60 @@ class UITestCase(testtools.TestCase):
                               self.linux_image)
         self.select_from_list('linuxApacheService-1-keyPair',
                               self.keypair)
+        Next = self.elements.get('button', 'Create')
+        self.driver.find_element_by_xpath(Next).click()
+
+    def create_ad_service(self, service_name):
+        self.driver.find_element_by_id('services__action_CreateService').click()
+
+        self.select_from_list('service_choice-service', 'Active Directory')
+        Next = self.elements.get('button', 'Next')
+        self.driver.find_element_by_xpath(Next).click()
+
+        self.find_clean_send(by.By.ID, 'id_activeDirectory-0-name', service_name)
+        self.find_clean_send(by.By.ID, 'id_activeDirectory-0-adminPassword', 'P@ssw0rd')
+        self.find_clean_send(by.By.ID, 'id_activeDirectory-0-adminPassword-clone', 'P@ssw0rd')
+        self.find_clean_send(by.By.ID, 'id_activeDirectory-0-recoveryPassword', 'P@ssw0rd')
+        self.find_clean_send(by.By.ID, 'id_activeDirectory-0-recoveryPassword-clone', 'P@ssw0rd')
+        Next = self.elements.get('button', 'Next2')
+        self.driver.find_element_by_xpath(Next).click()
+
+        self.select_from_list('activeDirectory-1-osImage', self.windows_image)
+        Next = self.elements.get('button', 'Create')
+        self.driver.find_element_by_xpath(Next).click()
+
+    def create_iis_service(self, service_name):
+        self.driver.find_element_by_id('services__action_CreateService').click()
+
+        self.select_from_list('service_choice-service', 'Internet Information Services')
+        Next = self.elements.get('button', 'Next')
+        self.driver.find_element_by_xpath(Next).click()
+
+        self.find_clean_send(by.By.ID, 'id_webServer-0-name', service_name)
+        self.find_clean_send(by.By.ID, 'id_webServer-0-adminPassword', 'P@ssw0rd')
+        self.find_clean_send(by.By.ID, 'id_webServer-0-adminPassword-clone', 'P@ssw0rd')
+        Next = self.elements.get('button', 'Next2')
+        self.driver.find_element_by_xpath(Next).click()
+
+        self.select_from_list('webServer-1-osImage', self.windows_image)
+        Next = self.elements.get('button', 'Create')
+        self.driver.find_element_by_xpath(Next).click()
+
+    def create_asp_service(self, service_name):
+        self.driver.find_element_by_id('services__action_CreateService').click()
+
+        self.select_from_list('service_choice-service', 'ASP.NET Application')
+        Next = self.elements.get('button', 'Next')
+        self.driver.find_element_by_xpath(Next).click()
+
+        self.find_clean_send(by.By.ID, 'id_aspNetApp-0-name', service_name)
+        self.find_clean_send(by.By.ID, 'id_aspNetApp-0-adminPassword', 'P@ssw0rd')
+        self.find_clean_send(by.By.ID, 'id_aspNetApp-0-adminPassword-clone', 'P@ssw0rd')
+        self.find_clean_send(by.By.ID, 'id_aspNetApp-0-repository', self.asp_git_repository)
+        Next = self.elements.get('button', 'Next2')
+        self.driver.find_element_by_xpath(Next).click()
+
+        self.select_from_list('aspNetApp-1-osImage', self.windows_image)
         Next = self.elements.get('button', 'Create')
         self.driver.find_element_by_xpath(Next).click()
 
