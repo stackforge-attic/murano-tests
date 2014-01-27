@@ -30,7 +30,10 @@ CommonGroup = [
                help='image for linux services'),
     cfg.StrOpt('windows_image',
                default='windows',
-               help='image for windows services')
+               help='image for windows services'),
+    cfg.StrOpt('keypair_name',
+               default='default_key',
+               help='keypair for murano services')
 ]
 
 
