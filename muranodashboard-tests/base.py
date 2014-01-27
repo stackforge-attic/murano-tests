@@ -133,5 +133,12 @@ class UITestCase(testtools.TestCase):
         self.driver.find_element_by_xpath(Next).click()
 
     def get_element_id(self, element_name):
-        path = self.driver.find_element_by_link_text(element_name).get_attribute("href")
+        path = self.driver.find_element_by_link_text(
+            element_name).get_attribute("href")
         return path.split('/')[-2]
+
+    def delete_service(self, service_name):
+        id = self.get_element_id(service_name)
+        self.driver.find_element_by_id('services__row_%s__action_delete'
+                                       % id).click()
+        self.driver.find_element_by_link_text('Delete Service').click()

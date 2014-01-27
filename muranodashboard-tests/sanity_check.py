@@ -29,7 +29,8 @@ class UISanityTests(UITestCase):
     def test_rename_image(self):
         self.log_in()
         self.navigate_to_images()
-        self.driver.find_element_by_id('marked_images__action_mark_image').click()
+        self.driver.find_element_by_id(
+            'marked_images__action_mark_image').click()
 
         self.select_from_list('image', 'TestImageForDeletion')
         self.find_clean_send(by.By.ID, 'id_title', 'New Image')
@@ -41,7 +42,8 @@ class UISanityTests(UITestCase):
     def test_delete_image(self):
         self.log_in()
         self.navigate_to_images()
-        self.driver.find_element_by_id('marked_images__action_mark_image').click()
+        self.driver.find_element_by_id(
+            'marked_images__action_mark_image').click()
 
         self.select_from_list('image', 'TestImageForDeletion')
         self.find_clean_send(by.By.ID, 'id_title', 'Image for deletion')
@@ -57,7 +59,7 @@ class UISanityTests(UITestCase):
         self.assertFalse(self.check_element_on_page(by.By.LINK_TEXT,
                                                     'TestImageForDeletion'))
 
-    def test_create_demo_service(self):
+    def test_create_and_delete_demo_service(self):
         self.log_in()
         self.navigate_to_environments()
         self.create_environment('test')
@@ -65,3 +67,8 @@ class UISanityTests(UITestCase):
 
         self.assertTrue(self.check_element_on_page(by.By.LINK_TEXT,
                                                    'DemoService'))
+
+        self.delete_service('DemoService')
+
+        self.assertFalse(self.check_element_on_page(by.By.LINK_TEXT,
+                                                    'DemoService'))
