@@ -12,7 +12,6 @@ from muranoclient.client import Client as mclient
 
 class UITestCase(testtools.TestCase):
 
-
     @classmethod
     def setUpClass(cls):
 
@@ -29,6 +28,7 @@ class UITestCase(testtools.TestCase):
         cls.demo_image = cfg.common.demo_image
         cls.linux_image = cfg.common.linux_image
         cls.windows_image = cfg.common.windows_image
+        cls.keypair = cfg.common.keypair_name
 
         cls.elements = ConfigParser.RawConfigParser()
         cls.elements.read('common.ini')
@@ -116,8 +116,13 @@ class UITestCase(testtools.TestCase):
             return False
         return True
 
-    def create_demo_service(self, service_name):
-        self.driver.find_element_by_link_text('Services').click()
+    def env_to_service(self, env_name):
+        element_id = self.get_element_id(env_name)
+        self.driver.find_element_by_id("murano__row_%s__action_show"
+                                       % element_id).click()
+
+    def create_demo_service(self, env_name, service_name):
+        self.env_to_service(env_name)
         self.driver.find_element_by_id('services__action_CreateService').click()
 
         self.select_from_list('service_choice-service', 'Demo Service')
@@ -129,6 +134,45 @@ class UITestCase(testtools.TestCase):
         self.driver.find_element_by_xpath(Next).click()
 
         self.select_from_list('demoService-1-osImage', self.demo_image)
+        Next = self.elements.get('button', 'Create')
+        self.driver.find_element_by_xpath(Next).click()
+
+    def create_linux_telnet(self, env_name, service_name):
+        self.env_to_service(env_name)
+        self.driver.find_element_by_id('services__action_CreateService').click()
+
+        self.select_from_list('service_choice-service', 'Linux Telnet')
+        Next = self.elements.get('button', 'Next')
+        self.driver.find_element_by_xpath(Next).click()
+
+        self.find_clean_send(by.By.ID, 'id_linuxTelnetService-0-name',
+                             service_name)
+        Next = self.elements.get('button', 'Next2')
+        self.driver.find_element_by_xpath(Next).click()
+
+        self.select_from_list('linuxTelnetService-1-osImage',
+                              self.linux_image)
+        self.select_from_list('linuxTelnetService-1-keyPair',
+                              self.keypair)
+        Next = self.elements.get('button', 'Create')
+        self.driver.find_element_by_xpath(Next).click()
+
+    def create_linux_apache(self, env_name, service_name):
+        self.env_to_service(env_name)
+        self.driver.find_element_by_id('services__action_CreateService').click()
+
+        self.select_from_list('service_choice-service', 'Linux Apache')
+        Next = self.elements.get('button', 'Next')
+        self.driver.find_element_by_xpath(Next).click()
+
+        self.find_clean_send(by.By.ID, 'id_linuxApacheService-0-name',
+                             service_name)
+        Next = self.elements.get('button', 'Next2')
+        self.driver.find_element_by_xpath(Next).click()
+        self.select_from_list('linuxApacheService-1-osImage',
+                              self.linux_image)
+        self.select_from_list('linuxApacheService-1-keyPair',
+                              self.keypair)
         Next = self.elements.get('button', 'Create')
         self.driver.find_element_by_xpath(Next).click()
 

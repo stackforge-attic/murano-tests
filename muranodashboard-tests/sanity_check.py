@@ -63,7 +63,7 @@ class UISanityTests(UITestCase):
         self.log_in()
         self.navigate_to_environments()
         self.create_environment('test')
-        self.create_demo_service('DemoService')
+        self.create_demo_service('test', 'DemoService')
 
         self.assertTrue(self.check_element_on_page(by.By.LINK_TEXT,
                                                    'DemoService'))
@@ -72,3 +72,31 @@ class UISanityTests(UITestCase):
 
         self.assertFalse(self.check_element_on_page(by.By.LINK_TEXT,
                                                     'DemoService'))
+
+    def test_create_and_delete_linux_telnet(self):
+        self.log_in()
+        self.navigate_to_environments()
+        self.create_environment('test')
+        self.create_linux_telnet('test', 'linuxtelnet')
+
+        self.assertTrue(self.check_element_on_page(by.By.LINK_TEXT,
+                                                   'linuxtelnet'))
+
+        self.delete_service('linuxtelnet')
+
+        self.assertFalse(self.check_element_on_page(by.By.LINK_TEXT,
+                                                    'linuxtelnet'))
+
+    def test_create_and_delete_linux_apache(self):
+        self.log_in()
+        self.navigate_to_environments()
+        self.create_environment('test')
+        self.create_linux_apache('test', 'linuxapache')
+
+        self.assertTrue(self.check_element_on_page(by.By.LINK_TEXT,
+                                                   'linuxapache'))
+
+        self.delete_service('linuxapache')
+
+        self.assertFalse(self.check_element_on_page(by.By.LINK_TEXT,
+                                                    'linuxapache'))
