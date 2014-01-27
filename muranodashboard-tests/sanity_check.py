@@ -38,11 +38,24 @@ class UISanityTests(UITestCase):
         mark = self.elements.get('button', 'ButtonSubmit')
         self.driver.find_element_by_xpath(mark).click()
 
+<<<<<<< HEAD
     def test_create_demo_service(self):
+=======
+    def test_create_and_delete_demo_service(self):
+>>>>>>> f3efa1b... Add 'create demo service' dashboard test
         self.log_in()
         self.navigate_to_environments()
         self.create_environment('test')
         self.create_demo_service('DemoService')
 
         self.assertTrue(self.check_element_on_page(by.By.LINK_TEXT,
+<<<<<<< HEAD
                                                    'DemoService'))
+=======
+                                                   'DemoService'))
+
+        self.delete_service('DemoService')
+
+        self.assertFalse(self.check_element_on_page(by.By.LINK_TEXT,
+                                                    'DemoService'))
+>>>>>>> f3efa1b... Add 'create demo service' dashboard test
