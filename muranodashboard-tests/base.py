@@ -68,29 +68,33 @@ class UITestCase(testtools.TestCase):
         create = self.elements.get('button', 'InputSubmit')
         self.driver.find_element_by_xpath(create).click()
 
-    def delete_environment(self):
+    def delete_environment(self, env_name):
         self.driver.find_element_by_link_text('Environments').click()
-        self.click_on_more()
-        self.click_on_delete()
+        self.click_on_more(env_name)
+        self.click_on_delete(env_name)
         self.confirm_deletion()
 
-    def edit_environment(self, new_name):
-        self.click_on_more()
-        self.click_on_edit()
+    def edit_environment(self, old_name, new_name):
+        self.click_on_more(old_name)
+        self.click_on_edit(old_name)
         self.find_clean_send(by.By.ID, 'id_name', new_name)
         save = self.elements.get('button', 'InputSubmit')
         self.driver.find_element_by_xpath(save).click()
 
-    def click_on_more(self):
-        more = self.elements.get('button', 'More')
-        self.driver.find_element_by_xpath(more).click()
+    def click_on_more(self, env_name):
+        element_id = self.get_element_id(env_name)
+        self.driver.find_element_by_xpath(
+            ".//*[@id='murano__row__%s']/td[4]/div/a[2]" % element_id).click()
 
-    def click_on_edit(self):
-        self.driver.find_element_by_link_text('Edit Environment').click()
+    def click_on_edit(self, env_name):
+        element_id = self.get_element_id(env_name)
+        self.driver.find_element_by_id(
+            "murano__row_%s__action_edit" % element_id).click()
 
-    def click_on_delete(self):
-        delete = self.elements.get('button', 'ButtonSubmit')
-        self.driver.find_element_by_xpath(delete).click()
+    def click_on_delete(self, env_name):
+        element_id = self.get_element_id(env_name)
+        self.driver.find_element_by_id(
+            "murano__row_%s__action_delete" % element_id).click()
 
     def navigate_to_environments(self):
         self.driver.find_element_by_link_text('Murano').click()
@@ -127,3 +131,7 @@ class UITestCase(testtools.TestCase):
         self.select_from_list('demoService-1-osImage', self.demo_image)
         Next = self.elements.get('button', 'Create')
         self.driver.find_element_by_xpath(Next).click()
+
+    def get_element_id(self, element_name):
+        path = self.driver.find_element_by_link_text(element_name).get_attribute("href")
+        return path.split('/')[-2]
