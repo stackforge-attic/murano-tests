@@ -33,7 +33,10 @@ CommonGroup = [
                help='image for windows services'),
     cfg.StrOpt('keypair_name',
                default='default_key',
-               help='keypair for murano services')
+               help='keypair for murano services'),
+    cfg.StrOpt('asp_git_repository',
+               default='git://github.com/',
+               help='git repository with asp application')
 ]
 
 
