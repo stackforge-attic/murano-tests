@@ -24,6 +24,8 @@ expect "@mistral"
 send -- "cp mistral/etc/mistral.conf.example mistral/etc/mistral.conf\n"
 expect "@mistral"
 
+send -- "sed -i \"s/auth_enable = True/auth_enable = False/\" mistral/etc/mistral.conf\n"
+expect "@mistral"
 send -- "sed -i \"s/rabbit_host = localhost/rabbit_host = "
 send -- [lindex $argv 2]
 send -- "/\" mistral/etc/mistral.conf\n"
