@@ -25,6 +25,9 @@ class UITestCase(testtools.TestCase):
 
         cls.murano_client = mclient('1', endpoint=cfg.common.murano_url,
                                     token=keystone_client.auth_token)
+        cls.demo_image = cfg.common.demo_image
+        cls.linux_image = cfg.common.linux_image
+        cls.windows_image = cfg.common.windows_image
 
     def setUp(self):
         super(UITestCase, self).setUp()
@@ -55,7 +58,8 @@ class UITestCase(testtools.TestCase):
         self.driver.find_element_by_xpath(confirm_deletion).click()
 
     def create_environment(self, env_name):
-        self.driver.find_element_by_id('murano__action_CreateEnvironment').click()
+        self.driver.find_element_by_id(
+            'murano__action_CreateEnvironment').click()
         self.find_clean_send(by.By.ID, 'id_name', env_name)
         create = UITestCase.elements.get('button', 'InputSubmit')
         self.driver.find_element_by_xpath(create).click()
@@ -93,7 +97,9 @@ class UITestCase(testtools.TestCase):
         self.driver.find_element_by_link_text('Images').click()
 
     def select_from_list(self, list_name, value):
-        self.driver.find_element_by_xpath("//select[@name='%s']/option[text()='%s']" % (list_name, value)).click()
+        self.driver.find_element_by_xpath(
+            "//select[@name='%s']/option[text()='%s']" %
+            (list_name, value)).click()
 
     def check_element_on_page(self, method, value):
         try:
@@ -101,3 +107,19 @@ class UITestCase(testtools.TestCase):
         except NoSuchElementException:
             return False
         return True
+
+    def create_demo_service(self, service_name):
+        self.driver.find_element_by_link_text('Services').click()
+        self.driver.find_element_by_id('services__action_CreateService').click()
+
+        self.select_from_list('service_choice-service', 'Demo Service')
+        Next = UITestCase.elements.get('button', 'Next')
+        self.driver.find_element_by_xpath(Next).click()
+
+        self.find_clean_send(by.By.ID, 'id_demoService-0-name', service_name)
+        Next = UITestCase.elements.get('button', 'Next2')
+        self.driver.find_element_by_xpath(Next).click()
+
+        self.select_from_list('demoService-1-osImage', self.demo_image)
+        Next = UITestCase.elements.get('button', 'Create')
+        self.driver.find_element_by_xpath(Next).click()
