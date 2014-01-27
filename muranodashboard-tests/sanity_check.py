@@ -103,3 +103,78 @@ class UISanityTests(UITestCase):
 
         self.assertFalse(self.check_element_on_page(by.By.LINK_TEXT,
                                                     'linuxapache'))
+
+    def test_create_and_delete_ad_service(self):
+        self.log_in()
+        self.navigate_to_environments()
+        self.create_environment('test')
+        self.env_to_service('test')
+        self.create_ad_service('muranotest.domain')
+
+        self.assertTrue(self.check_element_on_page(by.By.LINK_TEXT,
+                                                   'muranotest.domain'))
+
+        self.delete_service('muranotest.domain')
+
+        self.assertFalse(self.check_element_on_page(by.By.LINK_TEXT,
+                                                    'muranotest.domain'))
+
+    def test_create_and_delete_iis_service(self):
+        self.log_in()
+        self.navigate_to_environments()
+        self.create_environment('test')
+        self.env_to_service('test')
+        self.create_iis_service('IISService')
+
+        self.assertTrue(self.check_element_on_page(by.By.LINK_TEXT,
+                                                   'IISService'))
+
+        self.delete_service('IISService')
+
+        self.assertFalse(self.check_element_on_page(by.By.LINK_TEXT,
+                                                    'IISService'))
+
+    def test_create_and_delete_asp_service(self):
+        self.log_in()
+        self.navigate_to_environments()
+        self.create_environment('test')
+        self.env_to_service('test')
+        self.create_asp_service('ASPService')
+
+        self.assertTrue(self.check_element_on_page(by.By.LINK_TEXT,
+                                                   'ASPService'))
+
+        self.delete_service('ASPService')
+
+        self.assertFalse(self.check_element_on_page(by.By.LINK_TEXT,
+                                                    'ASPService'))
+
+    def test_create_and_delete_iisfarm_service(self):
+        self.log_in()
+        self.navigate_to_environments()
+        self.create_environment('test')
+        self.env_to_service('test')
+        self.create_iisfarm_service('IISFarmService')
+
+        self.assertTrue(self.check_element_on_page(by.By.LINK_TEXT,
+                                                   'IISFarmService'))
+
+        self.delete_service('IISFarmService')
+
+        self.assertFalse(self.check_element_on_page(by.By.LINK_TEXT,
+                                                    'IISFarmService'))
+
+    def test_create_and_delete_aspfarm_service(self):
+        self.log_in()
+        self.navigate_to_environments()
+        self.create_environment('test')
+        self.env_to_service('test')
+        self.create_aspfarm_service('ASPFarmService')
+
+        self.assertTrue(self.check_element_on_page(by.By.LINK_TEXT,
+                                                   'ASPFarmService'))
+
+        self.delete_service('ASPFarmService')
+
+        self.assertFalse(self.check_element_on_page(by.By.LINK_TEXT,
+                                                    'ASPFarmService'))
