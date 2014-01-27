@@ -127,3 +127,10 @@ class UITestCase(testtools.TestCase):
         self.select_from_list('demoService-1-osImage', self.demo_image)
         Next = self.elements.get('button', 'Create')
         self.driver.find_element_by_xpath(Next).click()
+
+    def delete_service(self, service_name):
+        service = self.driver.find_element_by_link_text(service_name)
+        id = service.get_attribute("href").split('/')[-2]
+        self.driver.find_element_by_id('services__row_%s__action_delete'
+                                       % id).click()
+        self.driver.find_element_by_link_text('Delete Service').click()
