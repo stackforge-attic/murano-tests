@@ -93,12 +93,6 @@ expect "@murano"
 send -- "sed -i \"s/disable_rollback=False/disable_rollback=True/\" /usr/local/lib/python2.7/dist-packages/muranoconductor/commands/cloud_formation.py\n"
 expect "@murano"
 
-send -- "cd /opt/git/murano-repository; service openstack-murano-repository stop\n"
-expect "@murano"
-send -- "git fetch https://tnurlygayanov@review.openstack.org/stackforge/murano-repository refs/changes/59/70159/2 && git checkout FETCH_HEAD\n"
-expect "@murano"
-send -- "chmod +x setup.sh ; ./setup.sh uninstall ; ./setup.sh install\n"
-expect "@murano"
 
 send -- "service murano-api restart\n"
 expect "@murano"

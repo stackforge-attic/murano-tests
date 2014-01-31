@@ -76,12 +76,6 @@ expect "@murano"
 send -- "cd /var/cache/muranoconductor-cache ; rm -rf *\n"
 expect "@murano"
 
-send -- "cd /opt/git/murano-repository; service openstack-murano-repository stop\n"
-expect "@murano"
-send -- "git fetch https://tnurlygayanov@review.openstack.org/stackforge/murano-repository refs/changes/59/70159/2 && git checkout FETCH_HEAD\n"
-expect "@murano"
-send -- "chmod +x setup.sh ; ./setup.sh uninstall ; ./setup.sh install\n"
-
 send -- "service murano-api restart\n"
 expect "@murano"
 send -- "service murano-conductor restart\n"
