@@ -1,11 +1,14 @@
 import testtools
 import ConfigParser
 import random
+import time
 
 from selenium import webdriver
 import selenium.webdriver.common.by as by
 import config.config as cfg
 from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from selenium.webdriver.support.ui import WebDriverWait
 
 from keystoneclient.v2_0 import client as ksclient
 from muranoclient.client import Client as mclient
@@ -37,9 +40,11 @@ class UITestCase(testtools.TestCase):
 
     def setUp(self):
         super(UITestCase, self).setUp()
-        self.driver = webdriver.Firefox()
+        self.driver = webdriver.Remote(
+            command_executor=cfg.common.selenium_server,
+            desired_capabilities=DesiredCapabilities.FIREFOX)
         self.driver.get(cfg.common.horizon_url + '/')
-        self.driver.implicitly_wait(5)
+        self.driver.implicitly_wait(10)
 
     def tearDown(self):
         super(UITestCase, self).tearDown()
@@ -55,9 +60,9 @@ class UITestCase(testtools.TestCase):
         self.driver.find_element_by_xpath(sign_in).click()
         self.navigate_to_environments()
 
-    def fill_field(self, by_find, find_element, send):
-        self.driver.find_element(by=by_find, value=find_element).clear()
-        self.driver.find_element(by=by_find, value=find_element).send_keys(send)
+    def fill_field(self, by_find, field, value):
+        self.driver.find_element(by=by_find, value=field).clear()
+        self.driver.find_element(by=by_find, value=field).send_keys(value)
 
     def confirm_deletion(self):
         confirm_deletion = self.elements.get('button', 'ConfirmDeletion')
@@ -127,60 +132,59 @@ class UITestCase(testtools.TestCase):
         self.driver.find_element_by_id('services__action_CreateService').click()
 
         self.select_from_list('service_choice-service', 'Demo Service')
-        Next = self.elements.get('button', 'Next')
-        self.driver.find_element_by_xpath(Next).click()
+        next_button = self.elements.get('button', 'Next')
+        self.driver.find_element_by_xpath(next_button).click()
 
         self.fill_field(by.By.ID, 'id_demoService-0-name', service_name)
-        Next = self.elements.get('button', 'Next2')
-        self.driver.find_element_by_xpath(Next).click()
+        next_button = self.elements.get('button', 'Next2')
+        self.driver.find_element_by_xpath(next_button).click()
 
         self.select_from_list('demoService-1-osImage', self.demo_image)
-        Next = self.elements.get('button', 'Create')
-        self.driver.find_element_by_xpath(Next).click()
+        next_button = self.elements.get('button', 'Create')
+        self.driver.find_element_by_xpath(next_button).click()
 
     def create_linux_telnet(self, service_name):
         self.driver.find_element_by_id('services__action_CreateService').click()
 
         self.select_from_list('service_choice-service', 'Linux Telnet')
-        Next = self.elements.get('button', 'Next')
-        self.driver.find_element_by_xpath(Next).click()
+        next_button = self.elements.get('button', 'Next')
+        self.driver.find_element_by_xpath(next_button).click()
 
         self.fill_field(by.By.ID, 'id_linuxTelnetService-0-name',
-                             service_name)
-        Next = self.elements.get('button', 'Next2')
-        self.driver.find_element_by_xpath(Next).click()
+                        service_name)
+        next_button = self.elements.get('button', 'Next2')
+        self.driver.find_element_by_xpath(next_button).click()
 
         self.select_from_list('linuxTelnetService-1-osImage',
                               self.linux_image)
         self.select_from_list('linuxTelnetService-1-keyPair',
                               self.keypair)
-        Next = self.elements.get('button', 'Create')
-        self.driver.find_element_by_xpath(Next).click()
+        next_button = self.elements.get('button', 'Create')
+        self.driver.find_element_by_xpath(next_button).click()
 
     def create_linux_apache(self, service_name):
         self.driver.find_element_by_id('services__action_CreateService').click()
 
         self.select_from_list('service_choice-service', 'Linux Apache')
-        Next = self.elements.get('button', 'Next')
-        self.driver.find_element_by_xpath(Next).click()
+        next_button = self.elements.get('button', 'Next')
+        self.driver.find_element_by_xpath(next_button).click()
 
-        self.fill_field(by.By.ID, 'id_linuxApacheService-0-name',
-                             service_name)
-        Next = self.elements.get('button', 'Next2')
-        self.driver.find_element_by_xpath(Next).click()
+        self.fill_field(by.By.ID, 'id_linuxApacheService-0-name', service_name)
+        next_button = self.elements.get('button', 'Next2')
+        self.driver.find_element_by_xpath(next_button).click()
         self.select_from_list('linuxApacheService-1-osImage',
                               self.linux_image)
         self.select_from_list('linuxApacheService-1-keyPair',
                               self.keypair)
-        Next = self.elements.get('button', 'Create')
-        self.driver.find_element_by_xpath(Next).click()
+        next_button = self.elements.get('button', 'Create')
+        self.driver.find_element_by_xpath(next_button).click()
 
     def create_ad_service(self, service_name):
         self.driver.find_element_by_id('services__action_CreateService').click()
 
         self.select_from_list('service_choice-service', 'Active Directory')
-        Next = self.elements.get('button', 'Next')
-        self.driver.find_element_by_xpath(Next).click()
+        next_button = self.elements.get('button', 'Next')
+        self.driver.find_element_by_xpath(next_button).click()
 
         self.fill_field(
             by.By.ID, 'id_activeDirectory-0-name', service_name)
@@ -192,39 +196,39 @@ class UITestCase(testtools.TestCase):
             by.By.ID, 'id_activeDirectory-0-recoveryPassword', 'P@ssw0rd')
         self.fill_field(
             by.By.ID, 'id_activeDirectory-0-recoveryPassword-clone', 'P@ssw0rd')
-        Next = self.elements.get('button', 'Next2')
-        self.driver.find_element_by_xpath(Next).click()
+        next_button = self.elements.get('button', 'Next2')
+        self.driver.find_element_by_xpath(next_button).click()
 
         self.select_from_list('activeDirectory-1-osImage', self.windows_image)
-        Next = self.elements.get('button', 'Create')
-        self.driver.find_element_by_xpath(Next).click()
+        next_button = self.elements.get('button', 'Create')
+        self.driver.find_element_by_xpath(next_button).click()
 
     def create_iis_service(self, service_name):
         self.driver.find_element_by_id('services__action_CreateService').click()
 
         self.select_from_list(
             'service_choice-service', 'Internet Information Services')
-        Next = self.elements.get('button', 'Next')
-        self.driver.find_element_by_xpath(Next).click()
+        next_button = self.elements.get('button', 'Next')
+        self.driver.find_element_by_xpath(next_button).click()
 
         self.fill_field(by.By.ID, 'id_webServer-0-name', service_name)
         self.fill_field(
             by.By.ID, 'id_webServer-0-adminPassword', 'P@ssw0rd')
         self.fill_field(
             by.By.ID, 'id_webServer-0-adminPassword-clone', 'P@ssw0rd')
-        Next = self.elements.get('button', 'Next2')
-        self.driver.find_element_by_xpath(Next).click()
+        next_button = self.elements.get('button', 'Next2')
+        self.driver.find_element_by_xpath(next_button).click()
 
         self.select_from_list('webServer-1-osImage', self.windows_image)
-        Next = self.elements.get('button', 'Create')
-        self.driver.find_element_by_xpath(Next).click()
+        next_button = self.elements.get('button', 'Create')
+        self.driver.find_element_by_xpath(next_button).click()
 
     def create_asp_service(self, service_name):
         self.driver.find_element_by_id('services__action_CreateService').click()
 
         self.select_from_list('service_choice-service', 'ASP.NET Application')
-        Next = self.elements.get('button', 'Next')
-        self.driver.find_element_by_xpath(Next).click()
+        next_button = self.elements.get('button', 'Next')
+        self.driver.find_element_by_xpath(next_button).click()
 
         self.fill_field(by.By.ID, 'id_aspNetApp-0-name', service_name)
         self.fill_field(
@@ -233,40 +237,40 @@ class UITestCase(testtools.TestCase):
             by.By.ID, 'id_aspNetApp-0-adminPassword-clone', 'P@ssw0rd')
         self.fill_field(
             by.By.ID, 'id_aspNetApp-0-repository', self.asp_git_repository)
-        Next = self.elements.get('button', 'Next2')
-        self.driver.find_element_by_xpath(Next).click()
+        next_button = self.elements.get('button', 'Next2')
+        self.driver.find_element_by_xpath(next_button).click()
 
         self.select_from_list('aspNetApp-1-osImage', self.windows_image)
-        Next = self.elements.get('button', 'Create')
-        self.driver.find_element_by_xpath(Next).click()
+        next_button = self.elements.get('button', 'Create')
+        self.driver.find_element_by_xpath(next_button).click()
 
     def create_iisfarm_service(self, service_name):
         self.driver.find_element_by_id('services__action_CreateService').click()
 
         self.select_from_list(
             'service_choice-service', 'Internet Information Services Web Farm')
-        Next = self.elements.get('button', 'Next')
-        self.driver.find_element_by_xpath(Next).click()
+        next_button = self.elements.get('button', 'Next')
+        self.driver.find_element_by_xpath(next_button).click()
 
         self.fill_field(by.By.ID, 'id_webServerFarm-0-name', service_name)
         self.fill_field(
             by.By.ID, 'id_webServerFarm-0-adminPassword', 'P@ssw0rd')
         self.fill_field(
             by.By.ID, 'id_webServerFarm-0-adminPassword-clone', 'P@ssw0rd')
-        Next = self.elements.get('button', 'Next2')
-        self.driver.find_element_by_xpath(Next).click()
+        next_button = self.elements.get('button', 'Next2')
+        self.driver.find_element_by_xpath(next_button).click()
 
         self.select_from_list('webServerFarm-1-osImage', self.windows_image)
-        Next = self.elements.get('button', 'Create')
-        self.driver.find_element_by_xpath(Next).click()
+        next_button = self.elements.get('button', 'Create')
+        self.driver.find_element_by_xpath(next_button).click()
 
     def create_aspfarm_service(self, service_name):
         self.driver.find_element_by_id('services__action_CreateService').click()
 
         self.select_from_list(
             'service_choice-service', 'ASP.NET Application Web Farm')
-        Next = self.elements.get('button', 'Next')
-        self.driver.find_element_by_xpath(Next).click()
+        next_button = self.elements.get('button', 'Next')
+        self.driver.find_element_by_xpath(next_button).click()
 
         self.fill_field(by.By.ID, 'id_aspNetAppFarm-0-name', service_name)
         self.fill_field(
@@ -275,19 +279,19 @@ class UITestCase(testtools.TestCase):
             by.By.ID, 'id_aspNetAppFarm-0-adminPassword-clone', 'P@ssw0rd')
         self.fill_field(
             by.By.ID, 'id_aspNetAppFarm-0-repository', self.asp_git_repository)
-        Next = self.elements.get('button', 'Next2')
-        self.driver.find_element_by_xpath(Next).click()
+        next_button = self.elements.get('button', 'Next2')
+        self.driver.find_element_by_xpath(next_button).click()
 
         self.select_from_list('aspNetAppFarm-1-osImage', self.windows_image)
-        Next = self.elements.get('button', 'Create')
-        self.driver.find_element_by_xpath(Next).click()
+        next_button = self.elements.get('button', 'Create')
+        self.driver.find_element_by_xpath(next_button).click()
 
     def create_mssql_service(self, service_name):
         self.driver.find_element_by_id('services__action_CreateService').click()
 
         self.select_from_list('service_choice-service', 'MS SQL Server')
-        Next = self.elements.get('button', 'Next')
-        self.driver.find_element_by_xpath(Next).click()
+        next_button = self.elements.get('button', 'Next')
+        self.driver.find_element_by_xpath(next_button).click()
 
         self.fill_field(by.By.ID, 'id_msSqlServer-0-name', service_name)
         self.fill_field(
@@ -298,19 +302,19 @@ class UITestCase(testtools.TestCase):
             by.By.ID, 'id_msSqlServer-0-saPassword', 'P@ssw0rd')
         self.fill_field(
             by.By.ID, 'id_msSqlServer-0-saPassword-clone', 'P@ssw0rd')
-        Next = self.elements.get('button', 'Next2')
-        self.driver.find_element_by_xpath(Next).click()
+        next_button = self.elements.get('button', 'Next2')
+        self.driver.find_element_by_xpath(next_button).click()
 
         self.select_from_list('msSqlServer-1-osImage', self.windows_image)
-        Next = self.elements.get('button', 'Create')
-        self.driver.find_element_by_xpath(Next).click()
+        next_button = self.elements.get('button', 'Create')
+        self.driver.find_element_by_xpath(next_button).click()
 
     def create_sql_cluster_service(self, service_name, domain_name):
         self.driver.find_element_by_id('services__action_CreateService').click()
 
         self.select_from_list('service_choice-service', 'MS SQL Server Cluster')
-        Next = self.elements.get('button', 'Next')
-        self.driver.find_element_by_xpath(Next).click()
+        next_button = self.elements.get('button', 'Next')
+        self.driver.find_element_by_xpath(next_button).click()
 
         self.fill_field(
             by.By.ID, 'id_msSqlClusterServer-0-name', service_name)
@@ -323,8 +327,8 @@ class UITestCase(testtools.TestCase):
             by.By.ID, 'id_msSqlClusterServer-0-saPassword', 'P@ssw0rd')
         self.fill_field(
             by.By.ID, 'id_msSqlClusterServer-0-saPassword-clone', 'P@ssw0rd')
-        Next = self.elements.get('button', 'Next2')
-        self.driver.find_element_by_xpath(Next).click()
+        next_button = self.elements.get('button', 'Next2')
+        self.driver.find_element_by_xpath(next_button).click()
 
         self.fill_field(
             by.By.ID, 'id_msSqlClusterServer-1-clusterIp', '1.1.1.1')
@@ -343,8 +347,8 @@ class UITestCase(testtools.TestCase):
         self.fill_field(
             by.By.ID, 'id_msSqlClusterServer-1-sqlServicePassword-clone',
             'P@ssw0rd')
-        Next = self.elements.get('button', 'Next2')
-        self.driver.find_element_by_xpath(Next).click()
+        next_button = self.elements.get('button', 'Next2')
+        self.driver.find_element_by_xpath(next_button).click()
 
         cluster_ip = self.get_env_subnet()
         self.fill_field(
@@ -352,18 +356,18 @@ class UITestCase(testtools.TestCase):
         listener_ip = self.get_env_subnet()
         self.fill_field(
             by.By.ID, 'id_msSqlClusterServer-1-agListenerIP', listener_ip)
-        Next = self.elements.get('button', 'Next2')
-        self.driver.find_element_by_xpath(Next).click()
+        next_button = self.elements.get('button', 'Next2')
+        self.driver.find_element_by_xpath(next_button).click()
 
         self.fill_field(
             by.By.ID, 'id_msSqlClusterServer-2-databases', 'testbase')
-        Next = self.elements.get('button', 'Next2')
-        self.driver.find_element_by_xpath(Next).click()
+        next_button = self.elements.get('button', 'Next2')
+        self.driver.find_element_by_xpath(next_button).click()
 
         self.select_from_list(
             'msSqlClusterServer-3-osImage', self.windows_image)
-        Next = self.elements.get('button', 'Create')
-        self.driver.find_element_by_xpath(Next).click()
+        next_button = self.elements.get('button', 'Create')
+        self.driver.find_element_by_xpath(next_button).click()
 
     def get_element_id(self, element_name):
         path = self.driver.find_element_by_link_text(
@@ -382,3 +386,34 @@ class UITestCase(testtools.TestCase):
         subnet = help_text.split('.')[-2]
         num = random.randint(0, 255)
         return '10.0.%s.%d' % (subnet, num)
+
+    def check_that_error_message_is_correct(self, error_message, num):
+        next_button = self.elements.get('button', 'Next2')
+        self.driver.find_element_by_xpath(next_button).click()
+        time.sleep(3)
+        appeared_text = self.driver.find_element_by_xpath(
+            "(.//div[@class = 'control-group form-field clearfix error'][%d])"
+            % num).text
+        index = appeared_text.find(error_message)
+
+        if index != -1:
+            return True
+        else:
+            return False
+
+    def check_that_alert_message_is_appeared(self, error_message):
+        next_button = self.elements.get('button', 'Next2')
+        self.driver.find_element_by_xpath(next_button).click()
+
+        xpath = ".//*[@id='create_service_form']/div[2]/input[2]"
+        WebDriverWait(self.driver, 10).until(lambda s: s.find_element(
+            by.By.XPATH, xpath).is_displayed())
+
+        appeared_text = self.driver.find_element_by_xpath(
+            "(.//div[@class = 'alert alert-message alert-error'])").text
+        index = appeared_text.find(error_message)
+
+        if index != -1:
+            return True
+        else:
+            return False

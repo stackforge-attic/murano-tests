@@ -1,8 +1,10 @@
 import sys
 import os
 sys.path.append(os.getcwd())
+
 from base import UITestCase
 import selenium.webdriver.common.by as by
+from selenium.webdriver.support.ui import WebDriverWait
 
 
 class UISanityTests(UITestCase):
@@ -128,7 +130,6 @@ class UISanityTests(UITestCase):
 
         self.assertTrue(self.check_element_on_page(by.By.LINK_TEXT,
                                                    'IISService'))
-
         self.delete_service('IISService')
 
         self.assertFalse(self.check_element_on_page(by.By.LINK_TEXT,
@@ -184,7 +185,7 @@ class UISanityTests(UITestCase):
         self.navigate_to_environments()
         self.create_environment('test')
         self.env_to_service('test')
-        self.create_mssql_service('ASPFarmService')
+        self.create_mssql_service('MSSQLService')
 
         self.assertTrue(self.check_element_on_page(by.By.LINK_TEXT,
                                                    'MSSQLService'))
@@ -213,3 +214,314 @@ class UISanityTests(UITestCase):
 
         self.assertFalse(self.check_element_on_page(by.By.LINK_TEXT,
                                                     'SQLCluster'))
+
+    def test_check_regex_expression_for_ad_name(self):
+        self.log_in()
+        self.navigate_to_environments()
+        self.create_environment('test')
+        self.env_to_service('test')
+
+        self.driver.find_element_by_id('services__action_CreateService').click()
+
+        self.select_from_list('service_choice-service', 'Active Directory')
+        next_button = self.elements.get('button', 'Next')
+        self.driver.find_element_by_xpath(next_button).click()
+
+        service_name = 'id_activeDirectory-0-name'
+
+        self.fill_field(by.By.ID, field=service_name, value='a')
+        self.assertTrue(self.check_that_error_message_is_correct(
+            'Ensure this value has at least 2 characters (it has 1).', 1))
+
+        self.fill_field(by.By.ID, field=service_name, value='aa')
+        self.assertFalse(self.check_that_error_message_is_correct(
+            'Ensure this value has at least 2 characters (it has 1).', 1))
+
+        self.fill_field(by.By.ID, field=service_name, value='@ct!v3')
+        self.assertTrue(self.check_that_error_message_is_correct(
+            'Only letters, numbers and dashes in the middle are allowed.', 1))
+
+        self.fill_field(by.By.ID, field=service_name, value='active.com')
+        self.assertFalse(self.check_that_error_message_is_correct(
+            'Only letters, numbers and dashes in the middle are allowed.', 1))
+
+        self.fill_field(by.By.ID, field=service_name, value='domain')
+        self.assertTrue(self.check_that_error_message_is_correct(
+            'Single-level domain is not appropriate.', 1))
+
+        self.fill_field(by.By.ID, field=service_name, value='domain.com')
+        self.assertFalse(self.check_that_error_message_is_correct(
+            'Single-level domain is not appropriate.', 1))
+
+        self.fill_field(by.By.ID, field=service_name,
+                        value='morethan15symbols.beforedot')
+        self.assertTrue(self.check_that_error_message_is_correct(
+            'NetBIOS name cannot be shorter than'
+            ' 1 symbol and longer than 15 symbols.', 1))
+
+        self.fill_field(by.By.ID, field=service_name,
+                        value='lessthan15.beforedot')
+        self.assertFalse(self.check_that_error_message_is_correct(
+            'NetBIOS name cannot be shorter than'
+            ' 1 symbol and longer than 15 symbols.', 1))
+
+        self.fill_field(by.By.ID, field=service_name, value='.domain.local')
+        self.assertTrue(self.check_that_error_message_is_correct(
+            'Period characters are allowed only when '
+            'they are used to delimit the components of domain style names', 1))
+
+        self.fill_field(by.By.ID, field=service_name, value='domain.local')
+        self.assertFalse(self.check_that_error_message_is_correct(
+            'Period characters are allowed only when '
+            'they are used to delimit the components of domain style names', 1))
+
+    def test_check_regex_expression_for_iis_name(self):
+        self.log_in()
+        self.navigate_to_environments()
+        self.create_environment('test')
+        self.env_to_service('test')
+
+        self.driver.find_element_by_id('services__action_CreateService').click()
+
+        self.select_from_list('service_choice-service',
+                              'Internet Information Services')
+        next_button = self.elements.get('button', 'Next')
+        self.driver.find_element_by_xpath(next_button).click()
+
+        service_name = 'id_webServer-0-name'
+
+        self.fill_field(by.By.ID, field=service_name, value='a')
+        self.assertTrue(self.check_that_error_message_is_correct(
+            'Ensure this value has at least 2 characters (it has 1).', 1))
+
+        self.fill_field(by.By.ID, field=service_name, value='aa')
+        self.assertFalse(self.check_that_error_message_is_correct(
+            'Ensure this value has at least 2 characters (it has 1).', 1))
+
+        self.fill_field(by.By.ID, field=service_name, value='S3rv!$')
+        self.assertTrue(self.check_that_error_message_is_correct(
+            'Just letters, numbers, underscores and hyphens are allowed.', 1))
+
+        self.fill_field(by.By.ID, field=service_name, value='Service')
+        self.assertFalse(self.check_that_error_message_is_correct(
+            'Just letters, numbers, underscores and hyphens are allowed.', 1))
+
+    def test_check_regex_expression_for_git_repo_field(self):
+        self.log_in()
+        self.navigate_to_environments()
+        self.create_environment('test')
+        self.env_to_service('test')
+
+        self.driver.find_element_by_id('services__action_CreateService').click()
+
+        self.select_from_list('service_choice-service', 'ASP.NET Application')
+        next_button = self.elements.get('button', 'Next')
+        self.driver.find_element_by_xpath(next_button).click()
+
+        git_repository = 'id_aspNetApp-0-repository'
+
+        self.fill_field(by.By.ID, field=git_repository, value='a')
+        self.assertTrue(self.check_that_error_message_is_correct(
+            'Enter correct git repository url', 4))
+
+        self.fill_field(by.By.ID, field=git_repository, value='://@:')
+        self.assertTrue(self.check_that_error_message_is_correct(
+            'Enter correct git repository url', 4))
+
+    def test_check_validation_for_hostname_template_field(self):
+        self.log_in()
+        self.navigate_to_environments()
+        self.create_environment('test')
+        self.env_to_service('test')
+
+        self.driver.find_element_by_id('services__action_CreateService').click()
+
+        self.select_from_list('service_choice-service', 'Demo Service')
+        next_button = self.elements.get('button', 'Next')
+        self.driver.find_element_by_xpath(next_button).click()
+
+        self.fill_field(by.By.ID, field='id_demoService-0-name', value='demo')
+        self.fill_field(by.By.ID, field='id_demoService-0-unitNamingPattern',
+                        value='demo')
+
+        xpath = ".//*[@id='create_service_form']/div[1]/div[1]/fieldset/div[1]"
+
+        next_button = self.elements.get('button', 'Next2')
+        self.driver.find_element_by_xpath(next_button).click()
+        self.assertTrue(self.check_element_on_page(by.By.XPATH, xpath))
+
+        self.fill_field(by.By.ID, field='id_demoService-0-dcInstances',
+                        value='1')
+        next_button = self.elements.get('button', 'Next2')
+        self.driver.find_element_by_xpath(next_button).click()
+
+        id = 'id_demoService-1-osImage'
+        WebDriverWait(self.driver, 10).until(lambda s: s.find_element(
+            by.By.ID, id).is_displayed())
+
+    def test_check_bool_field_validation(self):
+        self.log_in()
+        self.navigate_to_environments()
+        self.create_environment('test')
+        self.env_to_service('test')
+
+        self.driver.find_element_by_id('services__action_CreateService').click()
+
+        self.select_from_list('service_choice-service', 'MS SQL Server Cluster')
+        next_button = self.elements.get('button', 'Next')
+        self.driver.find_element_by_xpath(next_button).click()
+
+        self.fill_field(by.By.ID, 'id_msSqlClusterServer-0-name', 'ms-sql')
+        self.fill_field(
+            by.By.ID, 'id_msSqlClusterServer-0-adminPassword', 'P@ssw0rd')
+        self.fill_field(
+            by.By.ID, 'id_msSqlClusterServer-0-adminPassword-clone', 'P@ssw0rd')
+
+        self.driver.find_element_by_id(
+            'id_msSqlClusterServer-0-externalAD').click()
+        self.fill_field(
+            by.By.ID, 'id_msSqlClusterServer-0-domainAdminUserName', 'user')
+        self.fill_field(
+            by.By.ID, 'id_msSqlClusterServer-0-domainAdminPassword', 'P@ssw0rd')
+        self.fill_field(by.By.ID,
+                        'id_msSqlClusterServer-0-domainAdminPassword-clone',
+                        'anotherP@ssw0rd')
+        self.fill_field(
+            by.By.ID, 'id_msSqlClusterServer-0-saPassword', 'P@ssw0rd')
+        self.fill_field(
+            by.By.ID, 'id_msSqlClusterServer-0-saPassword-clone', 'P@ssw0rd')
+        next_button = self.elements.get('button', 'Next2')
+        self.driver.find_element_by_xpath(next_button).click()
+        self.assertTrue(self.check_that_alert_message_is_appeared(
+            'Active Directory Passwords don\'t match'))
+
+        self.driver.find_element_by_id(
+            'id_msSqlClusterServer-0-externalAD').click()
+
+        self.assertTrue(self.check_that_error_message_is_correct(
+            'This field is required.', 1))
+
+    def test_positive_scenario_1_for_the_MS_SQL_Cluster_Form(self):
+        """
+            Scenario 1: External AD and Mixed-Mode Auth checkboxes
+            are not selected. User select created earlier domain.
+        """
+
+        self.log_in()
+        self.navigate_to_environments()
+        self.create_environment('scenario_1')
+        self.env_to_service('scenario_1')
+
+        self.create_ad_service('activeDirectory.mssql')
+        self.assertTrue(self.check_element_on_page(by.By.LINK_TEXT,
+                                                   'activeDirectory.mssql'))
+
+        self.driver.find_element_by_link_text('Create Service').click()
+
+        self.select_from_list('service_choice-service', 'MS SQL Server Cluster')
+        next_button = self.elements.get('button', 'Next')
+        self.driver.find_element_by_xpath(next_button).click()
+
+        self.fill_field(by.By.ID, 'id_msSqlClusterServer-0-name', 'ms-sql')
+        self.fill_field(
+            by.By.ID, 'id_msSqlClusterServer-0-adminPassword', 'P@ssw0rd')
+        self.fill_field(
+            by.By.ID, 'id_msSqlClusterServer-0-adminPassword-clone', 'P@ssw0rd')
+
+        self.select_from_list('msSqlClusterServer-0-domain',
+                              'activeDirectory.mssql')
+
+        self.driver.find_element_by_id(
+            'id_msSqlClusterServer-0-mixedModeAuth').click()
+
+        next_button = self.elements.get('button', 'Next2')
+        self.driver.find_element_by_xpath(next_button).click()
+        self.assertTrue(self.check_element_on_page(
+            by.By.ID, 'id_msSqlClusterServer-1-clusterIp'))
+
+    def test_positive_scenario_2_for_the_MS_SQL_Cluster_Form(self):
+        """
+            Scenario 2: External AD field is selected (and user fill
+            all required fields here) and Mixed-Mode Auth checkbox
+            is not selected.
+        """
+
+        self.log_in()
+        self.navigate_to_environments()
+        self.create_environment('scenario_2')
+        self.env_to_service('scenario_2')
+
+        self.driver.find_element_by_link_text('Create Service').click()
+
+        self.select_from_list('service_choice-service', 'MS SQL Server Cluster')
+        next_button = self.elements.get('button', 'Next')
+        self.driver.find_element_by_xpath(next_button).click()
+
+        self.fill_field(by.By.ID, 'id_msSqlClusterServer-0-name', 'ms-sql')
+        self.fill_field(
+            by.By.ID, 'id_msSqlClusterServer-0-adminPassword', 'P@ssw0rd')
+        self.fill_field(
+            by.By.ID, 'id_msSqlClusterServer-0-adminPassword-clone', 'P@ssw0rd')
+
+        self.driver.find_element_by_id(
+            'id_msSqlClusterServer-0-externalAD').click()
+        self.fill_field(
+            by.By.ID, 'id_msSqlClusterServer-0-domainAdminUserName', 'user')
+        self.fill_field(
+            by.By.ID, 'id_msSqlClusterServer-0-domainAdminPassword', 'P@ssw0rd')
+        self.fill_field(by.By.ID,
+                        'id_msSqlClusterServer-0-domainAdminPassword-clone',
+                        'P@ssw0rd')
+
+        self.driver.find_element_by_id(
+            'id_msSqlClusterServer-0-mixedModeAuth').click()
+
+        next_button = self.elements.get('button', 'Next2')
+        self.driver.find_element_by_xpath(next_button).click()
+        self.assertTrue(self.check_element_on_page(
+            by.By.ID, 'id_msSqlClusterServer-1-clusterIp'))
+
+    def test_positive_scenario_3_for_the_MS_SQL_Cluster_Form(self):
+        """
+            Scenario 3: External AD and Mixed-Mode Auth checkboxes are selected.
+            User have to fill all required fields.
+        """
+
+        self.log_in()
+        self.navigate_to_environments()
+        self.create_environment('scenario_3')
+        self.env_to_service('scenario_3')
+
+        self.driver.find_element_by_link_text('Create Service').click()
+
+        self.select_from_list('service_choice-service', 'MS SQL Server Cluster')
+        next_button = self.elements.get('button', 'Next')
+        self.driver.find_element_by_xpath(next_button).click()
+
+        self.fill_field(by.By.ID, 'id_msSqlClusterServer-0-name', 'ms-sql')
+        self.fill_field(
+            by.By.ID, 'id_msSqlClusterServer-0-adminPassword', 'P@ssw0rd')
+        self.fill_field(
+            by.By.ID, 'id_msSqlClusterServer-0-adminPassword-clone', 'P@ssw0rd')
+
+        self.driver.find_element_by_id(
+            'id_msSqlClusterServer-0-externalAD').click()
+        self.fill_field(
+            by.By.ID, 'id_msSqlClusterServer-0-domainAdminUserName', 'user')
+        self.fill_field(
+            by.By.ID, 'id_msSqlClusterServer-0-domainAdminPassword', 'P@ssw0rd')
+        self.fill_field(by.By.ID,
+                        'id_msSqlClusterServer-0-domainAdminPassword-clone',
+                        'P@ssw0rd')
+
+        self.fill_field(
+            by.By.ID, 'id_msSqlClusterServer-0-saPassword', 'P@ssw0rd')
+        self.fill_field(
+            by.By.ID, 'id_msSqlClusterServer-0-saPassword-clone', 'P@ssw0rd')
+
+        next_button = self.elements.get('button', 'Next2')
+        self.driver.find_element_by_xpath(next_button).click()
+        self.assertTrue(self.check_element_on_page(
+            by.By.ID, 'id_msSqlClusterServer-1-clusterIp'))
+
+
