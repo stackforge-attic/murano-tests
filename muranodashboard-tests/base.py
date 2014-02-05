@@ -2,6 +2,7 @@ import testtools
 import ConfigParser
 import random
 import time
+import json
 
 from selenium import webdriver
 import selenium.webdriver.common.by as by
@@ -12,6 +13,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 from keystoneclient.v2_0 import client as ksclient
 from muranoclient.client import Client as mclient
+from glanceclient import Client as gclient
 
 
 class UITestCase(testtools.TestCase):
@@ -29,9 +31,14 @@ class UITestCase(testtools.TestCase):
         cls.murano_client = mclient('1', endpoint=cfg.common.murano_url,
                                     token=keystone_client.auth_token)
 
-        cls.demo_image = cfg.common.demo_image
-        cls.linux_image = cfg.common.linux_image
-        cls.windows_image = cfg.common.windows_image
+        glance_endpoint = keystone_client.service_catalog.url_for(
+            service_type='image', endpoint_type='publicURL')
+        glance = gclient('1', endpoint=glance_endpoint,
+                         token=keystone_client.auth_token)
+
+        cls.demo_image = cls.get_image_name('demo', glance)
+        cls.linux_image = cls.get_image_name('linux', glance)
+        cls.windows_image = cls.get_image_name('windows', glance)
         cls.keypair = cfg.common.keypair_name
         cls.asp_git_repository = cfg.common.asp_git_repository
 
@@ -59,6 +66,14 @@ class UITestCase(testtools.TestCase):
         sign_in = self.elements.get('button', 'ButtonSubmit')
         self.driver.find_element_by_xpath(sign_in).click()
         self.navigate_to_environments()
+
+    def get_image_name(self, type, glance):
+        for i in glance.images.list():
+            if 'murano_image_info' in i.properties.keys():
+                if type in json.loads(
+                        i.properties['murano_image_info'])['type']:
+                    return json.loads(i.properties[
+                        'murano_image_info'])['title']
 
     def fill_field(self, by_find, field, value):
         self.driver.find_element(by=by_find, value=field).clear()
@@ -129,7 +144,8 @@ class UITestCase(testtools.TestCase):
                                        % element_id).click()
 
     def create_demo_service(self, service_name):
-        self.driver.find_element_by_id('services__action_CreateService').click()
+        self.driver.find_element_by_id(
+            'services__action_CreateService').click()
 
         self.select_from_list('service_choice-service', 'Demo Service')
         next_button = self.elements.get('button', 'Next')
@@ -144,7 +160,8 @@ class UITestCase(testtools.TestCase):
         self.driver.find_element_by_xpath(next_button).click()
 
     def create_linux_telnet(self, service_name):
-        self.driver.find_element_by_id('services__action_CreateService').click()
+        self.driver.find_element_by_id(
+            'services__action_CreateService').click()
 
         self.select_from_list('service_choice-service', 'Linux Telnet')
         next_button = self.elements.get('button', 'Next')
@@ -163,7 +180,8 @@ class UITestCase(testtools.TestCase):
         self.driver.find_element_by_xpath(next_button).click()
 
     def create_linux_apache(self, service_name):
-        self.driver.find_element_by_id('services__action_CreateService').click()
+        self.driver.find_element_by_id(
+            'services__action_CreateService').click()
 
         self.select_from_list('service_choice-service', 'Linux Apache')
         next_button = self.elements.get('button', 'Next')
@@ -180,7 +198,8 @@ class UITestCase(testtools.TestCase):
         self.driver.find_element_by_xpath(next_button).click()
 
     def create_ad_service(self, service_name):
-        self.driver.find_element_by_id('services__action_CreateService').click()
+        self.driver.find_element_by_id(
+            'services__action_CreateService').click()
 
         self.select_from_list('service_choice-service', 'Active Directory')
         next_button = self.elements.get('button', 'Next')
@@ -195,7 +214,8 @@ class UITestCase(testtools.TestCase):
         self.fill_field(
             by.By.ID, 'id_activeDirectory-0-recoveryPassword', 'P@ssw0rd')
         self.fill_field(
-            by.By.ID, 'id_activeDirectory-0-recoveryPassword-clone', 'P@ssw0rd')
+            by.By.ID,
+            'id_activeDirectory-0-recoveryPassword-clone', 'P@ssw0rd')
         next_button = self.elements.get('button', 'Next2')
         self.driver.find_element_by_xpath(next_button).click()
 
@@ -204,7 +224,8 @@ class UITestCase(testtools.TestCase):
         self.driver.find_element_by_xpath(next_button).click()
 
     def create_iis_service(self, service_name):
-        self.driver.find_element_by_id('services__action_CreateService').click()
+        self.driver.find_element_by_id(
+            'services__action_CreateService').click()
 
         self.select_from_list(
             'service_choice-service', 'Internet Information Services')
@@ -224,7 +245,8 @@ class UITestCase(testtools.TestCase):
         self.driver.find_element_by_xpath(next_button).click()
 
     def create_asp_service(self, service_name):
-        self.driver.find_element_by_id('services__action_CreateService').click()
+        self.driver.find_element_by_id(
+            'services__action_CreateService').click()
 
         self.select_from_list('service_choice-service', 'ASP.NET Application')
         next_button = self.elements.get('button', 'Next')
@@ -245,7 +267,8 @@ class UITestCase(testtools.TestCase):
         self.driver.find_element_by_xpath(next_button).click()
 
     def create_iisfarm_service(self, service_name):
-        self.driver.find_element_by_id('services__action_CreateService').click()
+        self.driver.find_element_by_id(
+            'services__action_CreateService').click()
 
         self.select_from_list(
             'service_choice-service', 'Internet Information Services Web Farm')
@@ -265,7 +288,8 @@ class UITestCase(testtools.TestCase):
         self.driver.find_element_by_xpath(next_button).click()
 
     def create_aspfarm_service(self, service_name):
-        self.driver.find_element_by_id('services__action_CreateService').click()
+        self.driver.find_element_by_id(
+            'services__action_CreateService').click()
 
         self.select_from_list(
             'service_choice-service', 'ASP.NET Application Web Farm')
@@ -287,7 +311,8 @@ class UITestCase(testtools.TestCase):
         self.driver.find_element_by_xpath(next_button).click()
 
     def create_mssql_service(self, service_name):
-        self.driver.find_element_by_id('services__action_CreateService').click()
+        self.driver.find_element_by_id(
+            'services__action_CreateService').click()
 
         self.select_from_list('service_choice-service', 'MS SQL Server')
         next_button = self.elements.get('button', 'Next')
@@ -310,9 +335,11 @@ class UITestCase(testtools.TestCase):
         self.driver.find_element_by_xpath(next_button).click()
 
     def create_sql_cluster_service(self, service_name, domain_name):
-        self.driver.find_element_by_id('services__action_CreateService').click()
+        self.driver.find_element_by_id(
+            'services__action_CreateService').click()
 
-        self.select_from_list('service_choice-service', 'MS SQL Server Cluster')
+        self.select_from_list(
+            'service_choice-service', 'MS SQL Server Cluster')
         next_button = self.elements.get('button', 'Next')
         self.driver.find_element_by_xpath(next_button).click()
 
@@ -321,7 +348,8 @@ class UITestCase(testtools.TestCase):
         self.fill_field(
             by.By.ID, 'id_msSqlClusterServer-0-adminPassword', 'P@ssw0rd')
         self.fill_field(
-            by.By.ID, 'id_msSqlClusterServer-0-adminPassword-clone', 'P@ssw0rd')
+            by.By.ID,
+            'id_msSqlClusterServer-0-adminPassword-clone', 'P@ssw0rd')
         self.select_from_list('msSqlClusterServer-0-domain', domain_name)
         self.fill_field(
             by.By.ID, 'id_msSqlClusterServer-0-saPassword', 'P@ssw0rd')
@@ -337,7 +365,8 @@ class UITestCase(testtools.TestCase):
         self.fill_field(
             by.By.ID, 'id_msSqlClusterServer-1-agGroupName', 'ag-name')
         self.fill_field(
-            by.By.ID, 'id_msSqlClusterServer-1-agListenerName', 'listener_name')
+            by.By.ID,
+            'id_msSqlClusterServer-1-agListenerName', 'listener_name')
         self.fill_field(
             by.By.ID, 'id_msSqlClusterServer-1-agListenerIP', 'listener_name')
         self.fill_field(
