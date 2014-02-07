@@ -2,6 +2,8 @@ import sys
 import os
 sys.path.append(os.getcwd())
 
+import unittest
+
 from base import UITestCase
 import selenium.webdriver.common.by as by
 from selenium.webdriver.support.ui import WebDriverWait
@@ -150,6 +152,7 @@ class UISanityTests(UITestCase):
         self.assertFalse(self.check_element_on_page(by.By.LINK_TEXT,
                                                     'ASPService'))
 
+    @unittest.expectedFailure
     def test_create_and_delete_iisfarm_service(self):
         self.log_in()
         self.navigate_to_environments()
@@ -165,6 +168,7 @@ class UISanityTests(UITestCase):
         self.assertFalse(self.check_element_on_page(by.By.LINK_TEXT,
                                                     'IISFarmService'))
 
+    @unittest.expectedFailure
     def test_create_and_delete_aspfarm_service(self):
         self.log_in()
         self.navigate_to_environments()
