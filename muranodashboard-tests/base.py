@@ -3,6 +3,13 @@ import ConfigParser
 import random
 import time
 import json
+import datetime
+import os
+import logging
+
+log = logging.getLogger(__name__)
+log.setLevel(logging.DEBUG)
+log.addHandler(logging.StreamHandler())
 
 from selenium import webdriver
 import selenium.webdriver.common.by as by
@@ -35,7 +42,10 @@ class UITestCase(testtools.TestCase):
             service_type='image', endpoint_type='publicURL')
         glance = gclient('1', endpoint=glance_endpoint,
                          token=keystone_client.auth_token)
-        image_list = glance.images.list()
+
+        image_list = []
+        for i in glance.images.list():
+            image_list.append(i)
 
         cls.demo_image = cls.get_image_name('demo', image_list)
         cls.linux_image = cls.get_image_name('linux', image_list)
@@ -45,6 +55,7 @@ class UITestCase(testtools.TestCase):
 
         cls.elements = ConfigParser.RawConfigParser()
         cls.elements.read('common.ini')
+        cls.logger = logging.getLogger(__name__)
 
     def setUp(self):
         super(UITestCase, self).setUp()
@@ -56,10 +67,31 @@ class UITestCase(testtools.TestCase):
 
     def tearDown(self):
         super(UITestCase, self).tearDown()
+        self.addOnException(self.take_screenshot(self._testMethodName))
         self.driver.quit()
 
         for env in self.murano_client.environments.list():
             self.murano_client.environments.delete(env.id)
+
+    def take_screenshot(self, test_name):
+        screenshot_dir = './screenshots'
+        if not os.path.exists(screenshot_dir):
+            os.makedirs(screenshot_dir)
+        date = datetime.datetime.now().strftime('%H%M%S')
+        filename = '%s/%s-%s.png' % (
+            screenshot_dir, test_name, date)
+        self.driver.get_screenshot_as_file(filename)
+        log.debug("\nScreenshot {0} was saved".format(filename))
+
+    @classmethod
+    def get_image_name(cls, type_of_image, list_of_images):
+        for i in list_of_images:
+            if 'murano_image_info' in i.properties.keys():
+                if type_of_image in json.loads(
+                        i.properties['murano_image_info'])['type']:
+                    return json.loads(i.properties[
+                        'murano_image_info'])['title']
+        return None
 
     def log_in(self):
         self.fill_field(by.By.ID, 'id_username', cfg.common.user)
@@ -67,14 +99,6 @@ class UITestCase(testtools.TestCase):
         sign_in = self.elements.get('button', 'ButtonSubmit')
         self.driver.find_element_by_xpath(sign_in).click()
         self.navigate_to_environments()
-
-    def get_image_name(self, type, image_list):
-        for i in image_list:
-            if 'murano_image_info' in i.properties.keys():
-                if type in json.loads(
-                        i.properties['murano_image_info'])['type']:
-                    return json.loads(i.properties[
-                        'murano_image_info'])['title']
 
     def fill_field(self, by_find, field, value):
         self.driver.find_element(by=by_find, value=field).clear()
