@@ -37,7 +37,7 @@ def update_status_of_jira_issue(jira, issue, new_status):
 
     jira.transition_issue(issue, new_status_id,
                           comment="Automatically updated by script.")
-    
+
 
 def get_str(parameter):
     if not parameter:
@@ -257,8 +257,8 @@ def create_lp_bug(launchpad, project, title, description):
 
 def sync_jira_with_launchpad(url, user, password, project, project_key):
     template = 'Launchpad Bug #{0}: '
-    
-    jira_bugs = get_jira_bugs(url, user, password, project)
+
+    jira_bugs = get_jira_bugs(url, user, password, project_key)
     launchpad_bugs = get_launchpad_bugs(project)
 
     jira = JIRA(basic_auth=(user, password), options={'server': url})
