@@ -16,7 +16,7 @@ expect "@murano"
 send -- "rm -rf /tmp/keystone-signing-muranoapi\n"
 expect "@murano"
 
-send -- "cd /opt/git/ ; rm -rf "
+send -- "cd /opt/git/ && rm -rf "
 send -- [lindex $argv 3]
 send -- "\n"
 expect "@murano"
@@ -31,9 +31,9 @@ send -- [lindex $argv 3]
 send -- "\n"
 expect "@murano"
 
-send -- "chmod +x setupV2.sh ; ./setupV2.sh uninstall > 1.log\n"
+send -- "bash setupV2.sh uninstall > 1.log\n"
 expect "@murano"
-send -- "chmod +x setup.sh ; ./setup.sh uninstall > 2.log\n"
+send -- "bash setup.sh uninstall > 2.log\n"
 expect "@murano"
 
 send -- "git fetch https://review.openstack.org/stackforge/"
@@ -48,9 +48,9 @@ expect "@murano"
 send -- "chmod 600 /var/lib/openstack-dashboard/secret_key\n"
 expect "@murano"
 
-send -- "chmod +x ./setupV2.sh ; ./setupV2.sh install > new.log\n"                
+send -- "bash setupV2.sh install > new.log\n"
 expect "@murano"
-send -- "chmod +x setup.sh ; ./setup.sh install > old.log\n"
+send -- "bash setup.sh install > old.log\n"
 expect "@murano"
 
 send -- "sed -i \"s/\\\"BootFromVolume\\\": true,//\" /etc/murano-conductor/data/templates/cf/Linux.template\n"
@@ -67,13 +67,13 @@ send -- [lindex $argv 3]
 send -- " restart\n"
 expect "@murano"
 
-send -- "cd /var/cache/muranorepository-data/cache ; rm -rf *\n"
+send -- "cd /var/cache/muranorepository-data/cache && rm -rf *\n"
 expect "@murano"
-send -- "cd /var/cache/muranorepository-cache ; rm -rf *\n"                            
+send -- "cd /var/cache/muranorepository-cache && rm -rf *\n"
 expect "@murano"
-send -- "cd /var/cache/muranodashboard-cache ; rm -rf *\n"
+send -- "cd /var/cache/muranodashboard-cache && rm -rf *\n"
 expect "@murano"
-send -- "cd /var/cache/muranoconductor-cache ; rm -rf *\n"
+send -- "cd /var/cache/muranoconductor-cache && rm -rf *\n"
 expect "@murano"
 
 send -- "service murano-api restart\n"
