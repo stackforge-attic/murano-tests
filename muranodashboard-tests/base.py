@@ -23,6 +23,20 @@ from muranoclient.client import Client as mclient
 from glanceclient import Client as gclient
 
 
+class ImageException(Exception):
+    message = "Image doesn't exist"
+
+    def __init__(self, type=None):
+        if type is None:
+            self._error_string = self.message
+        else:
+            self._error_string = self.message + '\nDetails: %s' \
+                                                ' image is not found,' % type
+
+    def __str__(self):
+        return self._error_string
+
+
 class UITestCase(testtools.TestCase):
 
     @classmethod
@@ -91,6 +105,7 @@ class UITestCase(testtools.TestCase):
                         i.properties['murano_image_info'])['type']:
                     return json.loads(i.properties[
                         'murano_image_info'])['title']
+        raise ImageException(type_of_image)
 
     def log_in(self):
         self.fill_field(by.By.ID, 'id_username', cfg.common.user)
