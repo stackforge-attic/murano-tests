@@ -52,6 +52,8 @@ send -- "bash setupV2.sh install > new.log\n"
 expect "@murano"
 send -- "bash setup.sh install > old.log\n"
 expect "@murano"
+send -- "pip install -U python-heatclient==0.2.5"
+expect "@murano"
 
 send -- "sed -i \"s/\\\"BootFromVolume\\\": true,//\" /etc/murano-conductor/data/templates/cf/Linux.template\n"
 expect "@murano"
