@@ -92,6 +92,8 @@ expect "@murano"
 
 send -- "sed -i \"s/disable_rollback=False/disable_rollback=True/\" /usr/local/lib/python2.7/dist-packages/muranoconductor/commands/cloud_formation.py\n"
 expect "@murano"
+send -- "pip install -U python-heatclient==0.2.5\n"
+expect "@murano"
 
 
 send -- "service murano-api restart\n"
