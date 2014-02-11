@@ -59,9 +59,12 @@ class UITestCase(testtools.TestCase):
 
     def setUp(self):
         super(UITestCase, self).setUp()
+        """
         self.driver = webdriver.Remote(
             command_executor=cfg.common.selenium_server,
             desired_capabilities=DesiredCapabilities.FIREFOX)
+            """
+        self.driver = webdriver.Firefox()
         self.driver.get(cfg.common.horizon_url + '/')
         self.driver.implicitly_wait(10)
 
@@ -470,3 +473,58 @@ class UITestCase(testtools.TestCase):
             return True
         else:
             return False
+
+    def click_on_service_catalog_action(self, action):
+        self.driver.find_element_by_xpath(
+            ".//*[@id='service_catalog__action_%s']" % action).click()
+
+    def compose_trivial_service(self, name):
+        self.click_on_service_catalog_action(action='compose_service')
+
+        self.fill_field(by.By.ID, 'id_service_display_name', name)
+        self.fill_field(by.By.ID, 'id_full_service_name', '%sService' % name)
+        self.fill_field(by.By.ID, 'id_author', cfg.common.user)
+        self.fill_field(by.By.ID, 'id_description', 'New Service')
+
+        self.driver.find_element_by_link_text('UI Files').click()
+        self.driver.find_element_by_xpath(".//*[@value = 'ui##Demo.yaml']")
+        self.driver.find_element_by_link_text('Workflows').click()
+        self.driver.find_element_by_xpath(
+            ".//*[@name = 'workflows@@workflows##Demo.xml@@selected']")
+        self.driver.find_element_by_link_text('Heat Templates').click()
+        self.driver.find_element_by_xpath(
+            ".//*[@name = 'heat@@heat##Demo.template@@selected']")
+
+        submit_button = self.elements.get('button', 'InputSubmit')
+        self.driver.find_element_by_xpath(submit_button).click()
+
+    def select_action_for_service(self, service, action):
+        time.sleep(2)
+        if action == 'more':
+            self.driver.find_element_by_xpath(
+                ".//*[@id='service_catalog__row__%s']/td[7]/div/a[2]"
+                % service).click()
+            WebDriverWait(self.driver, 10).until(lambda s: s.find_element(
+                by.By.XPATH, ".//*[@id='service_catalog__row_%s__action_"
+                             "manage_service']" % service).is_displayed())
+        else:
+            self.driver.find_element_by_xpath(
+                ".//*[@id='service_catalog__row_%s__action_%s']"
+                % (service, action)).click()
+
+    def check_service_parameter(self, service, column, value):
+        time.sleep(2)
+        result = self.driver.find_element_by_xpath(
+            ".//*[@id='service_catalog__row__%s']/td[%s]"
+            % (service, column)).text
+        print result
+        print value
+        if result == value:
+            return True
+        else:
+            return False
+
+
+
+
+
