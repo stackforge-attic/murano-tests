@@ -530,4 +530,76 @@ class UISanityTests(UITestCase):
         self.assertTrue(self.check_element_on_page(
             by.By.ID, 'id_msSqlClusterServer-1-clusterIp'))
 
+    def test_check_opportunity_to_compose_a_new_service(self):
+        self.log_in()
+        self.driver.find_element_by_link_text('Service Definitions').click()
+        self.compose_trivial_service('composedService')
+        self.assertTrue(self.check_element_on_page(
+            by.By.XPATH, './/*[@data-display="composedService"]'))
 
+    def test_modify_service_name(self):
+        self.log_in()
+        self.driver.find_element_by_link_text('Service Definitions').click()
+        self.compose_trivial_service('forModification')
+        self.assertTrue(self.check_element_on_page(
+            by.By.XPATH, './/*[@data-display="forModification"]'))
+
+        self.select_action_for_service('forModificationService',
+                                       'modify_service')
+        self.fill_field(by.By.ID, 'id_service_display_name', 'modifiedService')
+        submit_button = self.elements.get('button', 'InputSubmit')
+        self.driver.find_element_by_xpath(submit_button).click()
+
+        self.assertTrue(self.check_service_parameter(
+            'forModificationService', '2', 'modifiedService'))
+
+    def test_modify_description(self):
+        self.log_in()
+        self.driver.find_element_by_link_text('Service Definitions').click()
+        self.compose_trivial_service('forModification')
+        self.assertTrue(self.check_element_on_page(
+            by.By.XPATH, './/*[@data-display="forModification"]'))
+
+        self.select_action_for_service('forModificationService',
+                                       'modify_service')
+
+        self.fill_field(by.By.ID, 'id_description', 'New Description')
+        submit_button = self.elements.get('button', 'InputSubmit')
+        self.driver.find_element_by_xpath(submit_button).click()
+        self.select_action_for_service('forModificationService', 'more')
+        self.select_action_for_service('forModificationService',
+                                       'manage_service')
+        self.check_element_on_page(
+            ".//*[@id='main_content']/div[3]/dl/dd[4]",
+            'New Description')
+
+    def test_check_opportunity_to_toggle_service(self):
+        self.log_in()
+        self.driver.find_element_by_link_text('Service Definitions').click()
+        self.select_action_for_service('demoService', 'more')
+        self.select_action_for_service('demoService', 'toggle_enabled')
+        self.assertTrue(
+            self.check_service_parameter('demoService', '3', 'False'))
+        self.select_action_for_service('demoService', 'more')
+        self.select_action_for_service('demoService', 'toggle_enabled')
+        self.assertTrue(
+            self.check_service_parameter('demoService', '3', 'True'))
+
+    def test_check_opportunity_to_select_composed_service(self):
+        self.log_in()
+        self.driver.find_element_by_link_text('Service Definitions').click()
+        self.compose_trivial_service('TEST')
+        self.assertTrue(self.check_element_on_page(
+            by.By.XPATH, './/*[@data-display="TEST"]'))
+
+        self.navigate_to_environments()
+        self.create_environment('env')
+        self.env_to_service('env')
+        self.driver.find_element_by_link_text('Create Service').click()
+        self.select_from_list('service_choice-service', 'TEST')
+
+        next_button = self.elements.get('button', 'Next')
+        self.driver.find_element_by_xpath(next_button).click()
+
+        next_ = "/html/body/div[3]/div/form/div[2]/input[2]"
+        self.assertTrue(self.check_element_on_page(by.By.XPATH, next_))
