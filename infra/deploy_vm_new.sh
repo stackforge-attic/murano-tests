@@ -76,11 +76,6 @@ send -- [lindex $argv 5]
 send -- "/\" /etc/murano/murano-conductor.conf\n"
 expect "@murano"
 
-send -- "sed -i \"s/\\\"BootFromVolume\\\": true,//\" /etc/murano-conductor/data/templates/cf/Linux.template\n"
-expect "@murano"
-send -- "sed -i \"s/\\\"BootFromVolume\\\": true,//\" /etc/murano-conductor/data/templates/cf/Windows.template\n"
-expect "@murano"
-
 send -- "sed -i \"s/murano_metadata_url = http:\\/\\/localhost:8084\\/v1/murano_metadata_url = http:\\/\\/"
 send -- [lindex $argv 1]
 send -- ":8084\\/v1/\" /etc/murano/conductor.conf\n"
@@ -97,7 +92,7 @@ send -- "sed -i \"s/DEBUG = False/DEBUG = True/\" /etc/openstack-dashboard/local
 expect -- "@murano"
 send -- "service apache2 restart\n"
 expect "@murano"
-send -- "rm -rf /tmp/muranoconductor-cache/* /tmp/muranorepository-cache/*\n"
+send -- "rm -rf /var/cache/murano/muranoconductor-data/* /var/cache/murano/muranorepository-data/* /var/cache/murano-dashboard/*\n"
 expect "@murano"
 
 send -- "sed -i \"s/disable_rollback=False/disable_rollback=True/\" /usr/local/lib/python2.7/dist-packages/muranoconductor/commands/cloud_formation.py\n"

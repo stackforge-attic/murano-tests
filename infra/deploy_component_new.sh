@@ -33,8 +33,6 @@ send -- [lindex $argv 3]
 send -- "\n"
 expect "@murano"
 
-send -- "bash setupV2.sh uninstall > 1.log\n"
-expect "@murano"
 send -- "bash setup.sh uninstall > 2.log\n"
 expect "@murano"
 
@@ -50,14 +48,7 @@ expect "@murano"
 send -- "chmod 600 /var/lib/openstack-dashboard/secret_key\n"
 expect "@murano"
 
-send -- "bash setupV2.sh install > new.log\n"
-expect "@murano"
 send -- "bash setup.sh install > old.log\n"
-expect "@murano"
-
-send -- "sed -i \"s/\\\"BootFromVolume\\\": true,//\" /etc/murano-conductor/data/templates/cf/Linux.template\n"
-expect "@murano"
-send -- "sed -i \"s/\\\"BootFromVolume\\\": true,//\" /etc/murano-conductor/data/templates/cf/Windows.template\n"
 expect "@murano"
 
 send -- "service openstack-"
@@ -69,13 +60,11 @@ send -- [lindex $argv 3]
 send -- " restart\n"
 expect "@murano"
 
-send -- "cd /var/cache/muranorepository-data/cache && rm -rf *\n"
+send -- "cd /var/cache/murano/muranorepository-data && rm -rf *\n"
 expect "@murano"
-send -- "cd /var/cache/muranorepository-cache && rm -rf *\n"
+send -- "cd /var/cache/murano-dashboard/ && rm -rf *\n"
 expect "@murano"
-send -- "cd /var/cache/muranodashboard-cache && rm -rf *\n"
-expect "@murano"
-send -- "cd /var/cache/muranoconductor-cache && rm -rf *\n"
+send -- "cd /var/cache/murano/muranoconductor-data && rm -rf *\n"
 expect "@murano"
 
 send -- "service murano-api restart\n"
