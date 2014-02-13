@@ -55,11 +55,6 @@ expect "@murano"
 send -- "bash setup.sh install > old.log\n"
 expect "@murano"
 
-send -- "sed -i \"s/\\\"BootFromVolume\\\": true,//\" /etc/murano-conductor/data/templates/cf/Linux.template\n"
-expect "@murano"
-send -- "sed -i \"s/\\\"BootFromVolume\\\": true,//\" /etc/murano-conductor/data/templates/cf/Windows.template\n"
-expect "@murano"
-
 send -- "service openstack-"
 send -- [lindex $argv 3]
 send -- " restart\n"
@@ -69,13 +64,11 @@ send -- [lindex $argv 3]
 send -- " restart\n"
 expect "@murano"
 
-send -- "cd /var/cache/muranorepository-data/cache && rm -rf *\n"
+send -- "cd /var/cache/murano/muranorepository-data && rm -rf *\n"
 expect "@murano"
-send -- "cd /var/cache/muranorepository-cache && rm -rf *\n"
+send -- "cd /var/cache/murano-dashboard/ && rm -rf *\n"
 expect "@murano"
-send -- "cd /var/cache/muranodashboard-cache && rm -rf *\n"
-expect "@murano"
-send -- "cd /var/cache/muranoconductor-cache && rm -rf *\n"
+send -- "cd /var/cache/murano/muranoconductor-data && rm -rf *\n"
 expect "@murano"
 
 send -- "service murano-api restart\n"
