@@ -17,6 +17,7 @@ import config.config as cfg
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.common.keys import Keys
 
 from keystoneclient.v2_0 import client as ksclient
 from muranoclient.client import Client as mclient
@@ -62,8 +63,9 @@ class UITestCase(testtools.TestCase):
         self.driver = webdriver.Remote(
             command_executor=cfg.common.selenium_server,
             desired_capabilities=DesiredCapabilities.FIREFOX)
+        self.driver = webdriver.Firefox()
         self.driver.get(cfg.common.horizon_url + '/')
-        self.driver.implicitly_wait(10)
+        self.driver.implicitly_wait(30)
 
     def tearDown(self):
         super(UITestCase, self).tearDown()
@@ -106,6 +108,9 @@ class UITestCase(testtools.TestCase):
     def confirm_deletion(self):
         confirm_deletion = self.elements.get('button', 'ConfirmDeletion')
         self.driver.find_element_by_xpath(confirm_deletion).click()
+
+    def refresh_page(self):
+        self.driver.find_element_by_xpath("//body").send_keys(Keys.F5)
 
     def create_environment(self, env_name):
         self.driver.find_element_by_id(
@@ -484,13 +489,13 @@ class UITestCase(testtools.TestCase):
         self.fill_field(by.By.ID, 'id_description', 'New Service')
 
         self.driver.find_element_by_link_text('UI Files').click()
-        self.driver.find_element_by_xpath(".//*[@value = 'ui##Demo.yaml']")
+        self.select_element('ui##Demo.yaml')
         self.driver.find_element_by_link_text('Workflows').click()
         self.driver.find_element_by_xpath(
-            ".//*[@name = 'workflows@@workflows##Demo.xml@@selected']")
+            ".//*[@name = 'workflows@@workflows##Demo.xml@@selected']").click()
         self.driver.find_element_by_link_text('Heat Templates').click()
         self.driver.find_element_by_xpath(
-            ".//*[@name = 'heat@@heat##Demo.template@@selected']")
+            ".//*[@name = 'heat@@heat##Demo.template@@selected']").click()
 
         submit_button = self.elements.get('button', 'InputSubmit')
         self.driver.find_element_by_xpath(submit_button).click()
@@ -510,7 +515,7 @@ class UITestCase(testtools.TestCase):
                 % (service, action)).click()
 
     def check_service_parameter(self, service, column, value):
-        time.sleep(2)
+        self.refresh_page()
         result = self.driver.find_element_by_xpath(
             ".//*[@id='service_catalog__row__%s']/td[%s]"
             % (service, column)).text
@@ -518,3 +523,16 @@ class UITestCase(testtools.TestCase):
             return True
         else:
             return False
+
+    def select_element(self, element):
+        self.driver.find_element_by_xpath(
+            ".//*[@value = '%s']" % element).click()
+
+    def choose_and_upload_files(self, name):
+        __location = os.path.realpath(os.path.join(os.getcwd(),
+                                                   os.path.dirname(__file__)))
+        print os.path.join(__location, name)
+        self.driver.find_element_by_xpath(".//*[@id='id_file']").click()
+        self.driver.find_element_by_id('id_file').send_keys(
+            os.path.join(__location, name))
+        self.select_element('Upload')
