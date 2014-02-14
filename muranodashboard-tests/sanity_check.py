@@ -2,8 +2,6 @@ import sys
 import os
 sys.path.append(os.getcwd())
 
-import testtools
-
 from base import UITestCase
 import selenium.webdriver.common.by as by
 from selenium.webdriver.support.ui import WebDriverWait
@@ -11,7 +9,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 class UISanityTests(UITestCase):
 
-    def test_create_delete_environment(self):
+    def test_001_create_delete_environment(self):
         self.log_in()
         self.create_environment('test_create_del_env')
         self.driver.find_element_by_link_text('test_create_del_env').click()
@@ -20,9 +18,9 @@ class UISanityTests(UITestCase):
         self.assertFalse(self.check_element_on_page(by.By.LINK_TEXT,
                                                     'test_create_del_env'))
 
-    def test_edit_environment(self):
+    def test_002_edit_environment(self):
         self.log_in()
-        self.navigate_to_environments()
+        self.navigate_to('Environments')
         self.create_environment('test_edit_env')
         self.driver.find_element_by_link_text('test_edit_env')
         self.edit_environment(old_name='test_edit_env', new_name='edited_env')
@@ -30,9 +28,9 @@ class UISanityTests(UITestCase):
         self.assertTrue(self.check_element_on_page(by.By.LINK_TEXT,
                                                    'edited_env'))
 
-    def test_rename_image(self):
+    def test_003_rename_image(self):
         self.log_in()
-        self.navigate_to_images()
+        self.navigate_to('Images')
         self.driver.find_element_by_id(
             'marked_images__action_mark_image').click()
 
@@ -40,12 +38,11 @@ class UISanityTests(UITestCase):
         self.fill_field(by.By.ID, 'id_title', 'New Image')
         self.select_from_list('type', ' Windows Server 2012')
 
-        mark = self.elements.get('button', 'MarkImage')
-        self.driver.find_element_by_xpath(mark).click()
+        self.select_and_click_element('Mark')
 
-    def test_delete_image(self):
+    def test_004_delete_image(self):
         self.log_in()
-        self.navigate_to_images()
+        self.navigate_to('Images')
         self.driver.find_element_by_id(
             'marked_images__action_mark_image').click()
 
@@ -53,8 +50,7 @@ class UISanityTests(UITestCase):
         self.fill_field(by.By.ID, 'id_title', 'Image for deletion')
         self.select_from_list('type', ' Windows Server 2012')
 
-        mark = self.elements.get('button', 'MarkImage')
-        self.driver.find_element_by_xpath(mark).click()
+        self.select_and_click_element('Mark')
 
         element_id = self.get_element_id('TestImageForDeletion')
         self.driver.find_element_by_id(
@@ -63,151 +59,138 @@ class UISanityTests(UITestCase):
         self.assertFalse(self.check_element_on_page(by.By.LINK_TEXT,
                                                     'TestImageForDeletion'))
 
-    def test_create_and_delete_demo_service(self):
+    def test_005_create_and_delete_demo_service(self):
         self.log_in()
-        self.navigate_to_environments()
+        self.navigate_to('Environments')
         self.create_environment('test')
         self.env_to_service('test')
-        self.create_demo_service('DemoService')
 
+        self.create_demo_service('DemoService')
         self.assertTrue(self.check_element_on_page(by.By.LINK_TEXT,
                                                    'DemoService'))
 
         self.delete_service('DemoService')
-
         self.assertFalse(self.check_element_on_page(by.By.LINK_TEXT,
                                                     'DemoService'))
 
-    def test_create_and_delete_linux_telnet(self):
+    def test_006_create_and_delete_linux_telnet(self):
         self.log_in()
-        self.navigate_to_environments()
+        self.navigate_to('Environments')
         self.create_environment('test')
         self.env_to_service('test')
-        self.create_linux_telnet('linuxtelnet')
 
+        self.create_linux_telnet('linuxtelnet')
         self.assertTrue(self.check_element_on_page(by.By.LINK_TEXT,
                                                    'linuxtelnet'))
 
         self.delete_service('linuxtelnet')
-
         self.assertFalse(self.check_element_on_page(by.By.LINK_TEXT,
                                                     'linuxtelnet'))
 
-    def test_create_and_delete_linux_apache(self):
+    def test_007_create_and_delete_linux_apache(self):
         self.log_in()
-        self.navigate_to_environments()
+        self.navigate_to('Environments')
         self.create_environment('test')
         self.env_to_service('test')
-        self.create_linux_apache('linuxapache')
 
+        self.create_linux_apache('linuxapache')
         self.assertTrue(self.check_element_on_page(by.By.LINK_TEXT,
                                                    'linuxapache'))
 
         self.delete_service('linuxapache')
-
         self.assertFalse(self.check_element_on_page(by.By.LINK_TEXT,
                                                     'linuxapache'))
 
-    def test_create_and_delete_ad_service(self):
+    def test_008_create_and_delete_ad_service(self):
         self.log_in()
-        self.navigate_to_environments()
+        self.navigate_to('Environments')
         self.create_environment('test')
         self.env_to_service('test')
-        self.create_ad_service('muranotest.domain')
 
+        self.create_ad_service('muranotest.domain')
         self.assertTrue(self.check_element_on_page(by.By.LINK_TEXT,
                                                    'muranotest.domain'))
 
         self.delete_service('muranotest.domain')
-
         self.assertFalse(self.check_element_on_page(by.By.LINK_TEXT,
                                                     'muranotest.domain'))
 
-    def test_create_and_delete_iis_service(self):
+    def test_009_create_and_delete_iis_service(self):
         self.log_in()
-        self.navigate_to_environments()
+        self.navigate_to('Environments')
         self.create_environment('test')
         self.env_to_service('test')
-        self.create_iis_service('IISService')
 
+        self.create_iis_service('IISService')
         self.assertTrue(self.check_element_on_page(by.By.LINK_TEXT,
                                                    'IISService'))
         self.delete_service('IISService')
-
         self.assertFalse(self.check_element_on_page(by.By.LINK_TEXT,
                                                     'IISService'))
 
-    def test_create_and_delete_asp_service(self):
+    def test_010_create_and_delete_asp_service(self):
         self.log_in()
-        self.navigate_to_environments()
+        self.navigate_to('Environments')
         self.create_environment('test')
         self.env_to_service('test')
-        self.create_asp_service('ASPService')
 
+        self.create_asp_service('ASPService')
         self.assertTrue(self.check_element_on_page(by.By.LINK_TEXT,
                                                    'ASPService'))
 
         self.delete_service('ASPService')
-
         self.assertFalse(self.check_element_on_page(by.By.LINK_TEXT,
                                                     'ASPService'))
 
-    @testtools.skip("SKIP because this https://review.openstack.org/#/c/67772/ "
-                   "not in master branch")
-    def test_create_and_delete_iisfarm_service(self):
+    def test_011_create_and_delete_iisfarm_service(self):
         self.log_in()
-        self.navigate_to_environments()
+        self.navigate_to('Environments')
         self.create_environment('test')
         self.env_to_service('test')
-        self.create_iisfarm_service('IISFarmService')
 
+        self.create_iisfarm_service('IISFarmService')
         self.assertTrue(self.check_element_on_page(by.By.LINK_TEXT,
                                                    'IISFarmService'))
 
         self.delete_service('IISFarmService')
-
         self.assertFalse(self.check_element_on_page(by.By.LINK_TEXT,
                                                     'IISFarmService'))
 
-    @testtools.skip("SKIP because this https://review.openstack.org/#/c/67772/ "
-                   "not in master branch")
-    def test_create_and_delete_aspfarm_service(self):
+    def test_012_create_and_delete_aspfarm_service(self):
         self.log_in()
-        self.navigate_to_environments()
+        self.navigate_to('Environments')
         self.create_environment('test')
         self.env_to_service('test')
-        self.create_aspfarm_service('ASPFarmService')
 
+        self.create_aspfarm_service('ASPFarmService')
         self.assertTrue(self.check_element_on_page(by.By.LINK_TEXT,
                                                    'ASPFarmService'))
 
         self.delete_service('ASPFarmService')
-
         self.assertFalse(self.check_element_on_page(by.By.LINK_TEXT,
                                                     'ASPFarmService'))
 
-    def test_create_and_delete_mssql_service(self):
+    def test_013_create_and_delete_mssql_service(self):
         self.log_in()
-        self.navigate_to_environments()
+        self.navigate_to('Environments')
         self.create_environment('test')
         self.env_to_service('test')
-        self.create_mssql_service('MSSQLService')
 
+        self.create_mssql_service('MSSQLService')
         self.assertTrue(self.check_element_on_page(by.By.LINK_TEXT,
                                                    'MSSQLService'))
 
         self.delete_service('MSSQLService')
-
         self.assertFalse(self.check_element_on_page(by.By.LINK_TEXT,
                                                     'MSSQLService'))
 
-    def test_create_and_delete_sql_cluster_service(self):
+    def test_014_create_and_delete_sql_cluster_service(self):
         self.log_in()
-        self.navigate_to_environments()
+        self.navigate_to('Environments')
         self.create_environment('test')
         self.env_to_service('test')
-        self.create_ad_service('activeDirectory.mssql')
 
+        self.create_ad_service('activeDirectory.mssql')
         self.assertTrue(self.check_element_on_page(by.By.LINK_TEXT,
                                                    'activeDirectory.mssql'))
 
@@ -217,13 +200,12 @@ class UISanityTests(UITestCase):
                                                    'SQLCluster'))
 
         self.delete_service('SQLCluster')
-
         self.assertFalse(self.check_element_on_page(by.By.LINK_TEXT,
                                                     'SQLCluster'))
 
-    def test_check_regex_expression_for_ad_name(self):
+    def test_015_check_regex_expression_for_ad_name(self):
         self.log_in()
-        self.navigate_to_environments()
+        self.navigate_to('Environments')
         self.create_environment('test')
         self.env_to_service('test')
 
@@ -281,9 +263,9 @@ class UISanityTests(UITestCase):
             'Period characters are allowed only when '
             'they are used to delimit the components of domain style names', 1))
 
-    def test_check_regex_expression_for_iis_name(self):
+    def test_016_check_regex_expression_for_iis_name(self):
         self.log_in()
-        self.navigate_to_environments()
+        self.navigate_to('Environments')
         self.create_environment('test')
         self.env_to_service('test')
 
@@ -312,9 +294,9 @@ class UISanityTests(UITestCase):
         self.assertFalse(self.check_that_error_message_is_correct(
             'Just letters, numbers, underscores and hyphens are allowed.', 1))
 
-    def test_check_regex_expression_for_git_repo_field(self):
+    def test_017_check_regex_expression_for_git_repo_field(self):
         self.log_in()
-        self.navigate_to_environments()
+        self.navigate_to('Environments')
         self.create_environment('test')
         self.env_to_service('test')
 
@@ -334,9 +316,9 @@ class UISanityTests(UITestCase):
         self.assertTrue(self.check_that_error_message_is_correct(
             'Enter correct git repository url', 4))
 
-    def test_check_validation_for_hostname_template_field(self):
+    def test_018_check_validation_for_hostname_template_field(self):
         self.log_in()
-        self.navigate_to_environments()
+        self.navigate_to('Environments')
         self.create_environment('test')
         self.env_to_service('test')
 
@@ -361,13 +343,13 @@ class UISanityTests(UITestCase):
         next_button = self.elements.get('button', 'Next2')
         self.driver.find_element_by_xpath(next_button).click()
 
-        id = 'id_demoService-1-osImage'
+        id_ = 'id_demoService-1-osImage'
         WebDriverWait(self.driver, 10).until(lambda s: s.find_element(
-            by.By.ID, id).is_displayed())
+            by.By.ID, id_).is_displayed())
 
-    def test_check_bool_field_validation(self):
+    def test_019_check_bool_field_validation(self):
         self.log_in()
-        self.navigate_to_environments()
+        self.navigate_to('Environments')
         self.create_environment('test')
         self.env_to_service('test')
 
@@ -407,14 +389,14 @@ class UISanityTests(UITestCase):
         self.assertTrue(self.check_that_error_message_is_correct(
             'This field is required.', 1))
 
-    def test_positive_scenario_1_for_the_MS_SQL_Cluster_Form(self):
+    def test_020_positive_scenario_1_for_the_MS_SQL_Cluster_Form(self):
         """
             Scenario 1: External AD and Mixed-Mode Auth checkboxes
             are not selected. User select created earlier domain.
         """
 
         self.log_in()
-        self.navigate_to_environments()
+        self.navigate_to('Environments')
         self.create_environment('scenario_1')
         self.env_to_service('scenario_1')
 
@@ -445,7 +427,7 @@ class UISanityTests(UITestCase):
         self.assertTrue(self.check_element_on_page(
             by.By.ID, 'id_msSqlClusterServer-1-clusterIp'))
 
-    def test_positive_scenario_2_for_the_MS_SQL_Cluster_Form(self):
+    def test_021_positive_scenario_2_for_the_MS_SQL_Cluster_Form(self):
         """
             Scenario 2: External AD field is selected (and user fill
             all required fields here) and Mixed-Mode Auth checkbox
@@ -453,7 +435,7 @@ class UISanityTests(UITestCase):
         """
 
         self.log_in()
-        self.navigate_to_environments()
+        self.navigate_to('Environments')
         self.create_environment('scenario_2')
         self.env_to_service('scenario_2')
 
@@ -487,14 +469,14 @@ class UISanityTests(UITestCase):
         self.assertTrue(self.check_element_on_page(
             by.By.ID, 'id_msSqlClusterServer-1-clusterIp'))
 
-    def test_positive_scenario_3_for_the_MS_SQL_Cluster_Form(self):
+    def test_022_positive_scenario_3_for_the_MS_SQL_Cluster_Form(self):
         """
             Scenario 3: External AD and Mixed-Mode Auth checkboxes are selected.
             User have to fill all required fields.
         """
 
         self.log_in()
-        self.navigate_to_environments()
+        self.navigate_to('Environments')
         self.create_environment('scenario_3')
         self.env_to_service('scenario_3')
 
@@ -530,16 +512,16 @@ class UISanityTests(UITestCase):
         self.assertTrue(self.check_element_on_page(
             by.By.ID, 'id_msSqlClusterServer-1-clusterIp'))
 
-    def test_check_opportunity_to_compose_a_new_service(self):
+    def test_023_check_opportunity_to_compose_a_new_service(self):
         self.log_in()
-        self.driver.find_element_by_link_text('Service Definitions').click()
+        self.navigate_to('Service Definitions')
         self.compose_trivial_service('composedService')
         self.assertTrue(self.check_element_on_page(
             by.By.XPATH, './/*[@data-display="composedService"]'))
 
-    def test_modify_service_name(self):
+    def test_024_modify_service_name(self):
         self.log_in()
-        self.driver.find_element_by_link_text('Service Definitions').click()
+        self.navigate_to('Service Definitions')
         self.compose_trivial_service('forModification')
         self.assertTrue(self.check_element_on_page(
             by.By.XPATH, './/*[@data-display="forModification"]'))
@@ -553,9 +535,9 @@ class UISanityTests(UITestCase):
         self.assertTrue(self.check_service_parameter(
             'forModificationService', '2', 'modifiedService'))
 
-    def test_modify_description(self):
+    def test_025_modify_description(self):
         self.log_in()
-        self.driver.find_element_by_link_text('Service Definitions').click()
+        self.navigate_to('Service Definitions')
         self.compose_trivial_service('forModification')
         self.assertTrue(self.check_element_on_page(
             by.By.XPATH, './/*[@data-display="forModification"]'))
@@ -573,26 +555,14 @@ class UISanityTests(UITestCase):
             ".//*[@id='main_content']/div[3]/dl/dd[4]",
             'New Description')
 
-    def test_check_opportunity_to_toggle_service(self):
+    def test_026_check_opportunity_to_select_composed_service(self):
         self.log_in()
-        self.driver.find_element_by_link_text('Service Definitions').click()
-        self.select_action_for_service('demoService', 'more')
-        self.select_action_for_service('demoService', 'toggle_enabled')
-        self.assertTrue(
-            self.check_service_parameter('demoService', '3', 'False'))
-        self.select_action_for_service('demoService', 'more')
-        self.select_action_for_service('demoService', 'toggle_enabled')
-        self.assertTrue(
-            self.check_service_parameter('demoService', '3', 'True'))
-
-    def test_check_opportunity_to_select_composed_service(self):
-        self.log_in()
-        self.driver.find_element_by_link_text('Service Definitions').click()
+        self.navigate_to('Service Definitions')
         self.compose_trivial_service('TEST')
         self.assertTrue(self.check_element_on_page(
             by.By.XPATH, './/*[@data-display="TEST"]'))
 
-        self.navigate_to_environments()
+        self.navigate_to('Environments')
         self.create_environment('env')
         self.env_to_service('env')
         self.driver.find_element_by_link_text('Create Service').click()
@@ -603,3 +573,126 @@ class UISanityTests(UITestCase):
 
         next_ = "/html/body/div[3]/div/form/div[2]/input[2]"
         self.assertTrue(self.check_element_on_page(by.By.XPATH, next_))
+
+    def test_027_modify_service_add_file(self):
+        self.log_in()
+        self.navigate_to('Service Definitions')
+        self.compose_trivial_service('TEST')
+
+        self.select_action_for_service('TESTService', 'modify_service')
+
+        self.driver.find_element_by_link_text('Scripts').click()
+        self.driver.find_element_by_xpath(
+            ".//*[@name = 'scripts@@scripts##"
+            "Get-DnsListeningIpAddress.ps1@@selected']").click()
+
+        submit_button = self.elements.get('button', 'InputSubmit')
+        self.driver.find_element_by_xpath(submit_button).click()
+
+        self.select_action_for_service('TESTService', 'more')
+        self.select_action_for_service('TESTService', 'manage_service')
+        self.assertTrue(self.check_element_on_page(
+            by.By.XPATH, ".//*[@id='scripts__row__scripts##"
+                         "Get-DnsListeningIpAddress.ps1']"))
+
+    def test_028_download_service(self):
+        self.log_in()
+        self.navigate_to('Service Definitions')
+
+        self.select_action_for_service('demoService', 'more')
+        self.select_action_for_service('demoService', 'download_service')
+
+    def test_029_upload_service_to_repository(self):
+        self.log_in()
+        self.driver.find_element_by_link_text('Service Definitions').click()
+
+        self.click_on_service_catalog_action('upload_service')
+        self.choose_and_upload_files('myService.tar.gz')
+
+        self.assertTrue(self.check_element_on_page(
+            by.By.XPATH, './/*[@data-display="My Service"]'))
+
+    def test_030_manage_service_upload_file(self):
+        self.log_in()
+        self.navigate_to('Service Definitions')
+        self.compose_trivial_service('TEST')
+
+        self.select_action_for_service('TESTService', 'more')
+        self.select_action_for_service('TESTService', 'manage_service')
+
+        self.driver.find_element_by_id('scripts__action_upload_file2').click()
+        self.choose_and_upload_files('myScript.ps1')
+
+        self.assertTrue(self.check_element_on_page(
+            by.By.XPATH, ".//*[@id='scripts__row__scripts##myScript.ps1']"))
+
+    def test_031_manage_files_upload_delete_file(self):
+        self.log_in()
+        self.navigate_to('Service Definitions')
+
+        self.click_on_service_catalog_action('manage_files')
+        self.driver.find_element_by_id(
+            'manage_files__action_upload_file').click()
+
+        self.choose_and_upload_files('myHeatTemplate.template')
+
+        self.select_and_click_element('heat')
+        self.assertTrue(self.check_element_on_page(
+            by.By.XPATH,
+            ".//*[@id='manage_files__row__heat##myHeatTemplate.template']"))
+
+        self.select_and_click_element('heat##myHeatTemplate.template')
+        self.driver.find_element_by_id(
+            'manage_files__action_delete_file').click()
+
+        self.confirm_deletion()
+
+        self.assertFalse(self.check_element_on_page(
+            by.By.XPATH, ".//*[@id='manage_files__row__heat##"
+                         "myHeatTemplate.template']"))
+
+    def test_032_check_opportunity_to_toggle_service(self):
+        self.log_in()
+        self.navigate_to('Service Definitions')
+
+        self.select_action_for_service('demoService', 'more')
+        self.select_action_for_service('demoService', 'toggle_enabled')
+        self.driver.refresh()
+        self.assertTrue(
+            self.check_service_parameter('demoService', '3', 'False'))
+
+        self.select_action_for_service('demoService', 'more')
+        self.select_action_for_service('demoService', 'toggle_enabled')
+        self.driver.refresh()
+        self.assertTrue(
+            self.check_service_parameter('demoService', '3', 'True'))
+
+    def test_033_delete_component_from_existing_service(self):
+        self.log_in()
+        self.navigate_to('Service Definitions')
+
+        self.select_action_for_service('demoService', 'more')
+        self.select_action_for_service('demoService', 'manage_service')
+
+        self.select_and_click_element('agent##Demo.template')
+        self.driver.refresh()
+        self.driver.find_element_by_id(
+            'agent__action_delete_file_from_service').click()
+        self.confirm_deletion()
+
+        self.assertFalse(self.check_element_on_page(
+            by.By.XPATH, ".//*[@id='agent__row__agent##Demo.template']"))
+
+    def test_034_check_opportunity_to_delete_composed_service(self):
+        self.log_in()
+        self.navigate_to('Service Definitions')
+        self.compose_trivial_service('ForDeletion')
+        self.assertTrue(self.check_element_on_page(
+            by.By.XPATH, './/*[@data-display="ForDeletion"]'))
+
+        self.select_and_click_element('ForDeletionService')
+        self.driver.refresh()
+        self.click_on_service_catalog_action('delete_service')
+        self.confirm_deletion()
+        self.assertFalse(self.check_element_on_page(
+            by.By.XPATH, './/*[@data-display="ForDeletion"]'))
