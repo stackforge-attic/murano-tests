@@ -152,8 +152,6 @@ class UISanityTests(UITestCase):
         self.assertFalse(self.check_element_on_page(by.By.LINK_TEXT,
                                                     'ASPService'))
 
-    @testtools.skip("SKIP because this https://review.openstack.org/#/c/67772/ "
-                   "not in master branch")
     def test_create_and_delete_iisfarm_service(self):
         self.log_in()
         self.navigate_to_environments()
@@ -169,8 +167,6 @@ class UISanityTests(UITestCase):
         self.assertFalse(self.check_element_on_page(by.By.LINK_TEXT,
                                                     'IISFarmService'))
 
-    @testtools.skip("SKIP because this https://review.openstack.org/#/c/67772/ "
-                   "not in master branch")
     def test_create_and_delete_aspfarm_service(self):
         self.log_in()
         self.navigate_to_environments()
@@ -603,3 +599,110 @@ class UISanityTests(UITestCase):
 
         next_ = "/html/body/div[3]/div/form/div[2]/input[2]"
         self.assertTrue(self.check_element_on_page(by.By.XPATH, next_))
+
+    def test_check_opportunity_to_delete_composed_service(self):
+        self.log_in()
+        self.driver.find_element_by_link_text('Service Definitions').click()
+        self.compose_trivial_service('ForDeletion')
+        self.assertTrue(self.check_element_on_page(
+            by.By.XPATH, './/*[@data-display="ForDeletion"]'))
+
+        self.select_element('ForDeletionService')
+        self.refresh_page()
+        self.click_on_service_catalog_action('delete_service')
+        self.confirm_deletion()
+        self.assertFalse(self.check_element_on_page(
+            by.By.XPATH, './/*[@data-display="ForDeletion"]'))
+
+    def test_delete_component_from_existing_service(self):
+        self.log_in()
+        self.driver.find_element_by_link_text('Service Definitions').click()
+
+        self.select_action_for_service('demoService', 'more')
+        self.select_action_for_service('demoService', 'manage_service')
+
+        self.select_element('agent##Demo.template')
+        self.refresh_page()
+        self.driver.find_element_by_id(
+            'agent__action_delete_file_from_service').click()
+        self.confirm_deletion()
+
+        self.assertFalse(self.check_element_on_page(
+            by.By.XPATH, ".//*[@id='agent__row__agent##Demo.tseemplate']"))
+
+    def test_modify_service_add_file(self):
+        self.log_in()
+        self.driver.find_element_by_link_text('Service Definitions').click()
+        self.compose_trivial_service('TEST')
+
+        self.select_action_for_service('TESTService', 'modify_service')
+
+        self.driver.find_element_by_link_text('Scripts').click()
+        self.driver.find_element_by_xpath(
+            ".//*[@name = 'scripts@@scripts##"
+            "Get-DnsListeningIpAddress.ps1@@selected']").click()
+
+        submit_button = self.elements.get('button', 'InputSubmit')
+        self.driver.find_element_by_xpath(submit_button).click()
+
+        self.select_action_for_service('TESTService', 'more')
+        self.select_action_for_service('TESTService', 'manage_service')
+        self.assertTrue(self.check_element_on_page(
+            by.By.XPATH, ".//*[@id='scripts__row__scripts##"
+                         "Get-DnsListeningIpAddress.ps1']"))
+
+    def test_download_service(self):
+        self.log_in()
+        self.driver.find_element_by_link_text('Service Definitions').click()
+
+        self.select_action_for_service('demoService', 'more')
+        self.select_action_for_service('demoService', 'download_service')
+
+    def test_upload_service_to_repository(self):
+        self.log_in()
+        self.driver.find_element_by_link_text('Service Definitions').click()
+
+        self.click_on_service_catalog_action('upload_service')
+        self.choose_and_upload_files('myService.tar.gz')
+
+        self.assertTrue(self.check_element_on_page(
+            by.By.XPATH, './/*[@data-display="My Service"]'))
+
+    def test_manage_service_upload_file(self):
+        self.log_in()
+        self.driver.find_element_by_link_text('Service Definitions').click()
+        self.compose_trivial_service('TEST')
+
+        self.select_action_for_service('TESTService', 'more')
+        self.select_action_for_service('TESTService', 'manage_service')
+
+        self.driver.find_element_by_id('scripts__action_upload_file2').click()
+        self.choose_and_upload_files('myScript.ps1')
+
+        self.assertTrue(self.check_element_on_page(
+            by.By.XPATH, ".//*[@id='scripts__row__scripts##myScript.ps1']"))
+
+    def test_manage_files_upload_delete_file(self):
+        self.log_in()
+        self.driver.find_element_by_link_text('Service Definitions').click()
+
+        self.click_on_service_catalog_action('manage_files')
+        self.driver.find_element_by_id(
+            'manage_files__action_upload_file').click()
+
+        self.choose_and_upload_files('myHeatTemplate.template')
+
+        self.select_element('heat')
+        self.assertTrue(self.check_element_on_page(
+            by.By.XPATH,
+            ".//*[@id='manage_files__row__heat##myHeatTemplate.template']"))
+
+        self.select_element('heat##myHeatTemplate.template')
+        self.driver.find_element_by_id(
+            'manage_files__action_delete_file').click()
+
+        self.confirm_deletion()
+
+        self.assertFalse(self.check_element_on_page(
+            by.By.XPATH, ".//*[@id='manage_files__row__heat##"
+                         "myHeatTemplate.template']"))
