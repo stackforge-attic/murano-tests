@@ -73,8 +73,9 @@ class UITestCase(testtools.TestCase):
         self.driver = webdriver.Remote(
             command_executor=cfg.common.selenium_server,
             desired_capabilities=DesiredCapabilities.FIREFOX)
+
         self.driver.get(cfg.common.horizon_url + '/')
-        self.driver.implicitly_wait(10)
+        self.driver.implicitly_wait(30)
 
     def tearDown(self):
         super(UITestCase, self).tearDown()
@@ -109,7 +110,7 @@ class UITestCase(testtools.TestCase):
         self.fill_field(by.By.ID, 'id_password', cfg.common.password)
         sign_in = self.elements.get('button', 'ButtonSubmit')
         self.driver.find_element_by_xpath(sign_in).click()
-        self.navigate_to_environments()
+        self.driver.find_element_by_link_text('Murano').click()
 
     def fill_field(self, by_find, field, value):
         self.driver.find_element(by=by_find, value=field).clear()
@@ -154,13 +155,9 @@ class UITestCase(testtools.TestCase):
         self.driver.find_element_by_id(
             "murano__row_%s__action_delete" % element_id).click()
 
-    def navigate_to_environments(self):
+    def navigate_to(self, link):
         self.driver.find_element_by_link_text('Murano').click()
-        self.driver.find_element_by_link_text('Environments').click()
-
-    def navigate_to_images(self):
-        self.driver.find_element_by_link_text('Murano').click()
-        self.driver.find_element_by_link_text('Images').click()
+        self.driver.find_element_by_link_text('%s' % link).click()
 
     def select_from_list(self, list_name, value):
         self.driver.find_element_by_xpath(
@@ -440,9 +437,9 @@ class UITestCase(testtools.TestCase):
         return path.split('/')[-2]
 
     def delete_service(self, service_name):
-        id = self.get_element_id(service_name)
+        service_id = self.get_element_id(service_name)
         self.driver.find_element_by_id('services__row_%s__action_delete'
-                                       % id).click()
+                                       % service_id).click()
         self.driver.find_element_by_link_text('Delete Service').click()
 
     def get_env_subnet(self):
@@ -496,13 +493,13 @@ class UITestCase(testtools.TestCase):
         self.fill_field(by.By.ID, 'id_description', 'New Service')
 
         self.driver.find_element_by_link_text('UI Files').click()
-        self.driver.find_element_by_xpath(".//*[@value = 'ui##Demo.yaml']")
+        self.select_and_click_element('ui##Demo.yaml')
         self.driver.find_element_by_link_text('Workflows').click()
         self.driver.find_element_by_xpath(
-            ".//*[@name = 'workflows@@workflows##Demo.xml@@selected']")
+            ".//*[@name = 'workflows@@workflows##Demo.xml@@selected']").click()
         self.driver.find_element_by_link_text('Heat Templates').click()
         self.driver.find_element_by_xpath(
-            ".//*[@name = 'heat@@heat##Demo.template@@selected']")
+            ".//*[@name = 'heat@@heat##Demo.template@@selected']").click()
 
         submit_button = self.elements.get('button', 'InputSubmit')
         self.driver.find_element_by_xpath(submit_button).click()
@@ -522,7 +519,7 @@ class UITestCase(testtools.TestCase):
                 % (service, action)).click()
 
     def check_service_parameter(self, service, column, value):
-        time.sleep(2)
+        self.driver.refresh()
         result = self.driver.find_element_by_xpath(
             ".//*[@id='service_catalog__row__%s']/td[%s]"
             % (service, column)).text
@@ -530,3 +527,15 @@ class UITestCase(testtools.TestCase):
             return True
         else:
             return False
+
+    def select_and_click_element(self, element):
+        self.driver.find_element_by_xpath(
+            ".//*[@value = '%s']" % element).click()
+
+    def choose_and_upload_files(self, name):
+        __location = os.path.realpath(os.path.join(os.getcwd(),
+                                                   os.path.dirname(__file__)))
+        self.driver.find_element_by_xpath(".//*[@id='id_file']").click()
+        self.driver.find_element_by_id('id_file').send_keys(
+            os.path.join(__location, name))
+        self.select_and_click_element('Upload')
