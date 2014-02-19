@@ -59,6 +59,7 @@ class UITestCase(testtools.TestCase):
 
     def setUp(self):
         super(UITestCase, self).setUp()
+
         self.driver = webdriver.Remote(
             command_executor=cfg.common.selenium_server,
             desired_capabilities=DesiredCapabilities.FIREFOX)
@@ -118,12 +119,12 @@ class UITestCase(testtools.TestCase):
     def delete_environment(self, env_name):
         self.driver.find_element_by_link_text('Environments').click()
         self.click_on_more(env_name)
-        self.click_on_delete(env_name)
+        self.select_action_for_environment(env_name, 'delete')
         self.confirm_deletion()
 
     def edit_environment(self, old_name, new_name):
         self.click_on_more(old_name)
-        self.click_on_edit(old_name)
+        self.select_action_for_environment(old_name, 'edit')
         self.fill_field(by.By.ID, 'id_name', new_name)
         save = self.elements.get('button', 'InputSubmit')
         self.driver.find_element_by_xpath(save).click()
@@ -133,15 +134,10 @@ class UITestCase(testtools.TestCase):
         self.driver.find_element_by_xpath(
             ".//*[@id='murano__row__%s']/td[4]/div/a[2]" % element_id).click()
 
-    def click_on_edit(self, env_name):
+    def select_action_for_environment(self, env_name, action):
         element_id = self.get_element_id(env_name)
         self.driver.find_element_by_id(
-            "murano__row_%s__action_edit" % element_id).click()
-
-    def click_on_delete(self, env_name):
-        element_id = self.get_element_id(env_name)
-        self.driver.find_element_by_id(
-            "murano__row_%s__action_delete" % element_id).click()
+            "murano__row_%s__action_%s" % (element_id, action)).click()
 
     def navigate_to(self, link):
         self.driver.find_element_by_link_text('Murano').click()
@@ -507,7 +503,7 @@ class UITestCase(testtools.TestCase):
                 % (service, action)).click()
 
     def check_service_parameter(self, service, column, value):
-        self.driver.refresh()
+
         result = self.driver.find_element_by_xpath(
             ".//*[@id='service_catalog__row__%s']/td[%s]"
             % (service, column)).text
@@ -527,3 +523,36 @@ class UITestCase(testtools.TestCase):
         self.driver.find_element_by_id('id_file').send_keys(
             os.path.join(__location, name))
         self.select_and_click_element('Upload')
+
+    def check_the_status_of_env(self, env_name, status):
+        env_id = self.get_element_id(env_name)
+
+        env_status = self.driver.find_element_by_xpath(
+            ".//*[@id='murano__row__%s']/td[3]" % env_id)
+        k = 0
+        while env_status.text != status:
+            time.sleep(15)
+            k += 1
+            self.driver.refresh()
+            env_status = self.driver.find_element_by_xpath(
+                ".//*[@id='murano__row__%s']/td[3]" % env_id)
+            if k > 160:
+                log.error('\nTimeout has expired')
+                break
+
+    def check_that_deploy_finished(self, env_name):
+        self.navigate_to('Environments')
+        self.click_on_more(env_name)
+        self.select_action_for_environment(env_name, 'show_deployments')
+        status = self.driver.find_element_by_xpath(
+            "/html/body/div/div[2]/div[3]/form/table/tbody/tr/td[3]").text
+
+        self.driver.find_element_by_link_text("Show Details").click()
+        self.driver.find_element_by_link_text("Logs").click()
+        self.take_screenshot(self._testMethodName)
+
+        self.navigate_to('Environments')
+        self.click_on_more(env_name)
+        self.select_action_for_environment(env_name, 'show_deployments')
+
+        self.assertEqual('Successful', status, 'Deploy finished with errors')
