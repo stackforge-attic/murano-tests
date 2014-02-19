@@ -532,8 +532,8 @@ class UISanityTests(UITestCase):
         submit_button = self.elements.get('button', 'InputSubmit')
         self.driver.find_element_by_xpath(submit_button).click()
 
-        self.assertTrue(self.check_service_parameter(
-            'forModificationService', '2', 'modifiedService'))
+        self.assertTrue(self.check_element_on_page(
+            by.By.XPATH, './/*[@data-display="modifiedService"]'))
 
     def test_025_modify_description(self):
         self.log_in()
@@ -657,13 +657,13 @@ class UISanityTests(UITestCase):
 
         self.select_action_for_service('demoService', 'more')
         self.select_action_for_service('demoService', 'toggle_enabled')
-        self.driver.refresh()
+
         self.assertTrue(
             self.check_service_parameter('demoService', '3', 'False'))
 
         self.select_action_for_service('demoService', 'more')
         self.select_action_for_service('demoService', 'toggle_enabled')
-        self.driver.refresh()
+
         self.assertTrue(
             self.check_service_parameter('demoService', '3', 'True'))
 
@@ -690,8 +690,9 @@ class UISanityTests(UITestCase):
         self.assertTrue(self.check_element_on_page(
             by.By.XPATH, './/*[@data-display="ForDeletion"]'))
 
-        self.select_and_click_element('ForDeletionService')
         self.driver.refresh()
+        self.select_and_click_element('ForDeletionService')
+
         self.click_on_service_catalog_action('delete_service')
         self.confirm_deletion()
         self.assertFalse(self.check_element_on_page(
