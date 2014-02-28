@@ -46,3 +46,5 @@ send -- "sed -i \"s/auth_host = 127.0.0.1/auth_host = "
 send -- [lindex $argv 2]
 send -- "/\" /etc/murano/murano-api.conf\n"
 expect "@murano"
+send -- "service murano-api restart"
+expect "@murano"
