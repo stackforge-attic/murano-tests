@@ -68,3 +68,5 @@ send -- "sed -i \"s/virtual_host = \\//virtual_host = "
 send -- [lindex $argv 5]
 send -- "/\" /etc/murano/murano-conductor.conf\n"
 expect "@murano"
+send -- "service murano-conductor restart\n"
+expect "@murano"
