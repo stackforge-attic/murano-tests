@@ -25,6 +25,11 @@ password = args.password
 vhost = args.vhostname
 cl = Client(rabbitmq_url, rabbitmq_user, rabbitmq_password)
 assert cl.is_alive()
+
+for i in cl.get_queues():
+    if i['vhost'] == vhost:
+        cl.delete_queue(i['name'])
+
 for i in cl.get_all_vhosts():
     if i['name'] == vhost:
         cl.delete_vhost(i['name'])
