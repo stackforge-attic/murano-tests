@@ -25,12 +25,19 @@ password = args.password
 vhost = args.vhostname
 cl = Client(rabbitmq_url, rabbitmq_user, rabbitmq_password)
 assert cl.is_alive()
-for i in cl.get_all_vhosts():
-    if i['name'] == vhost:
-        cl.delete_vhost(i['name'])
-for i in cl.get_users():
-    if i['name'] == user:
-        cl.delete_user(i['name'])
+
+for queue in cl.get_queues():
+    if queue['vhost'] == vhost:
+        cl.purge_queue(vhost, queue['name'])
+        cl.delete_queue(vhost, queue['name'])
+
+for vhost_ in cl.get_all_vhosts():
+    if vhost_['name'] == vhost:
+        cl.delete_vhost(vhost_['name'])
+
+for user_ in cl.get_users():
+    if user_['name'] == user:
+        cl.delete_user(user_['name'])
 
 cl.create_vhost(vhost)
 cl.create_user(user, password, tags='administrator')
