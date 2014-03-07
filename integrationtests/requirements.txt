@@ -9,3 +9,4 @@ jsonpath-rw>=1.2.0,<2.0
 jsonrpclib
 jsonschema>=2.0.0,<3.0.0
 python-muranoclient
+murano-metadataclient
