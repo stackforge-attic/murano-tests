@@ -1,6 +1,7 @@
 from keystoneclient.v2_0 import client as ksclient
 from muranoclient.v1.client import Client as murano_client
 from glanceclient import Client as gclient
+from metadataclient.v1.client import Client as metadata_client
 import testtools
 import testresources
 import config as cfg
@@ -22,6 +23,9 @@ class MuranoBase(testtools.TestCase, testtools.testcase.WithAttributes,
 
         cls.murano = murano_client(endpoint=cfg.murano.murano_url,
                                    token=cls.auth.auth_token)
+
+        cls.murano_repo = metadata_client(endpoint=cfg.murano.metadata_url,
+                                          token=cls.auth.auth_token)
 
     def setUp(self):
         super(MuranoBase, self).setUp()
@@ -227,6 +231,20 @@ class MuranoBase(testtools.TestCase, testtools.testcase.WithAttributes,
                                          path='/',
                                          data=post_body,
                                          session_id=session_id)
+
+    def transform_returned_list_of_files(self, list_):
+        list_of_objects = []
+        for obj in list_:
+            object_ = str(obj).split('/')[1]
+            list_of_objects.append(object_)
+        return list_of_objects
+
+    def form_service_list(self, list_):
+        list_of_objects = []
+        for obj in list_:
+            object_ = str(obj).split('(')[0]
+            list_of_objects.append(object_)
+        return list_of_objects
 
 
 class MuranoEnvironments(MuranoBase):
@@ -763,3 +781,152 @@ class MuranoDeploy(MuranoBase):
 
         deployments = self.murano.deployments.list(environment.id)
         self.assertEqual(deployments[0].state, 'success')
+
+
+class MuranoMetadata(MuranoBase):
+
+    def test_get_list_of_availiable_services(self):
+        services_list = self.murano_repo.metadata_admin.list_services()
+        self.assertTrue(isinstance(services_list, list))
+
+    def test_get_service_ui_file(self):
+        files = self.murano_repo.metadata_admin.get_service_files(
+            'ui', 'demoService')
+        ui_files = self.transform_returned_list_of_files(files)
+        self.assertIn('Demo.yaml', ui_files)
+
+    def test_get_service_workflows(self):
+        files = self.murano_repo.metadata_admin.get_service_files(
+            'workflows', 'demoService')
+        workflows = self.transform_returned_list_of_files(files)
+        self.assertIn('Demo.xml', workflows)
+
+    def test_get_service_heat_template(self):
+        files = self.murano_repo.metadata_admin.get_service_files(
+            'heat', 'demoService')
+        heat_templates = self.transform_returned_list_of_files(files)
+        self.assertIn('DemoSecurity.template', heat_templates)
+
+    def test_get_service_agent_template(self):
+        files = self.murano_repo.metadata_admin.get_service_files(
+            'agent', 'demoService')
+        agent_templates = self.transform_returned_list_of_files(files)
+        self.assertIn('Demo.template', agent_templates)
+
+    def test_get_service_info(self):
+        service_info = self.murano_repo.metadata_admin.get_service_info(
+            'activeDirectory')
+        self.assertIn('<strong> The Active Directory Service </strong>',
+                      service_info['description'])
+        self.assertIn('Mirantis Inc.', service_info['author'])
+        self.assertIn('Active Directory', service_info['service_display_name'])
+        self.assertIn('activeDirectory', service_info['full_service_name'])
+
+    def test_upload_delete_service(self):
+        __location = os.path.realpath(os.path.join(os.getcwd(),
+                                                   os.path.dirname(__file__)))
+        service = os.path.join(__location, 'myService.tar.gz')
+        file_ = open(service, 'rb')
+        self.murano_repo.metadata_admin.upload_service(file_)
+        list_of_services = self.murano_repo.metadata_admin.list_services()
+        services = self.form_service_list(list_of_services)
+        self.assertIn('myService', services)
+
+        self.murano_repo.metadata_admin.delete_service('myService')
+        list_of_services = self.murano_repo.metadata_admin.list_services()
+        services = self.form_service_list(list_of_services)
+        self.assertNotIn('myService', services)
+
+    def test_toggle_active(self):
+        self.murano_repo.metadata_admin.toggle_enabled('demoService')
+        service_info = self.murano_repo.metadata_admin.get_service_info(
+            'demoService')
+        self.assertEqual(False, service_info['enabled'])
+
+        self.murano_repo.metadata_admin.toggle_enabled('demoService')
+        service_info = self.murano_repo.metadata_admin.get_service_info(
+            'demoService')
+        self.assertEqual(True, service_info['enabled'])
+
+    def test_get_list_ui(self):
+        list_ui = self.murano_repo.metadata_admin.list_ui()
+
+        self.assertGreater(len(list_ui), 0)
+
+        self.assertIn('Demo.yaml', list_ui['ui'])
+        self.assertIn('ActiveDirectory.yaml', list_ui['ui'])
+
+    def test_get_list_agent(self):
+        list_agent = self.murano_repo.metadata_admin.list_agent()
+
+        self.assertGreater(len(list_agent), 0)
+
+        self.assertIn('JoinDomain.template', list_agent['agent'])
+        self.assertIn('InstallIIS.template', list_agent['agent'])
+
+    def test_get_list_heat(self):
+        list_heat = self.murano_repo.metadata_admin.list_heat()
+
+        self.assertGreater(len(list_heat), 0)
+
+        self.assertIn('DefaultSecurity.template', list_heat['heat'])
+        self.assertIn('FloatingIP.template', list_heat['heat'])
+
+    def test_get_list_scripts(self):
+        list_scripts = self.murano_repo.metadata_admin.list_scripts()
+
+        self.assertGreater(len(list_scripts), 0)
+
+        self.assertIn('Join-Domain.ps1', list_scripts['scripts'])
+        self.assertIn('InstallIIS.ps1', list_scripts['scripts'])
+
+    def test_get_list_workflows(self):
+        list_workflows = self.murano_repo.metadata_admin.list_workflows()
+
+        self.assertGreater(len(list_workflows), 0)
+
+        self.assertIn('AD.xml', list_workflows['workflows'])
+        self.assertIn('Networking.xml', list_workflows['workflows'])
+
+    def test_get_list_manifests(self):
+        list_manifests = self.murano_repo.metadata_admin.list_manifests()
+
+        self.assertGreater(len(list_manifests), 0)
+
+        self.assertIn('aspNetApp-manifest.yaml', list_manifests['manifests'])
+        self.assertIn('webServer-manifest.yaml', list_manifests['manifests'])
+
+    def test_upload_delete_file(self):
+        __location = os.path.realpath(os.path.join(os.getcwd(),
+                                                   os.path.dirname(__file__)))
+        service_file = os.path.join(__location, 'myScript.ps1')
+        file_ = open(service_file, 'rb')
+
+        self.murano_repo.metadata_admin.upload_file(
+            'scripts', file_, 'myScript.ps1')
+        list_scripts = self.murano_repo.metadata_admin.list_scripts()
+        self.assertIn('myScript.ps1', list_scripts['scripts'])
+
+        self.murano_repo.metadata_admin.delete('scripts', 'myScript.ps1')
+        list_scripts = self.murano_repo.metadata_admin.list_scripts()
+        self.assertNotIn('myScript.ps1', list_scripts['scripts'])
+
+    def test_upload_and_delete_file_from_the_service(self):
+        __location = os.path.realpath(os.path.join(os.getcwd(),
+                                                   os.path.dirname(__file__)))
+        service_file = os.path.join(__location, 'myScript.ps1')
+        file_ = open(service_file, 'rb')
+
+        self.murano_repo.metadata_admin.upload_file_to_service(
+            'scripts', file_, 'myScript.ps1', 'demoService')
+        scripts = self.murano_repo.metadata_admin.get_service_files(
+            'scripts', 'demoService')
+        files = self.transform_returned_list_of_files(scripts)
+        self.assertIn('myScript.ps1', files)
+
+        self.murano_repo.metadata_admin.delete_from_service(
+            'scripts', 'myScript.ps1', 'demoService')
+        scripts = self.murano_repo.metadata_admin.get_service_files(
+            'scripts', 'demoService')
+        files = self.transform_returned_list_of_files(scripts)
+        self.assertNotIn('myScript.ps1', files)
