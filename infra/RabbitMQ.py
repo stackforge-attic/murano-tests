@@ -33,7 +33,12 @@ for queue in cl.get_queues():
 
 for vhost_ in cl.get_all_vhosts():
     if vhost_['name'] == vhost:
-        cl.delete_vhost(vhost_['name'])
+        while True:
+            try:
+                cl.delete_vhost(vhost_['name'])
+                break
+            except Exception:
+                pass
 
 for user_ in cl.get_users():
     if user_['name'] == user:
