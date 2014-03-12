@@ -77,6 +77,7 @@ class UITestCase(testtools.TestCase):
 
         self.driver.get(cfg.common.horizon_url + '/')
         self.driver.implicitly_wait(30)
+        self.log_in()
 
     def tearDown(self):
         super(UITestCase, self).tearDown()
