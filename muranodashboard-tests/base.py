@@ -1,27 +1,26 @@
-import testtools
 import ConfigParser
-import random
-import time
-import json
 import datetime
-import os
+import json
 import logging
-
-log = logging.getLogger(__name__)
-log.setLevel(logging.DEBUG)
-log.addHandler(logging.StreamHandler())
+import os
+import random
+import testtools
+import time
 
 from selenium import webdriver
-import selenium.webdriver.common.by as by
-import config.config as cfg
 from selenium.common.exceptions import NoSuchElementException
+import selenium.webdriver.common.by as by
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.support.ui import WebDriverWait
 
 from keystoneclient.v2_0 import client as ksclient
 from muranoclient.client import Client as mclient
 from glanceclient import Client as gclient
+import config.config as cfg
 
+log = logging.getLogger(__name__)
+log.setLevel(logging.DEBUG)
+log.addHandler(logging.StreamHandler())
 
 class ImageException(Exception):
     message = "Image doesn't exist"
@@ -77,6 +76,7 @@ class UITestCase(testtools.TestCase):
 
         self.driver.get(cfg.common.horizon_url + '/')
         self.driver.implicitly_wait(30)
+        self.log_in()
 
     def tearDown(self):
         super(UITestCase, self).tearDown()
