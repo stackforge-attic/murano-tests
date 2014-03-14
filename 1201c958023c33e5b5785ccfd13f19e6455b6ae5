@@ -1,0 +1,11 @@
+Verified+2: Jenkins
+Approved+1: Stan Lagun <slagun@mirantis.com>
+Code-Review+2: Stan Lagun <slagun@mirantis.com>
+Code-Review+1: Timur Nurlygayanov <tnurlygayanov@mirantis.com>
+Code-Review+2: Timur Sufiev <tsufiev@mirantis.com>
+Code-Review+1: Sergey Murashov <smurashov@mirantis.com>
+Submitted-by: Jenkins
+Submitted-at: Fri, 14 Mar 2014 12:45:35 +0000
+Reviewed-on: https://review.openstack.org/79907
+Project: stackforge/murano-tests
+Branch: refs/heads/master
