@@ -1,3 +1,7 @@
+import os
+import sys
+sys.path.append(os.getcwd())
+
 import selenium.webdriver.common.by as by
 from selenium.webdriver.support.ui import WebDriverWait
 import testtools
@@ -8,7 +12,8 @@ from base import UITestCase
 class UISanityTests(UITestCase):
 
     def test_001_create_delete_environment(self):
-        """Test check ability to create and delete environment.
+        """
+        Test check ability to create and delete environment
 
         Scenario:
             1. Create environment
