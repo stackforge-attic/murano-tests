@@ -1,34 +1,34 @@
-import testtools
-import ConfigParser
-import random
-import time
-import json
 import datetime
 import os
+import random
+
+import ConfigParser
+import json
 import logging
-
-log = logging.getLogger(__name__)
-log.setLevel(logging.DEBUG)
-log.addHandler(logging.StreamHandler())
-
 from selenium import webdriver
-import selenium.webdriver.common.by as by
-import config.config as cfg
 from selenium.common.exceptions import NoSuchElementException
+import selenium.webdriver.common.by as by
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.support.ui import WebDriverWait
+import testtools
+import time
 
 from keystoneclient.v2_0 import client as ksclient
 from muranoclient.client import Client as mclient
 from glanceclient import Client as gclient
+import config.config as cfg
+
+log = logging.getLogger(__name__)
+log.setLevel(logging.DEBUG)
+log.addHandler(logging.StreamHandler())
 
 
 class ImageException(Exception):
     message = "Image doesn't exist"
 
     def __init__(self, type):
-        self._error_string = self.message + '\nDetails: %s' \
-                                            ' image is not found,' % str(type)
+        self._error_string = (self.message + '\nDetails: %s image is '
+                                             'not found,' % str(type))
 
     def __str__(self):
         return self._error_string
@@ -77,6 +77,7 @@ class UITestCase(testtools.TestCase):
 
         self.driver.get(cfg.common.horizon_url + '/')
         self.driver.implicitly_wait(30)
+        self.log_in()
 
     def tearDown(self):
         super(UITestCase, self).tearDown()
@@ -234,17 +235,13 @@ class UITestCase(testtools.TestCase):
         next_button = self.elements.get('button', 'Next')
         self.driver.find_element_by_xpath(next_button).click()
 
-        self.fill_field(
-            by.By.ID, 'id_activeDirectory-0-name', service_name)
-        self.fill_field(
-            by.By.ID, 'id_activeDirectory-0-adminPassword', 'P@ssw0rd')
-        self.fill_field(
-            by.By.ID, 'id_activeDirectory-0-adminPassword-clone', 'P@ssw0rd')
-        self.fill_field(
-            by.By.ID, 'id_activeDirectory-0-recoveryPassword', 'P@ssw0rd')
-        self.fill_field(
-            by.By.ID,
-            'id_activeDirectory-0-recoveryPassword-clone', 'P@ssw0rd')
+        ad = 'id_activeDirectory-0'
+
+        self.fill_field(by.By.ID, '%s-name' % ad, service_name)
+        self.fill_field(by.By.ID, '%s-adminPassword' % ad, 'P@ssw0rd')
+        self.fill_field(by.By.ID, '%s-adminPassword-clone' % ad, 'P@ssw0rd')
+        self.fill_field(by.By.ID, '%s-recoveryPassword' % ad, 'P@ssw0rd')
+        self.fill_field(by.By.ID, '%s-recoveryPassword-clone' % ad, 'P@ssw0rd')
         next_button = self.elements.get('button', 'Next2')
         self.driver.find_element_by_xpath(next_button).click()
 
@@ -261,11 +258,11 @@ class UITestCase(testtools.TestCase):
         next_button = self.elements.get('button', 'Next')
         self.driver.find_element_by_xpath(next_button).click()
 
-        self.fill_field(by.By.ID, 'id_webServer-0-name', service_name)
-        self.fill_field(
-            by.By.ID, 'id_webServer-0-adminPassword', 'P@ssw0rd')
-        self.fill_field(
-            by.By.ID, 'id_webServer-0-adminPassword-clone', 'P@ssw0rd')
+        iis = 'id_webServer-0'
+
+        self.fill_field(by.By.ID, '%s-name' % iis, service_name)
+        self.fill_field(by.By.ID, '%s-adminPassword' % iis, 'P@ssw0rd')
+        self.fill_field(by.By.ID, '%s-adminPassword-clone' % iis, 'P@ssw0rd')
         next_button = self.elements.get('button', 'Next2')
         self.driver.find_element_by_xpath(next_button).click()
 
@@ -281,13 +278,15 @@ class UITestCase(testtools.TestCase):
         next_button = self.elements.get('button', 'Next')
         self.driver.find_element_by_xpath(next_button).click()
 
-        self.fill_field(by.By.ID, 'id_aspNetApp-0-name', service_name)
-        self.fill_field(
-            by.By.ID, 'id_aspNetApp-0-adminPassword', 'P@ssw0rd')
-        self.fill_field(
-            by.By.ID, 'id_aspNetApp-0-adminPassword-clone', 'P@ssw0rd')
-        self.fill_field(
-            by.By.ID, 'id_aspNetApp-0-repository', self.asp_git_repository)
+        asp = 'id_aspNetApp-0'
+
+        self.fill_field(by.By.ID, '%s-name' % asp, service_name)
+        self.fill_field(by.By.ID, '%s-adminPassword' % asp, 'P@ssw0rd')
+        self.fill_field(by.By.ID, '%s-adminPassword-clone' % asp, 'P@ssw0rd')
+        self.fill_field(by.By.ID,
+                        '%s-repository' % asp,
+                        self.asp_git_repository)
+
         next_button = self.elements.get('button', 'Next2')
         self.driver.find_element_by_xpath(next_button).click()
 
@@ -299,16 +298,19 @@ class UITestCase(testtools.TestCase):
         self.driver.find_element_by_id(
             'services__action_CreateService').click()
 
-        self.select_from_list(
-            'service_choice-service', 'Internet Information Services Web Farm')
+        self.select_from_list('service_choice-service',
+                              'Internet Information Services Web Farm')
         next_button = self.elements.get('button', 'Next')
         self.driver.find_element_by_xpath(next_button).click()
 
-        self.fill_field(by.By.ID, 'id_webServerFarm-0-name', service_name)
-        self.fill_field(
-            by.By.ID, 'id_webServerFarm-0-adminPassword', 'P@ssw0rd')
-        self.fill_field(
-            by.By.ID, 'id_webServerFarm-0-adminPassword-clone', 'P@ssw0rd')
+        iis_farm = 'id_webServerFarm-0'
+
+        self.fill_field(by.By.ID, '%s-name' % iis_farm, service_name)
+        self.fill_field(by.By.ID, '%s-adminPassword' % iis_farm, 'P@ssw0rd')
+        self.fill_field(by.By.ID,
+                        '%s-adminPassword-clone' % iis_farm,
+                        'P@ssw0rd')
+
         next_button = self.elements.get('button', 'Next2')
         self.driver.find_element_by_xpath(next_button).click()
 
@@ -325,13 +327,17 @@ class UITestCase(testtools.TestCase):
         next_button = self.elements.get('button', 'Next')
         self.driver.find_element_by_xpath(next_button).click()
 
-        self.fill_field(by.By.ID, 'id_aspNetAppFarm-0-name', service_name)
-        self.fill_field(
-            by.By.ID, 'id_aspNetAppFarm-0-adminPassword', 'P@ssw0rd')
-        self.fill_field(
-            by.By.ID, 'id_aspNetAppFarm-0-adminPassword-clone', 'P@ssw0rd')
-        self.fill_field(
-            by.By.ID, 'id_aspNetAppFarm-0-repository', self.asp_git_repository)
+        asp_farm = 'id_aspNetAppFarm-0'
+
+        self.fill_field(by.By.ID, '%s-name' % asp_farm, service_name)
+        self.fill_field(by.By.ID, '%s-adminPassword' % asp_farm, 'P@ssw0rd')
+        self.fill_field(by.By.ID,
+                        '%s-adminPassword-clone' % asp_farm,
+                        'P@ssw0rd')
+        self.fill_field(by.By.ID,
+                        '%s-repository' % asp_farm,
+                        self.asp_git_repository)
+
         next_button = self.elements.get('button', 'Next2')
         self.driver.find_element_by_xpath(next_button).click()
 
@@ -347,15 +353,13 @@ class UITestCase(testtools.TestCase):
         next_button = self.elements.get('button', 'Next')
         self.driver.find_element_by_xpath(next_button).click()
 
-        self.fill_field(by.By.ID, 'id_msSqlServer-0-name', service_name)
-        self.fill_field(
-            by.By.ID, 'id_msSqlServer-0-adminPassword', 'P@ssw0rd')
-        self.fill_field(
-            by.By.ID, 'id_msSqlServer-0-adminPassword-clone', 'P@ssw0rd')
-        self.fill_field(
-            by.By.ID, 'id_msSqlServer-0-saPassword', 'P@ssw0rd')
-        self.fill_field(
-            by.By.ID, 'id_msSqlServer-0-saPassword-clone', 'P@ssw0rd')
+        mssql = 'id_msSqlServer-0'
+
+        self.fill_field(by.By.ID, '%s-name' % mssql, service_name)
+        self.fill_field(by.By.ID, '%s-adminPassword' % mssql, 'P@ssw0rd')
+        self.fill_field(by.By.ID, '%s-adminPassword-clone' % mssql, 'P@ssw0rd')
+        self.fill_field(by.By.ID, '%s-saPassword' % mssql, 'P@ssw0rd')
+        self.fill_field(by.By.ID, '%s-saPassword-clone' % mssql, 'P@ssw0rd')
         next_button = self.elements.get('button', 'Next2')
         self.driver.find_element_by_xpath(next_button).click()
 
@@ -367,63 +371,66 @@ class UITestCase(testtools.TestCase):
         self.driver.find_element_by_id(
             'services__action_CreateService').click()
 
-        self.select_from_list(
-            'service_choice-service', 'MS SQL Server Cluster')
+        self.select_from_list('service_choice-service',
+                              'MS SQL Server Cluster')
         next_button = self.elements.get('button', 'Next')
         self.driver.find_element_by_xpath(next_button).click()
 
-        self.fill_field(
-            by.By.ID, 'id_msSqlClusterServer-0-name', service_name)
-        self.fill_field(
-            by.By.ID, 'id_msSqlClusterServer-0-adminPassword', 'P@ssw0rd')
-        self.fill_field(
-            by.By.ID,
-            'id_msSqlClusterServer-0-adminPassword-clone', 'P@ssw0rd')
+        sql_cluster = 'id_msSqlClusterServer'
+
+        self.fill_field(by.By.ID, '%s-0-name' % sql_cluster, service_name)
+        self.fill_field(by.By.ID,
+                        '%s-0-adminPassword' % sql_cluster,
+                        'P@ssw0rd')
+        self.fill_field(by.By.ID,
+                        '%s-0-adminPassword-clone' % sql_cluster,
+                        'P@ssw0rd')
         self.select_from_list('msSqlClusterServer-0-domain', domain_name)
-        self.fill_field(
-            by.By.ID, 'id_msSqlClusterServer-0-saPassword', 'P@ssw0rd')
-        self.fill_field(
-            by.By.ID, 'id_msSqlClusterServer-0-saPassword-clone', 'P@ssw0rd')
+        self.fill_field(by.By.ID,
+                        '%s-0-saPassword' % sql_cluster,
+                        'P@ssw0rd')
+        self.fill_field(by.By.ID,
+                        '%s-0-saPassword-clone' % sql_cluster,
+                        'P@ssw0rd')
         next_button = self.elements.get('button', 'Next2')
         self.driver.find_element_by_xpath(next_button).click()
 
-        self.fill_field(
-            by.By.ID, 'id_msSqlClusterServer-1-clusterIp', '1.1.1.1')
-        self.fill_field(
-            by.By.ID, 'id_msSqlClusterServer-1-clusterName', 'cluster')
-        self.fill_field(
-            by.By.ID, 'id_msSqlClusterServer-1-agGroupName', 'ag-name')
-        self.fill_field(
-            by.By.ID,
-            'id_msSqlClusterServer-1-agListenerName', 'listener_name')
-        self.fill_field(
-            by.By.ID, 'id_msSqlClusterServer-1-agListenerIP', 'listener_name')
-        self.fill_field(
-            by.By.ID, 'id_msSqlClusterServer-1-sqlServiceUserName', 'admin')
-        self.fill_field(
-            by.By.ID, 'id_msSqlClusterServer-1-sqlServicePassword', 'P@ssw0rd')
-        self.fill_field(
-            by.By.ID, 'id_msSqlClusterServer-1-sqlServicePassword-clone',
-            'P@ssw0rd')
+        self.fill_field(by.By.ID, '%s-1-clusterIp' % sql_cluster, '1.1.1.1')
+        self.fill_field(by.By.ID, '%s-1-clusterName' % sql_cluster, 'cluster')
+        self.fill_field(by.By.ID, '%s-1-agGroupName' % sql_cluster, 'ag-name')
+        self.fill_field(by.By.ID,
+                        '%s-1-agListenerName' % sql_cluster,
+                        'listener_name')
+        self.fill_field(by.By.ID,
+                        '%s-1-agListenerIP' % sql_cluster,
+                        'listener_name')
+        self.fill_field(by.By.ID,
+                        '%s-1-sqlServiceUserName' % sql_cluster,
+                        'admin')
+        self.fill_field(by.By.ID,
+                        '%s-1-sqlServicePassword' % sql_cluster,
+                        'P@ssw0rd')
+        self.fill_field(by.By.ID,
+                        '%s-1-sqlServicePassword-clone' % sql_cluster,
+                        'P@ssw0rd')
         next_button = self.elements.get('button', 'Next2')
         self.driver.find_element_by_xpath(next_button).click()
 
         cluster_ip = self.get_env_subnet()
-        self.fill_field(
-            by.By.ID, 'id_msSqlClusterServer-1-clusterIp', cluster_ip)
+        self.fill_field(by.By.ID, '%s-1-clusterIp' % sql_cluster, cluster_ip)
         listener_ip = self.get_env_subnet()
-        self.fill_field(
-            by.By.ID, 'id_msSqlClusterServer-1-agListenerIP', listener_ip)
+        self.fill_field(by.By.ID,
+                        '%s-1-agListenerIP' % sql_cluster,
+                        listener_ip)
         next_button = self.elements.get('button', 'Next2')
         self.driver.find_element_by_xpath(next_button).click()
 
-        self.fill_field(
-            by.By.ID, 'id_msSqlClusterServer-2-databases', 'testbase')
+        self.fill_field(by.By.ID, '%s-2-databases' % sql_cluster, 'testbase')
         next_button = self.elements.get('button', 'Next2')
         self.driver.find_element_by_xpath(next_button).click()
 
-        self.select_from_list(
-            'msSqlClusterServer-3-osImage', self.windows_image)
+        self.select_from_list('msSqlClusterServer-3-osImage',
+                              self.windows_image)
         next_button = self.elements.get('button', 'Create')
         self.driver.find_element_by_xpath(next_button).click()
 
