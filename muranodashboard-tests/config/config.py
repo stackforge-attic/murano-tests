@@ -28,6 +28,9 @@ CommonGroup = [
     cfg.StrOpt('asp_git_repository',
                default='git://github.com/',
                help='git repository with asp application'),
+    cfg.StrOpt('tomcat_repository',
+               default='git://github.com/',
+               help='git repository with tomcat servlet'),
     cfg.StrOpt('selenium_server',
                default='http://127.0.0.1:4444/wd/hub',
                help='url where selenium server is running')

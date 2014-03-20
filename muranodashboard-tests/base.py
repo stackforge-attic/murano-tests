@@ -26,9 +26,9 @@ log.addHandler(logging.StreamHandler())
 class ImageException(Exception):
     message = "Image doesn't exist"
 
-    def __init__(self, type):
-        self._error_string = (self.message + '\nDetails: %s image is '
-                                             'not found,' % str(type))
+    def __init__(self, im_type):
+        self._error_string = (self.message + '\nDetails: {0} image is '
+                                             'not found,'.format(im_type))
 
     def __str__(self):
         return self._error_string
@@ -63,6 +63,7 @@ class UITestCase(testtools.TestCase):
         cls.windows_image = cls.get_image_name('windows', image_list)
         cls.keypair = cfg.common.keypair_name
         cls.asp_git_repository = cfg.common.asp_git_repository
+        cls.tomcat_repository = cfg.common.tomcat_repository
 
         cls.elements = ConfigParser.RawConfigParser()
         cls.elements.read('common.ini')
@@ -92,8 +93,7 @@ class UITestCase(testtools.TestCase):
         if not os.path.exists(screenshot_dir):
             os.makedirs(screenshot_dir)
         date = datetime.datetime.now().strftime('%H%M%S')
-        filename = '%s/%s-%s.png' % (
-            screenshot_dir, test_name, date)
+        filename = '{0}/{1}-{2}.png'.format(screenshot_dir, test_name, date)
         self.driver.get_screenshot_as_file(filename)
         log.debug("\nScreenshot {0} was saved".format(filename))
 
@@ -145,12 +145,13 @@ class UITestCase(testtools.TestCase):
     def click_on_more(self, env_name):
         element_id = self.get_element_id(env_name)
         self.driver.find_element_by_xpath(
-            ".//*[@id='murano__row__%s']/td[4]/div/a[2]" % element_id).click()
+            ".//*[@id='murano__row__{0}']/td[4]/div/a[2]".
+            format(element_id)).click()
 
     def select_action_for_environment(self, env_name, action):
         element_id = self.get_element_id(env_name)
         self.driver.find_element_by_id(
-            "murano__row_%s__action_%s" % (element_id, action)).click()
+            "murano__row_{0}__action_{1}".format(element_id, action)).click()
 
     def navigate_to(self, link):
         self.driver.find_element_by_link_text('Murano').click()
@@ -158,8 +159,8 @@ class UITestCase(testtools.TestCase):
 
     def select_from_list(self, list_name, value):
         self.driver.find_element_by_xpath(
-            "//select[@name='%s']/option[text()='%s']" %
-            (list_name, value)).click()
+            "//select[@name='{0}']/option[text()='{1}']".
+            format(list_name, value)).click()
 
     def check_element_on_page(self, method, value):
         try:
@@ -170,8 +171,8 @@ class UITestCase(testtools.TestCase):
 
     def env_to_service(self, env_name):
         element_id = self.get_element_id(env_name)
-        self.driver.find_element_by_id("murano__row_%s__action_show"
-                                       % element_id).click()
+        self.driver.find_element_by_id(
+            "murano__row_{0}__action_show".format(element_id)).click()
 
     def create_demo_service(self, service_name):
         self.driver.find_element_by_id(
@@ -237,11 +238,17 @@ class UITestCase(testtools.TestCase):
 
         ad = 'id_activeDirectory-0'
 
-        self.fill_field(by.By.ID, '%s-name' % ad, service_name)
-        self.fill_field(by.By.ID, '%s-adminPassword' % ad, 'P@ssw0rd')
-        self.fill_field(by.By.ID, '%s-adminPassword-clone' % ad, 'P@ssw0rd')
-        self.fill_field(by.By.ID, '%s-recoveryPassword' % ad, 'P@ssw0rd')
-        self.fill_field(by.By.ID, '%s-recoveryPassword-clone' % ad, 'P@ssw0rd')
+        self.fill_field(by.By.ID, '{0}-name'.format(ad), service_name)
+        self.fill_field(by.By.ID, '{0}-adminPassword'.format(ad), 'P@ssw0rd')
+        self.fill_field(by.By.ID,
+                        '{0}-adminPassword-clone'.format(ad),
+                        'P@ssw0rd')
+        self.fill_field(by.By.ID,
+                        '{0}-recoveryPassword'.format(ad),
+                        'P@ssw0rd')
+        self.fill_field(by.By.ID,
+                        '{0}-recoveryPassword-clone'.format(ad),
+                        'P@ssw0rd')
         next_button = self.elements.get('button', 'Next2')
         self.driver.find_element_by_xpath(next_button).click()
 
@@ -260,9 +267,11 @@ class UITestCase(testtools.TestCase):
 
         iis = 'id_webServer-0'
 
-        self.fill_field(by.By.ID, '%s-name' % iis, service_name)
-        self.fill_field(by.By.ID, '%s-adminPassword' % iis, 'P@ssw0rd')
-        self.fill_field(by.By.ID, '%s-adminPassword-clone' % iis, 'P@ssw0rd')
+        self.fill_field(by.By.ID, '{0}-name'.format(iis), service_name)
+        self.fill_field(by.By.ID, '{0}-adminPassword'.format(iis), 'P@ssw0rd')
+        self.fill_field(by.By.ID,
+                        '{0}-adminPassword-clone'.format(iis),
+                        'P@ssw0rd')
         next_button = self.elements.get('button', 'Next2')
         self.driver.find_element_by_xpath(next_button).click()
 
@@ -280,11 +289,13 @@ class UITestCase(testtools.TestCase):
 
         asp = 'id_aspNetApp-0'
 
-        self.fill_field(by.By.ID, '%s-name' % asp, service_name)
-        self.fill_field(by.By.ID, '%s-adminPassword' % asp, 'P@ssw0rd')
-        self.fill_field(by.By.ID, '%s-adminPassword-clone' % asp, 'P@ssw0rd')
+        self.fill_field(by.By.ID, '{0}-name'.format(asp), service_name)
+        self.fill_field(by.By.ID, '{0}-adminPassword'.format(asp), 'P@ssw0rd')
         self.fill_field(by.By.ID,
-                        '%s-repository' % asp,
+                        '{0}-adminPassword-clone'.format(asp),
+                        'P@ssw0rd')
+        self.fill_field(by.By.ID,
+                        '{0}-repository'.format(asp),
                         self.asp_git_repository)
 
         next_button = self.elements.get('button', 'Next2')
@@ -305,10 +316,12 @@ class UITestCase(testtools.TestCase):
 
         iis_farm = 'id_webServerFarm-0'
 
-        self.fill_field(by.By.ID, '%s-name' % iis_farm, service_name)
-        self.fill_field(by.By.ID, '%s-adminPassword' % iis_farm, 'P@ssw0rd')
+        self.fill_field(by.By.ID, '{0}-name'.format(iis_farm), service_name)
         self.fill_field(by.By.ID,
-                        '%s-adminPassword-clone' % iis_farm,
+                        '{0}-adminPassword'.format(iis_farm),
+                        'P@ssw0rd')
+        self.fill_field(by.By.ID,
+                        '{0}-adminPassword-clone'.format(iis_farm),
                         'P@ssw0rd')
 
         next_button = self.elements.get('button', 'Next2')
@@ -329,13 +342,15 @@ class UITestCase(testtools.TestCase):
 
         asp_farm = 'id_aspNetAppFarm-0'
 
-        self.fill_field(by.By.ID, '%s-name' % asp_farm, service_name)
-        self.fill_field(by.By.ID, '%s-adminPassword' % asp_farm, 'P@ssw0rd')
+        self.fill_field(by.By.ID, '{0}-name'.format(asp_farm), service_name)
         self.fill_field(by.By.ID,
-                        '%s-adminPassword-clone' % asp_farm,
+                        '{0}-adminPassword'.format(asp_farm),
                         'P@ssw0rd')
         self.fill_field(by.By.ID,
-                        '%s-repository' % asp_farm,
+                        '{0}-adminPassword-clone'.format(asp_farm),
+                        'P@ssw0rd')
+        self.fill_field(by.By.ID,
+                        '{0}-repository'.format(asp_farm),
                         self.asp_git_repository)
 
         next_button = self.elements.get('button', 'Next2')
@@ -355,11 +370,15 @@ class UITestCase(testtools.TestCase):
 
         mssql = 'id_msSqlServer-0'
 
-        self.fill_field(by.By.ID, '%s-name' % mssql, service_name)
-        self.fill_field(by.By.ID, '%s-adminPassword' % mssql, 'P@ssw0rd')
-        self.fill_field(by.By.ID, '%s-adminPassword-clone' % mssql, 'P@ssw0rd')
-        self.fill_field(by.By.ID, '%s-saPassword' % mssql, 'P@ssw0rd')
-        self.fill_field(by.By.ID, '%s-saPassword-clone' % mssql, 'P@ssw0rd')
+        self.fill_field(by.By.ID, '{0}-name'.format(mssql), service_name)
+        self.fill_field(by.By.ID, '{0}-adminPassword'.format(mssql), 'P@ssw0rd')
+        self.fill_field(by.By.ID,
+                        '{0}-adminPassword-clone'.format(mssql),
+                        'P@ssw0rd')
+        self.fill_field(by.By.ID, '{0}-saPassword'.format(mssql), 'P@ssw0rd')
+        self.fill_field(by.By.ID,
+                        '{0}-saPassword-clone'.format(mssql),
+                        'P@ssw0rd')
         next_button = self.elements.get('button', 'Next2')
         self.driver.find_element_by_xpath(next_button).click()
 
@@ -378,59 +397,118 @@ class UITestCase(testtools.TestCase):
 
         sql_cluster = 'id_msSqlClusterServer'
 
-        self.fill_field(by.By.ID, '%s-0-name' % sql_cluster, service_name)
         self.fill_field(by.By.ID,
-                        '%s-0-adminPassword' % sql_cluster,
+                        '{0}-0-name'.format(sql_cluster),
+                        service_name)
+        self.fill_field(by.By.ID,
+                        '{0}-0-adminPassword'.format(sql_cluster),
                         'P@ssw0rd')
         self.fill_field(by.By.ID,
-                        '%s-0-adminPassword-clone' % sql_cluster,
+                        '{0}-0-adminPassword-clone'.format(sql_cluster),
                         'P@ssw0rd')
         self.select_from_list('msSqlClusterServer-0-domain', domain_name)
         self.fill_field(by.By.ID,
-                        '%s-0-saPassword' % sql_cluster,
+                        '{0}-0-saPassword'.format(sql_cluster),
                         'P@ssw0rd')
         self.fill_field(by.By.ID,
-                        '%s-0-saPassword-clone' % sql_cluster,
+                        '{0}-0-saPassword-clone'.format(sql_cluster),
                         'P@ssw0rd')
         next_button = self.elements.get('button', 'Next2')
         self.driver.find_element_by_xpath(next_button).click()
 
-        self.fill_field(by.By.ID, '%s-1-clusterIp' % sql_cluster, '1.1.1.1')
-        self.fill_field(by.By.ID, '%s-1-clusterName' % sql_cluster, 'cluster')
-        self.fill_field(by.By.ID, '%s-1-agGroupName' % sql_cluster, 'ag-name')
         self.fill_field(by.By.ID,
-                        '%s-1-agListenerName' % sql_cluster,
+                        '{0}-1-clusterIp'.format(sql_cluster),
+                        '1.1.1.1')
+        self.fill_field(by.By.ID,
+                        '{0}-1-clusterName'.format(sql_cluster),
+                        'cluster')
+        self.fill_field(by.By.ID,
+                        '{0}-1-agGroupName'.format(sql_cluster),
+                        'ag-name')
+        self.fill_field(by.By.ID,
+                        '{0}-1-agListenerName'.format(sql_cluster),
                         'listener_name')
         self.fill_field(by.By.ID,
-                        '%s-1-agListenerIP' % sql_cluster,
+                        '{0}-1-agListenerIP'.format(sql_cluster),
                         'listener_name')
         self.fill_field(by.By.ID,
-                        '%s-1-sqlServiceUserName' % sql_cluster,
+                        '{0}-1-sqlServiceUserName'.format(sql_cluster),
                         'admin')
         self.fill_field(by.By.ID,
-                        '%s-1-sqlServicePassword' % sql_cluster,
+                        '{0}-1-sqlServicePassword'.format(sql_cluster),
                         'P@ssw0rd')
         self.fill_field(by.By.ID,
-                        '%s-1-sqlServicePassword-clone' % sql_cluster,
+                        '{0}-1-sqlServicePassword-clone'.format(sql_cluster),
                         'P@ssw0rd')
         next_button = self.elements.get('button', 'Next2')
         self.driver.find_element_by_xpath(next_button).click()
 
         cluster_ip = self.get_env_subnet()
-        self.fill_field(by.By.ID, '%s-1-clusterIp' % sql_cluster, cluster_ip)
+        self.fill_field(by.By.ID,
+                        '{0}-1-clusterIp'.format(sql_cluster),
+                        cluster_ip)
         listener_ip = self.get_env_subnet()
         self.fill_field(by.By.ID,
-                        '%s-1-agListenerIP' % sql_cluster,
+                        '{0}-1-agListenerIP'.format(sql_cluster),
                         listener_ip)
         next_button = self.elements.get('button', 'Next2')
         self.driver.find_element_by_xpath(next_button).click()
 
-        self.fill_field(by.By.ID, '%s-2-databases' % sql_cluster, 'testbase')
+        self.fill_field(by.By.ID,
+                        '{0}-2-databases'.format(sql_cluster),
+                        'testbase')
         next_button = self.elements.get('button', 'Next2')
         self.driver.find_element_by_xpath(next_button).click()
 
         self.select_from_list('msSqlClusterServer-3-osImage',
                               self.windows_image)
+        next_button = self.elements.get('button', 'Create')
+        self.driver.find_element_by_xpath(next_button).click()
+
+    def create_tomcat_service(self, service_name, database):
+        self.driver.find_element_by_id(
+            'services__action_CreateService').click()
+
+        self.select_from_list('service_choice-service', 'Tomcat')
+        next_button = self.elements.get('button', 'Next')
+        self.driver.find_element_by_xpath(next_button).click()
+
+        tomcat = 'id_tomcat-0'
+
+        self.fill_field(by.By.ID, '{0}-name'.format(tomcat), service_name)
+        self.fill_field(by.By.ID,
+                        '{0}-repository'.format(tomcat),
+                        self.tomcat_repository)
+        self.select_from_list('tomcat-0-psqlDatabase', database)
+        next_button = self.elements.get('button', 'Next2')
+        self.driver.find_element_by_xpath(next_button).click()
+
+        self.select_from_list('tomcat-1-osImage', self.linux_image)
+
+        next_button = self.elements.get('button', 'Create')
+        self.driver.find_element_by_xpath(next_button).click()
+
+    def create_postgreSQL_service(self, service_name):
+        self.driver.find_element_by_id(
+            'services__action_CreateService').click()
+
+        self.select_from_list('service_choice-service', 'PostgreSQL')
+        next_button = self.elements.get('button', 'Next')
+        self.driver.find_element_by_xpath(next_button).click()
+
+        psql = 'id_postgreSql-0'
+
+        self.fill_field(by.By.ID, '{0}-name'.format(psql), service_name)
+        self.fill_field(by.By.ID, '{0}-database'.format(psql), 'psql-base')
+        self.fill_field(by.By.ID, '{0}-username'.format(psql), 'admin')
+        self.fill_field(by.By.ID, '{0}-password'.format(psql), 'P@ssw0rd')
+        self.fill_field(by.By.ID, '{0}-password-clone'.format(psql), 'P@ssw0rd')
+
+        next_button = self.elements.get('button', 'Next2')
+        self.driver.find_element_by_xpath(next_button).click()
+
+        self.select_from_list('postgreSql-1-osImage', self.linux_image)
+
         next_button = self.elements.get('button', 'Create')
         self.driver.find_element_by_xpath(next_button).click()
 
@@ -441,8 +519,8 @@ class UITestCase(testtools.TestCase):
 
     def delete_service(self, service_name):
         service_id = self.get_element_id(service_name)
-        self.driver.find_element_by_id('services__row_%s__action_delete'
-                                       % service_id).click()
+        self.driver.find_element_by_id(
+            'services__row_{0}__action_delete'.format(service_id)).click()
         self.driver.find_element_by_link_text('Delete Service').click()
 
     def get_env_subnet(self):
@@ -450,7 +528,7 @@ class UITestCase(testtools.TestCase):
             "(.//span[@class = 'help-inline'])[1]").text
         subnet = help_text.split('.')[-2]
         num = random.randint(0, 255)
-        return '10.0.%s.%d' % (subnet, num)
+        return '10.0.{0}.{1}'.format(subnet, num)
 
     def check_that_error_message_is_correct(self, error_message, num):
         next_button = self.elements.get('button', 'Next2')
@@ -485,13 +563,15 @@ class UITestCase(testtools.TestCase):
 
     def click_on_service_catalog_action(self, action):
         self.driver.find_element_by_xpath(
-            ".//*[@id='service_catalog__action_%s']" % action).click()
+            ".//*[@id='service_catalog__action_{0}']".format(action)).click()
 
     def compose_trivial_service(self, name):
         self.click_on_service_catalog_action(action='compose_service')
 
         self.fill_field(by.By.ID, 'id_service_display_name', name)
-        self.fill_field(by.By.ID, 'id_full_service_name', '%sService' % name)
+        self.fill_field(by.By.ID,
+                        'id_full_service_name',
+                        '{0}Service'.format(name))
         self.fill_field(by.By.ID, 'id_author', cfg.common.user)
         self.fill_field(by.By.ID, 'id_description', 'New Service')
 
@@ -511,21 +591,22 @@ class UITestCase(testtools.TestCase):
         time.sleep(2)
         if action == 'more':
             self.driver.find_element_by_xpath(
-                ".//*[@id='service_catalog__row__%s']/td[7]/div/a[2]"
-                % service).click()
+                ".//*[@id='service_catalog__row__{0}']/td[7]/div/a[2]".
+                format(service)).click()
             WebDriverWait(self.driver, 10).until(lambda s: s.find_element(
-                by.By.XPATH, ".//*[@id='service_catalog__row_%s__action_"
-                             "manage_service']" % service).is_displayed())
+                by.By.XPATH,
+                ".//*[@id='service_catalog__row_{0}__action_manage_service']".
+                format(service)).is_displayed())
         else:
             self.driver.find_element_by_xpath(
-                ".//*[@id='service_catalog__row_%s__action_%s']"
-                % (service, action)).click()
+                ".//*[@id='service_catalog__row_{0}__action_{1}']".
+                format(service, action)).click()
 
-    def check_service_parameter(self, service, column, value):
+    def check_service_parameter(self, page, service, column, value):
 
         result = self.driver.find_element_by_xpath(
-            ".//*[@id='service_catalog__row__%s']/td[%s]"
-            % (service, column)).text
+            ".//*[@id='{0}__row__{1}']/td[{2}]".
+            format(page, service, column)).text
         if result == value:
             return True
         else:
@@ -533,7 +614,7 @@ class UITestCase(testtools.TestCase):
 
     def select_and_click_element(self, element):
         self.driver.find_element_by_xpath(
-            ".//*[@value = '%s']" % element).click()
+            ".//*[@value = '{0}']".format(element)).click()
 
     def choose_and_upload_files(self, name):
         __location = os.path.realpath(os.path.join(os.getcwd(),
@@ -541,20 +622,19 @@ class UITestCase(testtools.TestCase):
         self.driver.find_element_by_xpath(".//*[@id='id_file']").click()
         self.driver.find_element_by_id('id_file').send_keys(
             os.path.join(__location, name))
-        self.select_and_click_element('Upload')
 
     def check_the_status_of_env(self, env_name, status):
         env_id = self.get_element_id(env_name)
 
         env_status = self.driver.find_element_by_xpath(
-            ".//*[@id='murano__row__%s']/td[3]" % env_id)
+            ".//*[@id='murano__row__{0}']/td[3]".format(env_id))
         k = 0
         while env_status.text != status:
             time.sleep(15)
             k += 1
             self.driver.refresh()
             env_status = self.driver.find_element_by_xpath(
-                ".//*[@id='murano__row__%s']/td[3]" % env_id)
+                ".//*[@id='murano__row__{0}']/td[3]".format(env_id))
             if k > 160:
                 log.error('\nTimeout has expired')
                 break
