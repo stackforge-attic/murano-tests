@@ -92,7 +92,6 @@ class UISanityTests(UITestCase):
         self.assertFalse(self.check_element_on_page(by.By.LINK_TEXT,
                                                     'TestImageForDeletion'))
 
-    @testtools.skip("New UI in progress")
     def test_005_create_and_delete_demo_service(self):
         """
         Test check ability to create and delete demo service
@@ -338,7 +337,61 @@ class UISanityTests(UITestCase):
                                                     'SQLCluster'))
 
     @testtools.skip("New UI in progress")
-    def test_015_check_regex_expression_for_ad_name(self):
+    def test_015_create_and_delete_tomcat_service(self):
+        """
+        Test check ability to create and delete tomcat service
+
+        Scenario:
+            1. Navigate to Environments page
+            2. Create environment
+            3. Create tomcat service in this environment by filling
+            the creation form
+            4. Delete tomcat service from environment
+        """
+        self.navigate_to('Environments')
+        self.create_environment('test')
+        self.env_to_service('test')
+
+        self.create_postgreSQL_service('posrgreSQL')
+        self.assertTrue(self.check_element_on_page(by.By.LINK_TEXT,
+                                                   'posrgreSQL'))
+
+        self.driver.find_element_by_link_text('Create Service').click()
+        self.create_tomcat_service('tomcat-serv', 'posrgreSQL')
+        self.assertTrue(self.check_element_on_page(by.By.LINK_TEXT,
+                                                   'tomcat-serv'))
+
+        self.delete_service('tomcat-serv')
+        self.assertFalse(self.check_element_on_page(by.By.LINK_TEXT,
+                                                    'tomcat-serv'))
+
+    @testtools.skip("New UI in progress")
+    def test_016_create_and_delete_postgreSQL_service(self):
+        """
+        Test check ability to create and delete postgreSQL service
+
+        Scenario:
+            1. Navigate to Environments page
+            2. Create environment
+            3. Create postgreSQL service in this environment by filling
+            the creation form
+            4. Delete postgreSQL service from environment
+        """
+        self.navigate_to('Environments')
+        self.create_environment('test')
+        self.env_to_service('test')
+
+        self.driver.find_element_by_link_text('Create Service').click()
+        self.create_postgreSQL_service('postgreSQL-serv')
+        self.assertTrue(self.check_element_on_page(by.By.LINK_TEXT,
+                                                   'postgreSQL-serv'))
+
+        self.delete_service('postgreSQL-serv')
+        self.assertFalse(self.check_element_on_page(by.By.LINK_TEXT,
+                                                    'postgreSQL-serv'))
+
+    @testtools.skip("New UI in progress")
+    def test_017_check_regex_expression_for_ad_name(self):
         """
         Test check that validation of domain name field work and appropriate
         error message is appeared after entering incorrect domain name
@@ -423,7 +476,7 @@ class UISanityTests(UITestCase):
             'they are used to delimit the components of domain style names', 1))
 
     @testtools.skip("New UI in progress")
-    def test_016_check_regex_expression_for_iis_name(self):
+    def test_018_check_regex_expression_for_iis_name(self):
         """
         Test check that validation of iis name field work and appropriate
         error message is appeared after entering incorrect name
@@ -468,7 +521,7 @@ class UISanityTests(UITestCase):
             'Just letters, numbers, underscores and hyphens are allowed.', 1))
 
     @testtools.skip("New UI in progress")
-    def test_017_check_regex_expression_for_git_repo_field(self):
+    def test_019_check_regex_expression_for_git_repo_field(self):
         """
         Test check that validation of git repository field work and appropriate
         error message is appeared after entering incorrect url
@@ -500,7 +553,7 @@ class UISanityTests(UITestCase):
             'Enter correct git repository url', 4))
 
     @testtools.skip("New UI in progress")
-    def test_018_check_validation_for_hostname_template_field(self):
+    def test_020_check_validation_for_hostname_template_field(self):
         """
         Test check that validation of hostname template field work and
         appropriate error message is appeared after entering incorrect name
@@ -522,11 +575,12 @@ class UISanityTests(UITestCase):
         next_button = self.elements.get('button', 'Next')
         self.driver.find_element_by_xpath(next_button).click()
 
-        service = ''
+        service = 'id_demoService-0'
 
-        self.fill_field(by.By.ID, field='%s-name' % service, value='demo')
-        self.fill_field(by.By.ID, field='%s-unitNamingPattern' % service,
-                        value='demo')
+        self.fill_field(by.By.ID, '{0}-name'.format(service), 'demo')
+        self.fill_field(by.By.ID,
+                        '{0}-unitNamingPattern'.format(service),
+                        'demo')
 
         xpath = ".//*[@id='create_service_form']/div[1]/div[1]/fieldset/div[1]"
 
@@ -534,7 +588,7 @@ class UISanityTests(UITestCase):
         self.driver.find_element_by_xpath(next_button).click()
         self.assertTrue(self.check_element_on_page(by.By.XPATH, xpath))
 
-        self.fill_field(by.By.ID, field='%s-dcInstances' % service, value='1')
+        self.fill_field(by.By.ID, '{0}-dcInstances'.format(service), value='1')
         next_button = self.elements.get('button', 'Next2')
         self.driver.find_element_by_xpath(next_button).click()
 
@@ -542,7 +596,7 @@ class UISanityTests(UITestCase):
             by.By.ID, 'demoService-1-osImage').is_displayed())
 
     @testtools.skip("New UI in progress")
-    def test_019_check_bool_field_validation(self):
+    def test_021_check_bool_field_validation(self):
         """
         Test check that validation of bool field work
 
@@ -565,20 +619,29 @@ class UISanityTests(UITestCase):
 
         sql_cluster = 'id_msSqlClusterServer-0'
 
-        self.fill_field(by.By.ID, '%s-name' % sql_cluster, 'ms-sql')
-        self.fill_field(by.By.ID, '%s-adminPassword' % sql_cluster, 'P@ssw0rd')
-        self.fill_field(by.By.ID, '%s-adminPassword-clone' % sql_cluster,
+        self.fill_field(by.By.ID, '{0}-name'.format(sql_cluster), 'ms-sql')
+        self.fill_field(by.By.ID,
+                        '{0}-adminPassword'.format(sql_cluster),
                         'P@ssw0rd')
-
-        self.driver.find_element_by_id('%s-externalAD' % sql_cluster).click()
-        self.fill_field(by.By.ID, '%s-domainAdminUserName' % sql_cluster,
+        self.fill_field(by.By.ID,
+                        '{0}-adminPassword-clone'.format(sql_cluster),
+                        'P@ssw0rd')
+        self.driver.find_element_by_id(
+            '{0}-externalAD'.format(sql_cluster)).click()
+        self.fill_field(by.By.ID,
+                        '{0}-domainAdminUserName'.format(sql_cluster),
                         'user')
-        self.fill_field(by.By.ID, '%s-domainAdminPassword' % sql_cluster,
+        self.fill_field(by.By.ID,
+                        '{0}-domainAdminPassword'.format(sql_cluster),
                         'P@ssw0rd')
-        self.fill_field(by.By.ID, '%s-domainAdminPassword-clone' % sql_cluster,
+        self.fill_field(by.By.ID,
+                        '{0}-domainAdminPassword-clone'.format(sql_cluster),
                         'anotherP@ssw0rd')
-        self.fill_field(by.By.ID, '%s-saPassword' % sql_cluster, 'P@ssw0rd')
-        self.fill_field(by.By.ID, '%s-saPassword-clone' % sql_cluster,
+        self.fill_field(by.By.ID,
+                        '{0}-saPassword'.format(sql_cluster),
+                        'P@ssw0rd')
+        self.fill_field(by.By.ID,
+                        '{0}-saPassword-clone'.format(sql_cluster),
                         'P@ssw0rd')
 
         next_button = self.elements.get('button', 'Next2')
@@ -586,13 +649,14 @@ class UISanityTests(UITestCase):
         self.assertTrue(self.check_that_alert_message_is_appeared(
             'Active Directory Passwords don\'t match'))
 
-        self.driver.find_element_by_id('%sexternalAD' % sql_cluster).click()
+        self.driver.find_element_by_id(
+            '{0}-externalAD'.format(sql_cluster)).click()
 
         self.assertTrue(self.check_that_error_message_is_correct(
             'This field is required.', 1))
 
     @testtools.skip("New UI in progress")
-    def test_020_positive_scenario_1_for_the_MS_SQL_Cluster_Form(self):
+    def test_022_positive_scenario_1_for_the_MS_SQL_Cluster_Form(self):
         """
         Test check one possible scenario of creation mssql cluster
 
@@ -618,15 +682,19 @@ class UISanityTests(UITestCase):
 
         sql_cluster = 'id_msSqlClusterServer-0'
 
-        self.fill_field(by.By.ID, '%s-name' % sql_cluster, 'ms-sql')
-        self.fill_field(by.By.ID, '%s-adminPassword' % sql_cluster, 'P@ssw0rd')
-        self.fill_field(by.By.ID, '%s-adminPassword-clone' % sql_cluster,
+        self.fill_field(by.By.ID, '{0}-name'.format(sql_cluster), 'ms-sql')
+        self.fill_field(by.By.ID,
+                        '{0}-adminPassword'.format(sql_cluster),
+                        'P@ssw0rd')
+        self.fill_field(by.By.ID,
+                        '{0}-adminPassword-clone'.format(sql_cluster),
                         'P@ssw0rd')
 
         self.select_from_list('msSqlClusterServer-0-domain',
                               'activeDirectory.mssql')
 
-        self.driver.find_element_by_id('%s-mixedModeAuth' % sql_cluster).click()
+        self.driver.find_element_by_id(
+            '{0}-mixedModeAuth'.format(sql_cluster)).click()
 
         next_button = self.elements.get('button', 'Next2')
         self.driver.find_element_by_xpath(next_button).click()
@@ -634,7 +702,7 @@ class UISanityTests(UITestCase):
             by.By.ID, 'id_msSqlClusterServer-1-clusterIp'))
 
     @testtools.skip("New UI in progress")
-    def test_021_positive_scenario_2_for_the_MS_SQL_Cluster_Form(self):
+    def test_023_positive_scenario_2_for_the_MS_SQL_Cluster_Form(self):
         """
         Test check one possible scenario of creation mssql cluster
 
@@ -657,20 +725,28 @@ class UISanityTests(UITestCase):
 
         sql_cluster = 'id_msSqlClusterServer-0'
 
-        self.fill_field(by.By.ID, '%s-name' % sql_cluster, 'ms-sql')
-        self.fill_field(by.By.ID, '%s-adminPassword' % sql_cluster, 'P@ssw0rd')
-        self.fill_field(by.By.ID, '%s-adminPassword-clone' % sql_cluster,
+        self.fill_field(by.By.ID, '{0}-name'.format(sql_cluster), 'ms-sql')
+        self.fill_field(by.By.ID,
+                        '{0}-adminPassword'.format(sql_cluster),
+                        'P@ssw0rd')
+        self.fill_field(by.By.ID,
+                        '{0}-adminPassword-clone'.format(sql_cluster),
                         'P@ssw0rd')
 
-        self.driver.find_element_by_id('%s-externalAD' % sql_cluster).click()
-        self.fill_field(by.By.ID, '%s-domainAdminUserName' % sql_cluster,
+        self.driver.find_element_by_id(
+            '{0}-externalAD'.format(sql_cluster)).click()
+        self.fill_field(by.By.ID,
+                        '{0}-domainAdminUserName'.format(sql_cluster),
                         'user')
-        self.fill_field(by.By.ID, '%s-domainAdminPassword' % sql_cluster,
+        self.fill_field(by.By.ID,
+                        '{0}-domainAdminPassword'.format(sql_cluster),
                         'P@ssw0rd')
-        self.fill_field(by.By.ID, '%s-domainAdminPassword-clone' % sql_cluster,
+        self.fill_field(by.By.ID,
+                        '{0}-domainAdminPassword-clone'.format(sql_cluster),
                         'P@ssw0rd')
 
-        self.driver.find_element_by_id('%s-mixedModeAuth' % sql_cluster).click()
+        self.driver.find_element_by_id(
+            '{0}-mixedModeAuth'.format(sql_cluster)).click()
 
         next_button = self.elements.get('button', 'Next2')
         self.driver.find_element_by_xpath(next_button).click()
@@ -678,7 +754,7 @@ class UISanityTests(UITestCase):
             by.By.ID, 'id_msSqlClusterServer-1-clusterIp'))
 
     @testtools.skip("New UI in progress")
-    def test_022_positive_scenario_3_for_the_MS_SQL_Cluster_Form(self):
+    def test_024_positive_scenario_3_for_the_MS_SQL_Cluster_Form(self):
         """
         Test check one possible scenario of creation mssql cluster
 
@@ -700,21 +776,30 @@ class UISanityTests(UITestCase):
 
         sql_cluster = 'id_msSqlClusterServer-0'
 
-        self.fill_field(by.By.ID, '%s-name' % sql_cluster, 'ms-sql')
-        self.fill_field(by.By.ID, '%s-adminPassword' % sql_cluster, 'P@ssw0rd')
-        self.fill_field(by.By.ID, '%s-adminPassword-clone' % sql_cluster,
+        self.fill_field(by.By.ID, '{0}-name'.format(sql_cluster), 'ms-sql')
+        self.fill_field(by.By.ID,
+                        '{0}-adminPassword'.format(sql_cluster),
+                        'P@ssw0rd')
+        self.fill_field(by.By.ID,
+                        '{0}-adminPassword-clone'.format(sql_cluster),
                         'P@ssw0rd')
 
-        self.driver.find_element_by_id('%s-externalAD').click()
-        self.fill_field(by.By.ID, '%s-domainAdminUserName' % sql_cluster,
+        self.driver.find_element_by_id('{0}-externalAD').click()
+        self.fill_field(by.By.ID,
+                        '{0}-domainAdminUserName'.format(sql_cluster),
                         'user')
-        self.fill_field(by.By.ID, '%s-domainAdminPassword' % sql_cluster,
+        self.fill_field(by.By.ID,
+                        '{0}-domainAdminPassword'.format(sql_cluster),
                         'P@ssw0rd')
-        self.fill_field(by.By.ID, '%s-domainAdminPassword-clone' % sql_cluster,
+        self.fill_field(by.By.ID,
+                        '{0}-domainAdminPassword-clone'.format(sql_cluster),
                         'P@ssw0rd')
 
-        self.fill_field(by.By.ID, '%s-saPassword' % sql_cluster, 'P@ssw0rd')
-        self.fill_field(by.By.ID, '%s-saPassword-clone' % sql_cluster,
+        self.fill_field(by.By.ID,
+                        '{0}-saPassword'.format(sql_cluster),
+                        'P@ssw0rd')
+        self.fill_field(by.By.ID,
+                        '{0}-saPassword-clone'.format(sql_cluster),
                         'P@ssw0rd')
 
         next_button = self.elements.get('button', 'Next2')
@@ -722,7 +807,7 @@ class UISanityTests(UITestCase):
         self.assertTrue(self.check_element_on_page(
             by.By.ID, 'id_msSqlClusterServer-1-clusterIp'))
 
-    def test_023_check_opportunity_to_compose_a_new_service(self):
+    def test_025_check_opportunity_to_compose_a_new_service(self):
         """
         Test check ability to compose new service via Murano Repository
 
@@ -735,7 +820,7 @@ class UISanityTests(UITestCase):
         self.assertTrue(self.check_element_on_page(
             by.By.XPATH, './/*[@data-display="composedService"]'))
 
-    def test_024_modify_service_name(self):
+    def test_026_modify_service_name(self):
         """
         Test check ability to change name of the composed service
 
@@ -758,7 +843,7 @@ class UISanityTests(UITestCase):
         self.assertTrue(self.check_element_on_page(
             by.By.XPATH, './/*[@data-display="modifiedService"]'))
 
-    def test_025_modify_description(self):
+    def test_027_modify_description(self):
         """
         Test check ability to change description of the composed service
 
@@ -786,7 +871,7 @@ class UISanityTests(UITestCase):
             'New Description')
 
     @testtools.skip("New UI in progress")
-    def test_026_check_opportunity_to_select_composed_service(self):
+    def test_028_check_opportunity_to_select_composed_service(self):
         """
         Test check ability to add composed service in the environment
 
@@ -813,7 +898,7 @@ class UISanityTests(UITestCase):
         next_ = "/html/body/div[3]/div/form/div[2]/input[2]"
         self.assertTrue(self.check_element_on_page(by.By.XPATH, next_))
 
-    def test_027_modify_service_add_file(self):
+    def test_029_modify_service_add_file(self):
         """
         Test check ability to add file in composed service
 
@@ -841,7 +926,7 @@ class UISanityTests(UITestCase):
             by.By.XPATH, ".//*[@id='scripts__row__scripts##"
                          "Get-DnsListeningIpAddress.ps1']"))
 
-    def test_028_download_service(self):
+    def test_030_download_service(self):
         """
         Test check ability to download service from repository
 
@@ -854,7 +939,7 @@ class UISanityTests(UITestCase):
         self.select_action_for_service('demoService', 'more')
         self.select_action_for_service('demoService', 'download_service')
 
-    def test_029_upload_service_to_repository(self):
+    def test_031_upload_service_to_repository(self):
         """
         Test check ability to upload service from repository
 
@@ -867,11 +952,12 @@ class UISanityTests(UITestCase):
 
         self.click_on_service_catalog_action('upload_service')
         self.choose_and_upload_files('myService.tar.gz')
+        self.select_and_click_element('Upload')
 
         self.assertTrue(self.check_element_on_page(
             by.By.XPATH, './/*[@data-display="My Service"]'))
 
-    def test_030_manage_service_upload_file(self):
+    def test_032_manage_service_upload_file(self):
         """
         Test check ability to upload service from repository
 
@@ -888,19 +974,22 @@ class UISanityTests(UITestCase):
 
         self.driver.find_element_by_id('scripts__action_upload_file2').click()
         self.choose_and_upload_files('myScript.ps1')
+        self.select_and_click_element('Upload')
 
         self.assertTrue(self.check_element_on_page(
             by.By.XPATH, ".//*[@id='scripts__row__scripts##myScript.ps1']"))
 
-    def test_031_manage_files_upload_delete_file(self):
+    def test_033_manage_files_upload_delete_heat_template(self):
         """
-        Test check ability to upload file to repository and delete this file
+        Test check ability to upload heat template to repository and delete
+        this file
 
         Scenario:
             1. Navigate to Service Definitions page
             2. Click on "Manage Files"
-            3. Upload file to repository
-            4. Find uploaded file in appropriate category and delete it
+            3. Select file and type of the file "Heat Template"
+            4. Upload file to repository
+            5. Find uploaded file in appropriate category and delete it
             from repository
         """
         self.navigate_to('Service Definitions')
@@ -910,6 +999,7 @@ class UISanityTests(UITestCase):
             'manage_files__action_upload_file').click()
 
         self.choose_and_upload_files('myHeatTemplate.template')
+        self.select_and_click_element('Upload')
 
         self.select_and_click_element('heat')
         self.assertTrue(self.check_element_on_page(
@@ -926,7 +1016,113 @@ class UISanityTests(UITestCase):
             by.By.XPATH, ".//*[@id='manage_files__row__heat##"
                          "myHeatTemplate.template']"))
 
-    def test_032_check_opportunity_to_toggle_service(self):
+    def test_034_manage_files_upload_delete_agent_template(self):
+        """
+        Test check ability to upload agent template to repository and delete
+        this file
+
+        Scenario:
+            1. Navigate to Service Definitions page
+            2. Click on "Manage Files"
+            3. Select file and type of the file "Agent Template"
+            4. Upload file to repository
+            5. Find uploaded file in appropriate category and delete it
+            from repository
+        """
+        self.navigate_to('Service Definitions')
+
+        self.click_on_service_catalog_action('manage_files')
+        self.driver.find_element_by_id(
+            'manage_files__action_upload_file').click()
+
+        self.choose_and_upload_files('myAgentTemplate.template')
+        self.select_from_list('data_type', 'Murano Agent template')
+        self.select_and_click_element('Upload')
+
+        self.select_and_click_element('agent')
+        self.assertTrue(self.check_element_on_page(
+            by.By.XPATH,
+            ".//*[@id='manage_files__row__agent##myAgentTemplate.template']"))
+
+        self.select_and_click_element('agent##myAgentTemplate.template')
+        self.driver.find_element_by_id(
+            'manage_files__action_delete_file').click()
+
+        self.confirm_deletion()
+
+        self.assertFalse(self.check_element_on_page(
+            by.By.XPATH, ".//*[@id='manage_files__row__agent##"
+                         "myAgentTemplate.template']"))
+
+    def test_035_manage_files_upload_delete_ui_file(self):
+        """
+        Test check ability to upload ui_file to repository and delete
+        this file
+
+        Scenario:
+            1. Navigate to Service Definitions page
+            2. Click on "Manage Files"
+            3. Select file and type of the file "UI Definition (*.yaml)"
+            4. Upload file to repository
+            5. Find uploaded file in appropriate category and delete it
+            from repository
+        """
+        self.navigate_to('Service Definitions')
+
+        self.click_on_service_catalog_action('manage_files')
+        self.driver.find_element_by_id(
+            'manage_files__action_upload_file').click()
+
+        self.choose_and_upload_files('myYaml.yaml')
+        self.select_from_list('data_type', 'UI Definition (*.yaml)')
+        self.select_and_click_element('Upload')
+
+        self.select_and_click_element('ui')
+        self.assertTrue(self.check_element_on_page(
+            by.By.XPATH,
+            ".//*[@id='manage_files__row__ui##myYaml.yaml']"))
+
+        self.select_and_click_element('ui##myYaml.yaml')
+        self.driver.find_element_by_id(
+            'manage_files__action_delete_file').click()
+
+        self.confirm_deletion()
+
+        self.assertFalse(self.check_element_on_page(
+            by.By.XPATH, ".//*[@id='manage_files__row__ui##"
+                         "myYaml.yaml']"))
+
+    def test_036_check_cannot_add_second_ui_in_service(self):
+        """
+        Test check that adding of second ui file in service is prohibited
+
+        Scenario:
+            1. Navigate to Service Definitions page
+            2. Compose new service "TEST" without ui file
+            2. Navigate to 'Manage Service: TEST Service' page
+            ("More>Manage Service" for test service)
+            3. Check that "+ UI Files" button is absent
+            4. Select and delete ui file in this service
+            5. Check that "+ UI Files" button is present on page and it is
+            possible to upload file
+        """
+        self.navigate_to('Service Definitions')
+        self.compose_trivial_service('TEST')
+
+        self.select_action_for_service('TESTService', 'more')
+        self.select_action_for_service('TESTService', 'manage_service')
+
+        self.assertFalse(self.check_element_on_page(by.By.LINK_TEXT,
+                                                    'UI Files'))
+
+        self.select_and_click_element('ui##myYaml.yaml')
+        self.select_and_click_element('ui__delete_file_from_service')
+        self.confirm_deletion()
+
+        self.assertTrue(self.check_element_on_page(by.By.LINK_TEXT,
+                                                   'UI Files'))
+
+    def test_037_check_opportunity_to_toggle_service(self):
         """
         Test check ability to make service active or inactive
 
@@ -942,16 +1138,16 @@ class UISanityTests(UITestCase):
         self.select_action_for_service('demoService', 'more')
         self.select_action_for_service('demoService', 'toggle_enabled')
 
-        self.assertTrue(self.check_service_parameter('demoService',
-                                                     '3', 'False'))
+        self.assertTrue(self.check_service_parameter(
+            'service_catalog', 'demoService', '3', 'False'))
 
         self.select_action_for_service('demoService', 'more')
         self.select_action_for_service('demoService', 'toggle_enabled')
 
-        self.assertTrue(
-            self.check_service_parameter('demoService', '3', 'True'))
+        self.assertTrue(self.check_service_parameter(
+            'service_catalog', 'demoService', '3', 'True'))
 
-    def test_033_delete_component_from_existing_service(self):
+    def test_038_delete_component_from_existing_service(self):
         """
         Test check ability to delete component from existing service
 
@@ -979,7 +1175,7 @@ class UISanityTests(UITestCase):
         self.assertFalse(self.check_element_on_page(
             by.By.XPATH, ".//*[@id='agent__row__agent##Demo.template']"))
 
-    def test_034_check_opportunity_to_delete_composed_service(self):
+    def test_039_check_opportunity_to_delete_composed_service(self):
         """
         Test check ability to delete composed service
 
@@ -1001,3 +1197,17 @@ class UISanityTests(UITestCase):
         self.confirm_deletion()
         self.assertFalse(self.check_element_on_page(
             by.By.XPATH, './/*[@data-display="ForDeletion"]'))
+
+    def test_039_check_application_catalog_panel(self):
+        """
+        Test check that 'Application Catalog' panel is operable
+
+        Scenario:
+            1. Create environment
+            2. Navigate to 'Application Catalog' panel
+        """
+        self.navigate_to('Environments')
+        self.create_environment('test')
+        self.navigate_to('Application Catalog')
+        self.assertTrue(self.check_element_on_page(
+            by.By.XPATH, ".//*[@id='content_body']/div[2]/h3[1]"))
