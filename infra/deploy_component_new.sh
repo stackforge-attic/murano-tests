@@ -51,15 +51,6 @@ expect "@murano"
 send -- "bash setup.sh install > old.log\n"
 expect "@murano"
 
-send -- "service openstack-"
-send -- [lindex $argv 3]
-send -- " restart\n"
-expect "@murano"
-send -- "service "
-send -- [lindex $argv 3]
-send -- " restart\n"
-expect "@murano"
-
 send -- "cd /var/cache/murano/muranorepository-data && rm -rf *\n"
 expect "@murano"
 send -- "cd /var/cache/murano-dashboard/ && rm -rf *\n"
