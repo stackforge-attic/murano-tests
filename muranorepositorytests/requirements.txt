@@ -1,0 +1,4 @@
+nose
+testtools
+testresources
+requests
