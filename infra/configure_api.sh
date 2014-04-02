@@ -52,5 +52,7 @@ send -- "sed -i \"s/auth_url = http:\\/\\/localhost:5000\\/v2.0/auth_url = http:
 send -- [lindex $argv 2]
 send -- ":5000\\/v2.0/\" /etc/murano/murano-api.conf\n"
 expect "@murano"
+send -- "murano-manage --config-file /etc/murano/murano-api.conf db_sync\n"
+expect "@murano"
 send -- "service murano-api restart\n"
 expect "@murano"
