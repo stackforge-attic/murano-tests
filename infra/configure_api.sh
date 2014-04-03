@@ -46,7 +46,11 @@ send -- "sed -i \"s/auth_host = 127.0.0.1/auth_host = "
 send -- [lindex $argv 2]
 send -- "/\" /etc/murano/murano-api.conf\n"
 expect "@murano"
-send -- "sed -i \"s/connection = sqlite:\\/\\/\\/murano.sqlite/connection = mysql:\\/\\/murano:swordfish@localhost:3306\\/murano/\" /etc/murano/murano-api.conf\n"
+send -- "sed -i \"s/connection = sqlite:\\/\\/\\/\\/etc\\/murano\\/murano-api.sqlite/connection = mysql:\\/\\/murano:swordfish@localhost:3306\\/murano/\" /etc/murano/murano-api.conf\n"
+expect "@murano"
+send -- "sed -i \"s/auth_url = http:\\/\\/localhost:5000\\/v2.0/auth_url = http:\\/\\/"
+send -- [lindex $argv 2]
+send -- ":5000\\/v2.0/\" /etc/murano/murano-api.conf\n"
 expect "@murano"
 send -- "service murano-api restart\n"
 expect "@murano"
