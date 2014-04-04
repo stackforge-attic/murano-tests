@@ -229,13 +229,6 @@ class UITestCase(testtools.TestCase):
         self.driver.find_element_by_xpath(next_button).click()
 
     def create_ad_service(self, service_name):
-        self.driver.find_element_by_id(
-            'services__action_CreateService').click()
-
-        self.select_from_list('service_choice-service', 'Active Directory')
-        next_button = self.elements.get('button', 'Next')
-        self.driver.find_element_by_xpath(next_button).click()
-
         ad = 'id_activeDirectory-0'
 
         self.fill_field(by.By.ID, '{0}-name'.format(ad), service_name)
@@ -257,14 +250,6 @@ class UITestCase(testtools.TestCase):
         self.driver.find_element_by_xpath(next_button).click()
 
     def create_iis_service(self, service_name):
-        self.driver.find_element_by_id(
-            'services__action_CreateService').click()
-
-        self.select_from_list(
-            'service_choice-service', 'Internet Information Services')
-        next_button = self.elements.get('button', 'Next')
-        self.driver.find_element_by_xpath(next_button).click()
-
         iis = 'id_webServer-0'
 
         self.fill_field(by.By.ID, '{0}-name'.format(iis), service_name)

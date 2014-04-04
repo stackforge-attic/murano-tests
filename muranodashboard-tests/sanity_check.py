@@ -92,6 +92,7 @@ class UISanityTests(UITestCase):
         self.assertFalse(self.check_element_on_page(by.By.LINK_TEXT,
                                                     'TestImageForDeletion'))
 
+    @testtools.skip("New UI in progress")
     def test_005_create_and_delete_demo_service(self):
         """
         Test check ability to create and delete demo service
@@ -179,6 +180,10 @@ class UISanityTests(UITestCase):
         self.create_environment('test')
         self.env_to_service('test')
 
+        self.driver.find_element_by_link_text('Add Application').click()
+        self.driver.find_element_by_xpath(
+            self.elements.get('apps', 'AD')).click()
+
         self.create_ad_service('muranotest.domain')
         self.assertTrue(self.check_element_on_page(by.By.LINK_TEXT,
                                                    'muranotest.domain'))
@@ -202,6 +207,10 @@ class UISanityTests(UITestCase):
         self.navigate_to('Environments')
         self.create_environment('test')
         self.env_to_service('test')
+
+        self.driver.find_element_by_link_text('Add Application').click()
+        self.driver.find_element_by_xpath(
+            self.elements.get('apps', 'IIS')).click()
 
         self.create_iis_service('IISService')
         self.assertTrue(self.check_element_on_page(by.By.LINK_TEXT,
@@ -807,29 +816,31 @@ class UISanityTests(UITestCase):
         self.assertTrue(self.check_element_on_page(
             by.By.ID, 'id_msSqlClusterServer-1-clusterIp'))
 
+    @testtools.skip("New UI in progress")
     def test_025_check_opportunity_to_compose_a_new_service(self):
         """
         Test check ability to compose new service via Murano Repository
 
         Scenario:
-            1. Navigate to Service Definitions page
+            1. Navigate to Package Definitions page
             2. Click on "Compose Service"  and create new service
         """
-        self.navigate_to('Service Definitions')
+        self.navigate_to('Package Definitions')
         self.compose_trivial_service('composedService')
         self.assertTrue(self.check_element_on_page(
             by.By.XPATH, './/*[@data-display="composedService"]'))
 
+    @testtools.skip("New UI in progress")
     def test_026_modify_service_name(self):
         """
         Test check ability to change name of the composed service
 
         Scenario:
-            1. Navigate to Service Definitions page
+            1. Navigate to Package Definitions page
             2. Click on "Compose Service"  and create new service
             3. Rename composed service
         """
-        self.navigate_to('Service Definitions')
+        self.navigate_to('Package Definitions')
         self.compose_trivial_service('forModification')
         self.assertTrue(self.check_element_on_page(
             by.By.XPATH, './/*[@data-display="forModification"]'))
@@ -843,16 +854,17 @@ class UISanityTests(UITestCase):
         self.assertTrue(self.check_element_on_page(
             by.By.XPATH, './/*[@data-display="modifiedService"]'))
 
+    @testtools.skip("New UI in progress")
     def test_027_modify_description(self):
         """
         Test check ability to change description of the composed service
 
         Scenario:
-            1. Navigate to Service Definitions page
+            1. Navigate to Package Definitions page
             2. Click on "Compose Service"  and create new service
             3. Change description of composed service
         """
-        self.navigate_to('Service Definitions')
+        self.navigate_to('Package Definitions')
         self.compose_trivial_service('forModification')
         self.assertTrue(self.check_element_on_page(
             by.By.XPATH, './/*[@data-display="forModification"]'))
@@ -876,12 +888,12 @@ class UISanityTests(UITestCase):
         Test check ability to add composed service in the environment
 
         Scenario:
-            1. Navigate to Service Definitions page
+            1. Navigate to Package Definitions page
             2. Click on "Compose Service"  and create new service
             3. Navigate to Environments page
             4. Create environment and add in this env created service
         """
-        self.navigate_to('Service Definitions')
+        self.navigate_to('Package Definitions')
         self.compose_trivial_service('TEST')
         self.assertTrue(self.check_element_on_page(
             by.By.XPATH, './/*[@data-display="TEST"]'))
@@ -898,16 +910,17 @@ class UISanityTests(UITestCase):
         next_ = "/html/body/div[3]/div/form/div[2]/input[2]"
         self.assertTrue(self.check_element_on_page(by.By.XPATH, next_))
 
+    @testtools.skip("New UI in progress")
     def test_029_modify_service_add_file(self):
         """
         Test check ability to add file in composed service
 
         Scenario:
-            1. Navigate to Service Definitions page
+            1. Navigate to 'Package Definitions' page
             2. Click on "Compose Service"  and create new service
             3. Manage composed service: add file
         """
-        self.navigate_to('Service Definitions')
+        self.navigate_to('Package Definitions')
         self.compose_trivial_service('TEST')
 
         self.select_action_for_service('TESTService', 'modify_service')
@@ -926,29 +939,31 @@ class UISanityTests(UITestCase):
             by.By.XPATH, ".//*[@id='scripts__row__scripts##"
                          "Get-DnsListeningIpAddress.ps1']"))
 
+    @testtools.skip("New UI in progress")
     def test_030_download_service(self):
         """
         Test check ability to download service from repository
 
         Scenario:
-            1. Navigate to Service Definitions page
+            1. Navigate to 'Package Definitions' page
             2. Select Demo service and click on "More>Download"
         """
-        self.navigate_to('Service Definitions')
+        self.navigate_to('Package Definitions')
 
         self.select_action_for_service('demoService', 'more')
         self.select_action_for_service('demoService', 'download_service')
 
+    @testtools.skip("New UI in progress")
     def test_031_upload_service_to_repository(self):
         """
         Test check ability to upload service from repository
 
         Scenario:
-            1. Navigate to Service Definitions page
+            1. Navigate to 'Package Definitions' page
             2. Click on "Upload Service"
             3. Select tar.gz archive with service and submit form
         """
-        self.driver.find_element_by_link_text('Service Definitions').click()
+        self.driver.find_element_by_link_text('Package Definitions').click()
 
         self.click_on_service_catalog_action('upload_service')
         self.choose_and_upload_files('myService.tar.gz')
@@ -957,16 +972,17 @@ class UISanityTests(UITestCase):
         self.assertTrue(self.check_element_on_page(
             by.By.XPATH, './/*[@data-display="My Service"]'))
 
+    @testtools.skip("New UI in progress")
     def test_032_manage_service_upload_file(self):
         """
         Test check ability to upload service from repository
 
         Scenario:
-            1. Navigate to Service Definitions page
+            1. Navigate to 'Package Definitions' page
             2. Compose new service
             3. Manage composed service: upload new file to this service
         """
-        self.navigate_to('Service Definitions')
+        self.navigate_to('Package Definitions')
         self.compose_trivial_service('TEST')
 
         self.select_action_for_service('TESTService', 'more')
@@ -979,20 +995,21 @@ class UISanityTests(UITestCase):
         self.assertTrue(self.check_element_on_page(
             by.By.XPATH, ".//*[@id='scripts__row__scripts##myScript.ps1']"))
 
+    @testtools.skip("New UI in progress")
     def test_033_manage_files_upload_delete_heat_template(self):
         """
         Test check ability to upload heat template to repository and delete
         this file
 
         Scenario:
-            1. Navigate to Service Definitions page
+            1. Navigate to Package Definitions page
             2. Click on "Manage Files"
             3. Select file and type of the file "Heat Template"
             4. Upload file to repository
             5. Find uploaded file in appropriate category and delete it
             from repository
         """
-        self.navigate_to('Service Definitions')
+        self.navigate_to('Package Definitions')
 
         self.click_on_service_catalog_action('manage_files')
         self.driver.find_element_by_id(
@@ -1016,20 +1033,21 @@ class UISanityTests(UITestCase):
             by.By.XPATH, ".//*[@id='manage_files__row__heat##"
                          "myHeatTemplate.template']"))
 
+    @testtools.skip("New UI in progress")
     def test_034_manage_files_upload_delete_agent_template(self):
         """
         Test check ability to upload agent template to repository and delete
         this file
 
         Scenario:
-            1. Navigate to Service Definitions page
+            1. Navigate to 'Package Definitions' page
             2. Click on "Manage Files"
             3. Select file and type of the file "Agent Template"
             4. Upload file to repository
             5. Find uploaded file in appropriate category and delete it
             from repository
         """
-        self.navigate_to('Service Definitions')
+        self.navigate_to('Package Definitions')
 
         self.click_on_service_catalog_action('manage_files')
         self.driver.find_element_by_id(
@@ -1054,20 +1072,21 @@ class UISanityTests(UITestCase):
             by.By.XPATH, ".//*[@id='manage_files__row__agent##"
                          "myAgentTemplate.template']"))
 
+    @testtools.skip("New UI in progress")
     def test_035_manage_files_upload_delete_ui_file(self):
         """
         Test check ability to upload ui_file to repository and delete
         this file
 
         Scenario:
-            1. Navigate to Service Definitions page
+            1. Navigate to 'Package Definitions' page
             2. Click on "Manage Files"
             3. Select file and type of the file "UI Definition (*.yaml)"
             4. Upload file to repository
             5. Find uploaded file in appropriate category and delete it
             from repository
         """
-        self.navigate_to('Service Definitions')
+        self.navigate_to('Package Definitions')
 
         self.click_on_service_catalog_action('manage_files')
         self.driver.find_element_by_id(
@@ -1097,13 +1116,13 @@ class UISanityTests(UITestCase):
         Test check that adding of second ui file in service is prohibited
 
         Scenario:
-            1. Navigate to Service Definitions page
+            1. Navigate to 'Package Definitions' page
             2. Compose new service "TEST"
             2. Navigate to 'Manage Service: TEST Service' page
             ("More>Manage Service" for test service)
             3. Check that "+ UI Files" button is absent
         """
-        self.navigate_to('Service Definitions')
+        self.navigate_to('Package Definitions')
         self.compose_trivial_service('TEST')
 
         self.select_action_for_service('TESTService', 'more')
@@ -1112,18 +1131,19 @@ class UISanityTests(UITestCase):
         self.assertFalse(self.check_element_on_page(by.By.LINK_TEXT,
                                                     'UI Files'))
 
+    @testtools.skip("New UI in progress")
     def test_037_check_opportunity_to_toggle_service(self):
         """
         Test check ability to make service active or inactive
 
         Scenario:
-            1. Navigate to Service Definitions page
+            1. Navigate to 'Package Definitions' page
             2. Select Demo service and make it inactive ("More>Toggle Service")
             3. Check that service became inactive
             4. Select Demo service and make it active ("More>Toggle Service")
             5. Check that service became active
         """
-        self.navigate_to('Service Definitions')
+        self.navigate_to('Package Definitions')
 
         self.select_action_for_service('demoService', 'more')
         self.select_action_for_service('demoService', 'toggle_enabled')
@@ -1137,18 +1157,19 @@ class UISanityTests(UITestCase):
         self.assertTrue(self.check_service_parameter(
             'service_catalog', 'demoService', '3', 'True'))
 
+    @testtools.skip("New UI in progress")
     def test_038_delete_component_from_existing_service(self):
         """
         Test check ability to delete component from existing service
 
         Scenario:
-            1. Navigate to Service Definitions page
+            1. Navigate to 'Package Definitions' page
             2. Select Demo service and navigate to service info page
             ("More>Manage Service")
             3. Select one of service's file
             4. Delete this file
         """
-        self.navigate_to('Service Definitions')
+        self.navigate_to('Package Definitions')
 
         self.select_action_for_service('demoService', 'more')
         self.select_action_for_service('demoService', 'manage_service')
@@ -1165,17 +1186,18 @@ class UISanityTests(UITestCase):
         self.assertFalse(self.check_element_on_page(
             by.By.XPATH, ".//*[@id='agent__row__agent##Demo.template']"))
 
+    @testtools.skip("New UI in progress")
     def test_039_check_opportunity_to_delete_composed_service(self):
         """
         Test check ability to delete composed service
 
         Scenario:
-            1. Navigate to Service Definitions page
+            1. Navigate to 'Package Definitions' page
             2. Compose new service
             3. Select composed service
             4. Delete this service
         """
-        self.navigate_to('Service Definitions')
+        self.navigate_to('Package Definitions')
         self.compose_trivial_service('ForDeletion')
         self.assertTrue(self.check_element_on_page(
             by.By.XPATH, './/*[@data-display="ForDeletion"]'))
@@ -1196,8 +1218,18 @@ class UISanityTests(UITestCase):
             1. Create environment
             2. Navigate to 'Application Catalog' panel
         """
-        self.navigate_to('Environments')
-        self.create_environment('test')
         self.navigate_to('Application Catalog')
         self.assertTrue(self.check_element_on_page(
             by.By.XPATH, ".//*[@id='main_content']/div[3]/h3[1]"))
+
+    def test_041_check_package_definition_panel(self):
+        """
+        Test check that 'Package Definitions' panel is operable
+
+        Scenario:
+            1. Create environment
+            2. Navigate to 'Package Catalog' panel
+        """
+        self.navigate_to('Package Definitions')
+        self.assertTrue(self.check_element_on_page(
+            by.By.XPATH, ".//*[@id='main_content']/div[1]/div[2]/h2"))
