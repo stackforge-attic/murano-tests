@@ -1,0 +1,11 @@
+Verified+2: Jenkins
+Code-Review+1: Timur Nurlygayanov <tnurlygayanov@mirantis.com>
+Code-Review+2: Dmitry Teselkin <dteselkin@mirantis.com>
+Code-Review+1: Igor Yozhikov <iyozhikov@mirantis.com>
+Approved+1: Timur Sufiev <tsufiev@mirantis.com>
+Code-Review+2: Timur Sufiev <tsufiev@mirantis.com>
+Submitted-by: Jenkins
+Submitted-at: Tue, 08 Apr 2014 09:54:17 +0000
+Reviewed-on: https://review.openstack.org/85688
+Project: stackforge/murano-tests
+Branch: refs/heads/master
