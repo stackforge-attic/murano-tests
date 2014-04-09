@@ -20,7 +20,7 @@ class UISanityTests(UITestCase):
             2. Navigate to this environment
             3. Go back to environment list and delete created environment
         """
-        self.navigate_to('Environments')
+        self.go_to_submenu('Environments')
         self.create_environment('test_create_del_env')
         self.driver.find_element_by_link_text('test_create_del_env').click()
 
@@ -37,7 +37,7 @@ class UISanityTests(UITestCase):
             2. Change environment's name
             3. Check that there is renamed environment is in environment list
         """
-        self.navigate_to('Environments')
+        self.go_to_submenu('Environments')
         self.create_environment('test_edit_env')
         self.driver.find_element_by_link_text('test_edit_env')
 
@@ -56,7 +56,8 @@ class UISanityTests(UITestCase):
             2. Click on button "Mark Image"
             3. Fill the form and submit it
         """
-        self.navigate_to('Images')
+        self.navigate_to('Manage')
+        self.go_to_submenu('Images')
         self.driver.find_element_by_id(
             'marked_images__action_mark_image').click()
 
@@ -75,7 +76,8 @@ class UISanityTests(UITestCase):
             2. Create test image
             3. Select created image and click on "Delete Metadata"
         """
-        self.navigate_to('Images')
+        self.navigate_to('Manage')
+        self.go_to_submenu('Images')
         self.driver.find_element_by_id(
             'marked_images__action_mark_image').click()
 
@@ -104,11 +106,15 @@ class UISanityTests(UITestCase):
             the creation form
             4. Delete demo service from environment
         """
-        self.navigate_to('Environments')
+        self.go_to_submenu('Environments')
         self.create_environment('test')
         self.env_to_service('test')
 
+        self.driver.find_element_by_link_text('Add Application').click()
         self.create_demo_service('DemoService')
+
+        self.go_to_submenu('Environments')
+        self.env_to_service('test')
         self.assertTrue(self.check_element_on_page(by.By.LINK_TEXT,
                                                    'DemoService'))
 
@@ -128,11 +134,15 @@ class UISanityTests(UITestCase):
             the creation form
             4. Delete linux telnet service from environment
         """
-        self.navigate_to('Environments')
+        self.go_to_submenu('Environments')
         self.create_environment('test')
         self.env_to_service('test')
 
+        self.driver.find_element_by_link_text('Add Application').click()
         self.create_linux_telnet('linuxtelnet')
+
+        self.go_to_submenu('Environments')
+        self.env_to_service('test')
         self.assertTrue(self.check_element_on_page(by.By.LINK_TEXT,
                                                    'linuxtelnet'))
 
@@ -152,11 +162,15 @@ class UISanityTests(UITestCase):
             the creation form
             4. Delete linux apache service from environment
         """
-        self.navigate_to('Environments')
+        self.go_to_submenu('Environments')
         self.create_environment('test')
         self.env_to_service('test')
 
+        self.driver.find_element_by_link_text('Add Application').click()
         self.create_linux_apache('linuxapache')
+
+        self.go_to_submenu('Environments')
+        self.env_to_service('test')
         self.assertTrue(self.check_element_on_page(by.By.LINK_TEXT,
                                                    'linuxapache'))
 
@@ -176,15 +190,17 @@ class UISanityTests(UITestCase):
             the creation form
             4. Delete active directory service from environment
         """
-        self.navigate_to('Environments')
+        self.go_to_submenu('Environments')
         self.create_environment('test')
         self.env_to_service('test')
 
         self.driver.find_element_by_link_text('Add Application').click()
         self.driver.find_element_by_xpath(
             self.elements.get('apps', 'AD')).click()
-
         self.create_ad_service('muranotest.domain')
+
+        self.go_to_submenu('Environments')
+        self.env_to_service('test')
         self.assertTrue(self.check_element_on_page(by.By.LINK_TEXT,
                                                    'muranotest.domain'))
 
@@ -204,15 +220,15 @@ class UISanityTests(UITestCase):
             the creation form
             4. Delete IIS service from environment
         """
-        self.navigate_to('Environments')
+        self.go_to_submenu('Environments')
         self.create_environment('test')
         self.env_to_service('test')
 
         self.driver.find_element_by_link_text('Add Application').click()
-        self.driver.find_element_by_xpath(
-            self.elements.get('apps', 'IIS')).click()
-
         self.create_iis_service('IISService')
+
+        self.go_to_submenu('Environments')
+        self.env_to_service('test')
         self.assertTrue(self.check_element_on_page(by.By.LINK_TEXT,
                                                    'IISService'))
         self.delete_service('IISService')
@@ -231,12 +247,15 @@ class UISanityTests(UITestCase):
             the creation form
             4. Delete ASP.Net service from environment
         """
-        self.log_in()
-        self.navigate_to('Environments')
+        self.go_to_submenu('Environments')
         self.create_environment('test')
         self.env_to_service('test')
 
+        self.driver.find_element_by_link_text('Add Application').click()
         self.create_asp_service('ASPService')
+
+        self.go_to_submenu('Environments')
+        self.env_to_service('test')
         self.assertTrue(self.check_element_on_page(by.By.LINK_TEXT,
                                                    'ASPService'))
 
@@ -256,11 +275,15 @@ class UISanityTests(UITestCase):
             the creation form
             4. Delete IIS Farm service from environment
         """
-        self.navigate_to('Environments')
+        self.go_to_submenu('Environments')
         self.create_environment('test')
         self.env_to_service('test')
 
+        self.driver.find_element_by_link_text('Add Application').click()
         self.create_iisfarm_service('IISFarmService')
+
+        self.go_to_submenu('Environments')
+        self.env_to_service('test')
         self.assertTrue(self.check_element_on_page(by.By.LINK_TEXT,
                                                    'IISFarmService'))
 
@@ -280,11 +303,15 @@ class UISanityTests(UITestCase):
             the creation form
             4. Delete ASP.Net Farm service from environment
         """
-        self.navigate_to('Environments')
+        self.go_to_submenu('Environments')
         self.create_environment('test')
         self.env_to_service('test')
 
+        self.driver.find_element_by_link_text('Add Application').click()
         self.create_aspfarm_service('ASPFarmService')
+
+        self.go_to_submenu('Environments')
+        self.env_to_service('test')
         self.assertTrue(self.check_element_on_page(by.By.LINK_TEXT,
                                                    'ASPFarmService'))
 
@@ -304,11 +331,15 @@ class UISanityTests(UITestCase):
             the creation form
             4. Delete MSSQL service from environment
         """
-        self.navigate_to('Environments')
+        self.go_to_submenu('Environments')
         self.create_environment('test')
         self.env_to_service('test')
 
+        self.driver.find_element_by_link_text('Add Application').click()
         self.create_mssql_service('MSSQLService')
+
+        self.go_to_submenu('Environments')
+        self.env_to_service('test')
         self.assertTrue(self.check_element_on_page(by.By.LINK_TEXT,
                                                    'MSSQLService'))
 
@@ -328,10 +359,11 @@ class UISanityTests(UITestCase):
             the creation form
             4. Delete MSSQL cluster service from environment
         """
-        self.navigate_to('Environments')
+        self.go_to_submenu('Environments')
         self.create_environment('test')
         self.env_to_service('test')
 
+        self.driver.find_element_by_link_text('Add Application').click()
         self.create_ad_service('activeDirectory.mssql')
         self.assertTrue(self.check_element_on_page(by.By.LINK_TEXT,
                                                    'activeDirectory.mssql'))
@@ -357,10 +389,11 @@ class UISanityTests(UITestCase):
             the creation form
             4. Delete tomcat service from environment
         """
-        self.navigate_to('Environments')
+        self.go_to_submenu('Environments')
         self.create_environment('test')
         self.env_to_service('test')
 
+        self.driver.find_element_by_link_text('Add Application').click()
         self.create_postgreSQL_service('posrgreSQL')
         self.assertTrue(self.check_element_on_page(by.By.LINK_TEXT,
                                                    'posrgreSQL'))
@@ -386,11 +419,11 @@ class UISanityTests(UITestCase):
             the creation form
             4. Delete postgreSQL service from environment
         """
-        self.navigate_to('Environments')
+        self.go_to_submenu('Environments')
         self.create_environment('test')
         self.env_to_service('test')
 
-        self.driver.find_element_by_link_text('Create Service').click()
+        self.driver.find_element_by_link_text('Add Application').click()
         self.create_postgreSQL_service('postgreSQL-serv')
         self.assertTrue(self.check_element_on_page(by.By.LINK_TEXT,
                                                    'postgreSQL-serv'))
@@ -426,60 +459,56 @@ class UISanityTests(UITestCase):
             12. Set "domain.local" as a domain name and check that
             error message didn't appear
         """
-        self.navigate_to('Environments')
+        self.go_to_submenu('Environments')
         self.create_environment('test')
         self.env_to_service('test')
 
-        self.driver.find_element_by_id('services__action_CreateService').click()
+        self.driver.find_element_by_link_text('Add Application').click()
+        self.driver.find_element_by_xpath(
+            self.elements.get('apps', 'AD')).click()
 
-        self.select_from_list('service_choice-service', 'Active Directory')
-        next_button = self.elements.get('button', 'Next')
-        self.driver.find_element_by_xpath(next_button).click()
-
-        service_name = 'id_activeDirectory-0-name'
-
-        self.fill_field(by.By.ID, field=service_name, value='a')
+        self.fill_field(by.By.ID, field='id_0-name', value='a')
         self.assertTrue(self.check_that_error_message_is_correct(
             'Ensure this value has at least 2 characters (it has 1).', 1))
 
-        self.fill_field(by.By.ID, field=service_name, value='aa')
+        self.fill_field(by.By.ID, field='id_0-name', value='aa')
         self.assertFalse(self.check_that_error_message_is_correct(
             'Ensure this value has at least 2 characters (it has 1).', 1))
 
-        self.fill_field(by.By.ID, field=service_name, value='@ct!v3')
+        self.fill_field(by.By.ID, field='id_0-name', value='@ct!v3')
         self.assertTrue(self.check_that_error_message_is_correct(
             'Only letters, numbers and dashes in the middle are allowed.', 1))
 
-        self.fill_field(by.By.ID, field=service_name, value='active.com')
+        self.fill_field(by.By.ID, field='id_0-name', value='active.com')
         self.assertFalse(self.check_that_error_message_is_correct(
             'Only letters, numbers and dashes in the middle are allowed.', 1))
 
-        self.fill_field(by.By.ID, field=service_name, value='domain')
+        self.fill_field(by.By.ID, field='id_0-name', value='domain')
         self.assertTrue(self.check_that_error_message_is_correct(
             'Single-level domain is not appropriate.', 1))
 
-        self.fill_field(by.By.ID, field=service_name, value='domain.com')
+        self.fill_field(by.By.ID, field='id_0-name', value='domain.com')
         self.assertFalse(self.check_that_error_message_is_correct(
             'Single-level domain is not appropriate.', 1))
 
-        self.fill_field(by.By.ID, field=service_name,
+        self.fill_field(by.By.ID, field='id_0-name',
                         value='morethan15symbols.beforedot')
         self.assertTrue(self.check_that_error_message_is_correct(
             'NetBIOS name cannot be shorter than'
             ' 1 symbol and longer than 15 symbols.', 1))
 
-        self.fill_field(by.By.ID, field=service_name,
+        self.fill_field(by.By.ID, field='id_0-name',
                         value='lessthan15.beforedot')
         self.assertFalse(self.check_that_error_message_is_correct(
             'NetBIOS name cannot be shorter than'
             ' 1 symbol and longer than 15 symbols.', 1))
 
-        self.fill_field(by.By.ID, field=service_name, value='.domain.local')
+        self.fill_field(by.By.ID, field='id_0-name', value='.domain.local')
         self.assertTrue(self.check_that_error_message_is_correct(
             'Period characters are allowed only when '
             'they are used to delimit the components of domain style names', 1))
 
-        self.fill_field(by.By.ID, field=service_name, value='domain.local')
+        self.fill_field(by.By.ID, field='id_0-name', value='domain.local')
         self.assertFalse(self.check_that_error_message_is_correct(
             'Period characters are allowed only when '
             'they are used to delimit the components of domain style names', 1))
@@ -500,32 +529,27 @@ class UISanityTests(UITestCase):
             6. Set "Service" as a iis name and check that error message
             didn't appear
         """
-        self.navigate_to('Environments')
+        self.go_to_submenu('Environments')
         self.create_environment('test')
         self.env_to_service('test')
 
-        self.driver.find_element_by_id('services__action_CreateService').click()
+        self.driver.find_element_by_link_text('Add Application').click()
+        self.driver.find_element_by_xpath(
+            self.elements.get('apps', 'IIS')).click()
 
-        self.select_from_list('service_choice-service',
-                              'Internet Information Services')
-        next_button = self.elements.get('button', 'Next')
-        self.driver.find_element_by_xpath(next_button).click()
-
-        service_name = 'id_webServer-0-name'
-
-        self.fill_field(by.By.ID, field=service_name, value='a')
+        self.fill_field(by.By.ID, field='id_0-name', value='a')
         self.assertTrue(self.check_that_error_message_is_correct(
             'Ensure this value has at least 2 characters (it has 1).', 1))
 
-        self.fill_field(by.By.ID, field=service_name, value='aa')
+        self.fill_field(by.By.ID, field='id_0-name', value='aa')
         self.assertFalse(self.check_that_error_message_is_correct(
             'Ensure this value has at least 2 characters (it has 1).', 1))
 
-        self.fill_field(by.By.ID, field=service_name, value='S3rv!$')
+        self.fill_field(by.By.ID, field='id_0-name', value='S3rv!$')
         self.assertTrue(self.check_that_error_message_is_correct(
             'Just letters, numbers, underscores and hyphens are allowed.', 1))
 
-        self.fill_field(by.By.ID, field=service_name, value='Service')
+        self.fill_field(by.By.ID, field='id_0-name', value='Service')
         self.assertFalse(self.check_that_error_message_is_correct(
             'Just letters, numbers, underscores and hyphens are allowed.', 1))
 
@@ -541,23 +565,19 @@ class UISanityTests(UITestCase):
             3. Set "a" as a git repository url and verify error message
             4. Set "://@:" as a git repository url and verify error message
         """
-        self.navigate_to('Environments')
+        self.go_to_submenu('Environments')
         self.create_environment('test')
         self.env_to_service('test')
 
-        self.driver.find_element_by_id('services__action_CreateService').click()
+        self.driver.find_element_by_link_text('Add Application').click()
+        self.driver.find_element_by_xpath(
+            self.elements.get('apps', 'ASP')).click()
 
-        self.select_from_list('service_choice-service', 'ASP.NET Application')
-        next_button = self.elements.get('button', 'Next')
-        self.driver.find_element_by_xpath(next_button).click()
-
-        git_repository = 'id_aspNetApp-0-repository'
-
-        self.fill_field(by.By.ID, field=git_repository, value='a')
+        self.fill_field(by.By.ID, field='id_0-repository', value='a')
         self.assertTrue(self.check_that_error_message_is_correct(
             'Enter correct git repository url', 4))
 
-        self.fill_field(by.By.ID, field=git_repository, value='://@:')
+        self.fill_field(by.By.ID, field='id_0-repository', value='://@:')
         self.assertTrue(self.check_that_error_message_is_correct(
             'Enter correct git repository url', 4))
 
@@ -574,35 +594,29 @@ class UISanityTests(UITestCase):
             4. Set "demo" as a hostname template name and change number of
             instances from 2 to 1 and check that there is no error message
         """
-        self.navigate_to('Environments')
+        self.go_to_submenu('Environments')
         self.create_environment('test')
         self.env_to_service('test')
 
-        self.driver.find_element_by_id('services__action_CreateService').click()
+        self.driver.find_element_by_link_text('Add Application').click()
+        self.driver.find_element_by_xpath(
+            self.elements.get('apps', 'Demo')).click()
 
-        self.select_from_list('service_choice-service', 'Demo Service')
-        next_button = self.elements.get('button', 'Next')
-        self.driver.find_element_by_xpath(next_button).click()
-
-        service = 'id_demoService-0'
-
-        self.fill_field(by.By.ID, '{0}-name'.format(service), 'demo')
-        self.fill_field(by.By.ID,
-                        '{0}-unitNamingPattern'.format(service),
-                        'demo')
+        self.fill_field(by.By.ID, 'id_0-name', 'demo')
+        self.fill_field(by.By.ID, 'id_0-unitNamingPattern', 'demo')
 
         xpath = ".//*[@id='create_service_form']/div[1]/div[1]/fieldset/div[1]"
 
-        next_button = self.elements.get('button', 'Next2')
-        self.driver.find_element_by_xpath(next_button).click()
+        self.driver.find_element_by_xpath(
+            self.elements.get('button', 'ButtonSubmit')).click()
         self.assertTrue(self.check_element_on_page(by.By.XPATH, xpath))
 
-        self.fill_field(by.By.ID, '{0}-dcInstances'.format(service), value='1')
-        next_button = self.elements.get('button', 'Next2')
-        self.driver.find_element_by_xpath(next_button).click()
+        self.fill_field(by.By.ID, 'id_0-dcInstances', value='1')
+        self.driver.find_element_by_xpath(
+            self.elements.get('button', 'ButtonSubmit')).click()
 
         WebDriverWait(self.driver, 10).until(lambda s: s.find_element(
-            by.By.ID, 'demoService-1-osImage').is_displayed())
+            by.By.ID, '1-osImage').is_displayed())
 
     @testtools.skip("New UI in progress")
     def test_021_check_bool_field_validation(self):
@@ -616,7 +630,7 @@ class UISanityTests(UITestCase):
             4. Unselect externalAD and click on Next, second step of wizard
             should appears
         """
-        self.navigate_to('Environments')
+        self.go_to_submenu('Environments')
         self.create_environment('test')
         self.env_to_service('test')
 
@@ -675,7 +689,7 @@ class UISanityTests(UITestCase):
             3. External AD and Mixed-Mode Auth checkboxes
             are not selected. User select created earlier domain.
         """
-        self.navigate_to('Environments')
+        self.go_to_submenu('Environments')
         self.create_environment('scenario_1')
         self.env_to_service('scenario_1')
 
@@ -722,7 +736,7 @@ class UISanityTests(UITestCase):
             all required fields here) and Mixed-Mode Auth checkbox
             is not selected.
         """
-        self.navigate_to('Environments')
+        self.go_to_submenu('Environments')
         self.create_environment('scenario_2')
         self.env_to_service('scenario_2')
 
@@ -773,7 +787,7 @@ class UISanityTests(UITestCase):
             3. External AD and Mixed-Mode Auth checkboxes are selected.
             User have to fill all required fields.
         """
-        self.navigate_to('Environments')
+        self.go_to_submenu('Environments')
         self.create_environment('scenario_3')
         self.env_to_service('scenario_3')
 
@@ -816,102 +830,64 @@ class UISanityTests(UITestCase):
         self.assertTrue(self.check_element_on_page(
             by.By.ID, 'id_msSqlClusterServer-1-clusterIp'))
 
-    @testtools.skip("New UI in progress")
-    def test_025_check_opportunity_to_compose_a_new_service(self):
+    @testtools.skip("There are no default packages in Murano")
+    def test_025_modify_package_name(self):
         """
-        Test check ability to compose new service via Murano Repository
+        Test check ability to change name of the package
 
         Scenario:
-            1. Navigate to Package Definitions page
-            2. Click on "Compose Service"  and create new service
+            1. Navigate to 'Package Definitions' page
+            2. Select package and click on 'Modify Package'
+            3. Rename package
         """
-        self.navigate_to('Package Definitions')
-        self.compose_trivial_service('composedService')
-        self.assertTrue(self.check_element_on_page(
-            by.By.XPATH, './/*[@data-display="composedService"]'))
+        self.navigate_to('Manage')
+        self.go_to_submenu('Package Definitions')
+        self.select_action_for_package('NAME',
+                                       'modify_package')
+        self.fill_field(by.By.ID, 'id_name', 'NAME-modified')
+        self.driver.find_element_by_xpath(
+            self.elements.get('button', 'InputSubmit')).click()
 
-    @testtools.skip("New UI in progress")
-    def test_026_modify_service_name(self):
+        self.assertTrue(self.check_element_on_page(
+            by.By.XPATH, './/*[@data-display="NAME-modified"]'))
+
+        self.select_action_for_package('NAME-modified',
+                                       'modify_package')
+        self.fill_field(by.By.ID, 'id_name', 'NAME')
+        self.driver.find_element_by_xpath(
+            self.elements.get('button', 'InputSubmit')).click()
+
+        self.assertTrue(self.check_element_on_page(
+            by.By.XPATH, './/*[@data-display="NAME"]'))
+
+    @testtools.skip("There are no default packages in Murano")
+    def test_026_modify_description(self):
         """
-        Test check ability to change name of the composed service
+        Test check ability to change description of the package
 
         Scenario:
-            1. Navigate to Package Definitions page
-            2. Click on "Compose Service"  and create new service
-            3. Rename composed service
+            1. Navigate to 'Package Definitions' page
+            2. Select package and click on 'Modify Package'
+            3. Change description
         """
-        self.navigate_to('Package Definitions')
-        self.compose_trivial_service('forModification')
-        self.assertTrue(self.check_element_on_page(
-            by.By.XPATH, './/*[@data-display="forModification"]'))
-
-        self.select_action_for_service('forModificationService',
-                                       'modify_service')
-        self.fill_field(by.By.ID, 'id_service_display_name', 'modifiedService')
-        submit_button = self.elements.get('button', 'InputSubmit')
-        self.driver.find_element_by_xpath(submit_button).click()
-
-        self.assertTrue(self.check_element_on_page(
-            by.By.XPATH, './/*[@data-display="modifiedService"]'))
-
-    @testtools.skip("New UI in progress")
-    def test_027_modify_description(self):
-        """
-        Test check ability to change description of the composed service
-
-        Scenario:
-            1. Navigate to Package Definitions page
-            2. Click on "Compose Service"  and create new service
-            3. Change description of composed service
-        """
-        self.navigate_to('Package Definitions')
-        self.compose_trivial_service('forModification')
-        self.assertTrue(self.check_element_on_page(
-            by.By.XPATH, './/*[@data-display="forModification"]'))
-
-        self.select_action_for_service('forModificationService',
-                                       'modify_service')
+        self.navigate_to('Manage')
+        self.go_to_submenu('Package Definitions')
+        self.select_action_for_package('NAME',
+                                       'modify_package')
 
         self.fill_field(by.By.ID, 'id_description', 'New Description')
-        submit_button = self.elements.get('button', 'InputSubmit')
-        self.driver.find_element_by_xpath(submit_button).click()
-        self.select_action_for_service('forModificationService', 'more')
-        self.select_action_for_service('forModificationService',
-                                       'manage_service')
+        self.driver.find_element_by_xpath(
+            self.elements.get('button', 'InputSubmit')).click()
+
+        self.navigate_to('Deployment')
+        self.go_to_submenu('Application Catalog')
+
         self.check_element_on_page(
-            ".//*[@id='main_content']/div[3]/dl/dd[4]",
+            "XPATH_OF_NAME",
             'New Description')
 
-    @testtools.skip("New UI in progress")
-    def test_028_check_opportunity_to_select_composed_service(self):
-        """
-        Test check ability to add composed service in the environment
-
-        Scenario:
-            1. Navigate to Package Definitions page
-            2. Click on "Compose Service"  and create new service
-            3. Navigate to Environments page
-            4. Create environment and add in this env created service
-        """
-        self.navigate_to('Package Definitions')
-        self.compose_trivial_service('TEST')
-        self.assertTrue(self.check_element_on_page(
-            by.By.XPATH, './/*[@data-display="TEST"]'))
-
-        self.navigate_to('Environments')
-        self.create_environment('env')
-        self.env_to_service('env')
-        self.driver.find_element_by_link_text('Create Service').click()
-        self.select_from_list('service_choice-service', 'TEST')
-
-        next_button = self.elements.get('button', 'Next')
-        self.driver.find_element_by_xpath(next_button).click()
-
-        next_ = "/html/body/div[3]/div/form/div[2]/input[2]"
-        self.assertTrue(self.check_element_on_page(by.By.XPATH, next_))
-
-    @testtools.skip("New UI in progress")
-    def test_029_modify_service_add_file(self):
+    @testtools.skip("There are no default packages in Murano")
+    def test_027_modify_package_add_tag(self):
         """
         Test check ability to add file in composed service
 
@@ -920,27 +896,26 @@ class UISanityTests(UITestCase):
             2. Click on "Compose Service"  and create new service
             3. Manage composed service: add file
         """
-        self.navigate_to('Package Definitions')
-        self.compose_trivial_service('TEST')
+        self.navigate_to('Manage')
+        self.go_to_submenu('Package Definitions')
+        self.select_action_for_package('NAME',
+                                       'modify_package')
 
-        self.select_action_for_service('TESTService', 'modify_service')
-
-        self.driver.find_element_by_link_text('Scripts').click()
+        self.fill_field(by.By.ID, 'id_tags', 'TEST_TAG')
         self.driver.find_element_by_xpath(
-            ".//*[@name = 'scripts@@scripts##"
-            "Get-DnsListeningIpAddress.ps1@@selected']").click()
+            self.elements.get('button', 'InputSubmit')).click()
 
-        submit_button = self.elements.get('button', 'InputSubmit')
-        self.driver.find_element_by_xpath(submit_button).click()
+        app_id = self.get_element_id('NAME')
 
-        self.select_action_for_service('TESTService', 'more')
-        self.select_action_for_service('TESTService', 'manage_service')
-        self.assertTrue(self.check_element_on_page(
-            by.By.XPATH, ".//*[@id='scripts__row__scripts##"
-                         "Get-DnsListeningIpAddress.ps1']"))
+        self.navigate_to('Deployment')
+        self.go_to_submenu('Application Catalog')
+        self.select_and_click_action_for_app('details', app_id)
+        self.check_element_on_page(
+            'XPATH_OF_AREA',
+            'TEST_TAG')
 
-    @testtools.skip("New UI in progress")
-    def test_030_download_service(self):
+    @testtools.skip("There are no default packages in Murano")
+    def test_028_download_package(self):
         """
         Test check ability to download service from repository
 
@@ -948,288 +923,213 @@ class UISanityTests(UITestCase):
             1. Navigate to 'Package Definitions' page
             2. Select Demo service and click on "More>Download"
         """
-        self.navigate_to('Package Definitions')
+        self.navigate_to('Manage')
+        self.go_to_submenu('Package Definitions')
 
-        self.select_action_for_service('demoService', 'more')
-        self.select_action_for_service('demoService', 'download_service')
+        self.select_action_for_package('demoService', 'more')
+        self.select_action_for_package('demoService', 'download_service')
 
-    @testtools.skip("New UI in progress")
-    def test_031_upload_service_to_repository(self):
+    @testtools.skip("There are no default packages in Murano")
+    def test_029_upload_package_add_to_env(self):
         """
-        Test check ability to upload service from repository
+        Test check ability to upload package to repository
 
         Scenario:
             1. Navigate to 'Package Definitions' page
-            2. Click on "Upload Service"
-            3. Select tar.gz archive with service and submit form
+            2. Click on "Upload Package"
+            3. Select zip archive with package and category, submit form
         """
-        self.driver.find_element_by_link_text('Package Definitions').click()
+        self.navigate_to('Manage')
+        self.go_to_submenu('Package Definitions')
 
-        self.click_on_service_catalog_action('upload_service')
-        self.choose_and_upload_files('myService.tar.gz')
-        self.select_and_click_element('Upload')
+        self.click_on_package_action('upload_package')
+        self.choose_and_upload_files('PACKAGE.zip')
+        self.select_from_list('categories', 'CATEGORY')
+        self.driver.find_element_by_xpath(
+            self.elements.get('button', 'InputSubmit')).click()
 
         self.assertTrue(self.check_element_on_page(
-            by.By.XPATH, './/*[@data-display="My Service"]'))
+            by.By.XPATH, './/*[@data-display="PACKAGE_NAME"]'))
 
-    @testtools.skip("New UI in progress")
-    def test_032_manage_service_upload_file(self):
+    @testtools.skip("There are no default packages in Murano")
+    def test_030_check_opportunity_to_toggle_service(self):
         """
-        Test check ability to upload service from repository
+        Test check ability to make package active or inactive
 
         Scenario:
             1. Navigate to 'Package Definitions' page
-            2. Compose new service
-            3. Manage composed service: upload new file to this service
+            2. Select some package and make it inactive ("More>Toggle Package")
+            3. Check that package became inactive
+            4. Select some package and make it active ("More>Toggle Package ")
+            5. Check that package became active
         """
-        self.navigate_to('Package Definitions')
-        self.compose_trivial_service('TEST')
+        self.navigate_to('Manage')
+        self.go_to_submenu('Package Definitions')
 
-        self.select_action_for_service('TESTService', 'more')
-        self.select_action_for_service('TESTService', 'manage_service')
+        self.select_action_for_package('NAME', 'more')
+        self.select_action_for_package('NAME', 'toggle_enabled')
 
-        self.driver.find_element_by_id('scripts__action_upload_file2').click()
-        self.choose_and_upload_files('myScript.ps1')
-        self.select_and_click_element('Upload')
+        self.assertTrue(self.check_package_parameter('NAME', '3', 'False'))
 
-        self.assertTrue(self.check_element_on_page(
-            by.By.XPATH, ".//*[@id='scripts__row__scripts##myScript.ps1']"))
+        self.select_action_for_package('NAME', 'more')
+        self.select_action_for_package('NAME', 'toggle_enabled')
 
-    @testtools.skip("New UI in progress")
-    def test_033_manage_files_upload_delete_heat_template(self):
+        self.assertTrue(self.check_package_parameter('NAME', '3', 'True'))
+
+    @testtools.skip("There are no default packages in Murano")
+    def test_031_check_opportunity_to_delete_package(self):
         """
-        Test check ability to upload heat template to repository and delete
-        this file
-
-        Scenario:
-            1. Navigate to Package Definitions page
-            2. Click on "Manage Files"
-            3. Select file and type of the file "Heat Template"
-            4. Upload file to repository
-            5. Find uploaded file in appropriate category and delete it
-            from repository
-        """
-        self.navigate_to('Package Definitions')
-
-        self.click_on_service_catalog_action('manage_files')
-        self.driver.find_element_by_id(
-            'manage_files__action_upload_file').click()
-
-        self.choose_and_upload_files('myHeatTemplate.template')
-        self.select_and_click_element('Upload')
-
-        self.select_and_click_element('heat')
-        self.assertTrue(self.check_element_on_page(
-            by.By.XPATH,
-            ".//*[@id='manage_files__row__heat##myHeatTemplate.template']"))
-
-        self.select_and_click_element('heat##myHeatTemplate.template')
-        self.driver.find_element_by_id(
-            'manage_files__action_delete_file').click()
-
-        self.confirm_deletion()
-
-        self.assertFalse(self.check_element_on_page(
-            by.By.XPATH, ".//*[@id='manage_files__row__heat##"
-                         "myHeatTemplate.template']"))
-
-    @testtools.skip("New UI in progress")
-    def test_034_manage_files_upload_delete_agent_template(self):
-        """
-        Test check ability to upload agent template to repository and delete
-        this file
+        Test check ability to delete package from database
 
         Scenario:
             1. Navigate to 'Package Definitions' page
-            2. Click on "Manage Files"
-            3. Select file and type of the file "Agent Template"
-            4. Upload file to repository
-            5. Find uploaded file in appropriate category and delete it
-            from repository
+            2. Select some package
+            3. Delete this package
         """
-        self.navigate_to('Package Definitions')
+        self.navigate_to('Manage')
+        self.go_to_submenu('Package Definitions')
 
-        self.click_on_service_catalog_action('manage_files')
-        self.driver.find_element_by_id(
-            'manage_files__action_upload_file').click()
+        package = self.get_element_id('NAME')
+        self.select_and_click_element(package)
 
-        self.choose_and_upload_files('myAgentTemplate.template')
-        self.select_from_list('data_type', 'Murano Agent template')
-        self.select_and_click_element('Upload')
-
-        self.select_and_click_element('agent')
-        self.assertTrue(self.check_element_on_page(
-            by.By.XPATH,
-            ".//*[@id='manage_files__row__agent##myAgentTemplate.template']"))
-
-        self.select_and_click_element('agent##myAgentTemplate.template')
-        self.driver.find_element_by_id(
-            'manage_files__action_delete_file').click()
-
-        self.confirm_deletion()
-
-        self.assertFalse(self.check_element_on_page(
-            by.By.XPATH, ".//*[@id='manage_files__row__agent##"
-                         "myAgentTemplate.template']"))
-
-    @testtools.skip("New UI in progress")
-    def test_035_manage_files_upload_delete_ui_file(self):
-        """
-        Test check ability to upload ui_file to repository and delete
-        this file
-
-        Scenario:
-            1. Navigate to 'Package Definitions' page
-            2. Click on "Manage Files"
-            3. Select file and type of the file "UI Definition (*.yaml)"
-            4. Upload file to repository
-            5. Find uploaded file in appropriate category and delete it
-            from repository
-        """
-        self.navigate_to('Package Definitions')
-
-        self.click_on_service_catalog_action('manage_files')
-        self.driver.find_element_by_id(
-            'manage_files__action_upload_file').click()
-
-        self.choose_and_upload_files('myYaml.yaml')
-        self.select_from_list('data_type', 'UI Definition (*.yaml)')
-        self.select_and_click_element('Upload')
-
-        self.select_and_click_element('ui')
-        self.assertTrue(self.check_element_on_page(
-            by.By.XPATH,
-            ".//*[@id='manage_files__row__ui##myYaml.yaml']"))
-
-        self.select_and_click_element('ui##myYaml.yaml')
-        self.driver.find_element_by_id(
-            'manage_files__action_delete_file').click()
-
-        self.confirm_deletion()
-
-        self.assertFalse(self.check_element_on_page(
-            by.By.XPATH, ".//*[@id='manage_files__row__ui##"
-                         "myYaml.yaml']"))
-
-    def test_036_check_cannot_add_second_ui_in_service(self):
-        """
-        Test check that adding of second ui file in service is prohibited
-
-        Scenario:
-            1. Navigate to 'Package Definitions' page
-            2. Compose new service "TEST"
-            2. Navigate to 'Manage Service: TEST Service' page
-            ("More>Manage Service" for test service)
-            3. Check that "+ UI Files" button is absent
-        """
-        self.navigate_to('Package Definitions')
-        self.compose_trivial_service('TEST')
-
-        self.select_action_for_service('TESTService', 'more')
-        self.select_action_for_service('TESTService', 'manage_service')
-
-        self.assertFalse(self.check_element_on_page(by.By.LINK_TEXT,
-                                                    'UI Files'))
-
-    @testtools.skip("New UI in progress")
-    def test_037_check_opportunity_to_toggle_service(self):
-        """
-        Test check ability to make service active or inactive
-
-        Scenario:
-            1. Navigate to 'Package Definitions' page
-            2. Select Demo service and make it inactive ("More>Toggle Service")
-            3. Check that service became inactive
-            4. Select Demo service and make it active ("More>Toggle Service")
-            5. Check that service became active
-        """
-        self.navigate_to('Package Definitions')
-
-        self.select_action_for_service('demoService', 'more')
-        self.select_action_for_service('demoService', 'toggle_enabled')
-
-        self.assertTrue(self.check_service_parameter(
-            'service_catalog', 'demoService', '3', 'False'))
-
-        self.select_action_for_service('demoService', 'more')
-        self.select_action_for_service('demoService', 'toggle_enabled')
-
-        self.assertTrue(self.check_service_parameter(
-            'service_catalog', 'demoService', '3', 'True'))
-
-    @testtools.skip("New UI in progress")
-    def test_038_delete_component_from_existing_service(self):
-        """
-        Test check ability to delete component from existing service
-
-        Scenario:
-            1. Navigate to 'Package Definitions' page
-            2. Select Demo service and navigate to service info page
-            ("More>Manage Service")
-            3. Select one of service's file
-            4. Delete this file
-        """
-        self.navigate_to('Package Definitions')
-
-        self.select_action_for_service('demoService', 'more')
-        self.select_action_for_service('demoService', 'manage_service')
-
-        self.select_and_click_element('agent##Demo.template')
-
-        self.assertTrue(self.check_element_on_page(
-            by.By.XPATH, ".//*[@id='agent__row__agent##Demo.template']"))
-
-        self.driver.find_element_by_id(
-            'agent__action_delete_file_from_service').click()
-        self.confirm_deletion()
-
-        self.assertFalse(self.check_element_on_page(
-            by.By.XPATH, ".//*[@id='agent__row__agent##Demo.template']"))
-
-    @testtools.skip("New UI in progress")
-    def test_039_check_opportunity_to_delete_composed_service(self):
-        """
-        Test check ability to delete composed service
-
-        Scenario:
-            1. Navigate to 'Package Definitions' page
-            2. Compose new service
-            3. Select composed service
-            4. Delete this service
-        """
-        self.navigate_to('Package Definitions')
-        self.compose_trivial_service('ForDeletion')
-        self.assertTrue(self.check_element_on_page(
-            by.By.XPATH, './/*[@data-display="ForDeletion"]'))
-
-        self.driver.refresh()
-        self.select_and_click_element('ForDeletionService')
-
-        self.click_on_service_catalog_action('delete_service')
+        self.click_on_package_action('delete_package')
         self.confirm_deletion()
         self.assertFalse(self.check_element_on_page(
-            by.By.XPATH, './/*[@data-display="ForDeletion"]'))
+            by.By.XPATH, './/*[@data-display="NAME"]'))
 
-    def test_040_check_application_catalog_panel(self):
+    def test_032_check_application_catalog_panel(self):
         """
-        Test check that 'Application Catalog' panel is operable
+        Test checks that 'Application Catalog' panel is operable
 
         Scenario:
             1. Create environment
             2. Navigate to 'Application Catalog' panel
         """
-        self.navigate_to('Application Catalog')
+        self.go_to_submenu('Application Catalog')
         self.assertTrue(self.check_element_on_page(
-            by.By.XPATH, ".//*[@id='main_content']/div[3]/h3[1]"))
+            by.By.XPATH, ".//*[@id='content_body']/div[2]/h3[1]"))
 
-    def test_041_check_package_definition_panel(self):
+    @testtools.skip("There are no default apps in Murano")
+    def test_033_env_creation_form_app_catalog_page(self):
         """
-        Test check that 'Package Definitions' panel is operable
+        Test checks that app's option 'Add to environment' is operable
+        when there is no previously created env. In this case creation of the
+        environment should start after clicking 'Add to environment' button
 
         Scenario:
-            1. Create environment
-            2. Navigate to 'Package Catalog' panel
+            1. Navigate to 'Application Catalog' panel
+            2. Click on 'Add to environment' button for some application
+            3. Create new environment
+            4. Add application in created environment
         """
-        self.navigate_to('Package Definitions')
+        self.go_to_submenu('Application Catalog')
+        self.driver.find_element_by_link_text('Add to environment').click()
+
+        self.fill_field(by.By.ID, 'id_name', 'test_033')
+        self.driver.find_element_by_xpath(
+            self.elements.get('button', 'InputSubmit')).click()
+
+        self.navigate_to('Deployment')
+        self.go_to_submenu('Environments')
+        self.driver.find_element_by_link_text('test_033').click()
+        self.assertTrue(
+            self.driver.find_element_by_id('services__action_AddApplication'))
+
+    @testtools.skip("There are no default apps in Murano")
+    def test_034_check_info_about_app(self):
+        """
+        Test checks that information about app is available and truly.
+
+        Scenario:
+            1. Navigate to 'Application Catalog' panel
+            2. Choose some application and click on 'More info'
+            3. Verify info about application
+        """
+        self.go_to_submenu('Application Catalog')
+        self.select_and_click_action_for_app('details', 'NAME')
+
+        self.assertIn('DESCRIPTION', self.driver.page_source)
+        self.driver.find_element_by_link_text('Requirements').click()
+        self.driver.find_element_by_link_text('License').click()
+
+    def test_035_check_search_option(self):
+        """
+        Test checks that 'Search' option is operable.
+
+        Scenario:
+            1. Navigate to 'Application Catalog' panel
+            2. Click on 'Search' panel
+            3. Type name of service that should be founded
+            3. Click on 'Go' and check result
+        """
+        self.go_to_submenu('Application Catalog')
+        self.driver.find_element_by_id('MuranoSearchPanelToggle').click()
+        self.fill_field(by.By.XPATH, ".//*[@name='search']", 'PARAM')
+        self.driver.find_element_by_xpath(
+            ".//*[@id='MuranoSearchPanel']/form/button").click()
+
+    @testtools.skip("There are no default apps in Murano")
+    def test_036_filter_by_category(self):
+        """
+        Test checks ability to filter applications by category
+        in Application Catalog page
+
+        Scenario:
+            1. Navigate to 'Application Catalog' panel
+            2. Click on 'Category' panel
+            3. Select category and click on it
+            4. Verify result
+        """
+        self.navigate_to('Manage')
+        self.go_to_submenu('Package Definition')
+
+        package_category1 = self.get_element_id('PACKAGE_CATEGORY1')
+        package_category2 = self.get_element_id('PACKAGE_CATEGORY2')
+
+        self.navigate_to('Deployment')
+        self.go_to_submenu('Application Catalog')
+        self.driver.find_element_by_id('MuranoCategoriesPanelToggle').click()
+        self.driver.find_element_by_link_text('CATEGORY1').click()
+
         self.assertTrue(self.check_element_on_page(
-            by.By.XPATH, ".//*[@id='main_content']/div[1]/div[2]/h2"))
+            by.By.XPATH, "//*[@href='/murano/catalog/details/{1}']".
+            format(package_category1)))
+
+        self.driver.find_element_by_id('MuranoCategoriesPanelToggle').click()
+        self.driver.find_element_by_link_text('CATEGORY2').click()
+
+        self.assertTrue(self.check_element_on_page(
+            by.By.XPATH, "//*[@href='/murano/catalog/details/{1}']".
+            format(package_category2)))
+
+    @testtools.skip("There are no default apps in Murano")
+    def test_037_check_option_switch_env(self):
+        """
+        Test checks ability to switch environment and to add app in other env
+
+        Scenario:
+            1. Navigate to 'Deployment>Environments' panel
+            2. Create environment 'env1'
+            3. Create environment 'env2'
+            4. Navigate to 'Deployment>Application Catalog'
+            5. Click on 'Environment' panel
+            6. Switch to env2
+            7. Add application in env2
+            8. Navigate to 'Deployment>Environments' and go to the env2
+            9. Check that added application is here
+        """
+        self.go_to_submenu('Environments')
+        self.create_environment('env1')
+        self.create_environment('env2')
+        self.navigate_to('Manage')
+        self.go_to_submenu('Application Catalog')
+        self.driver.find_element_by_link_text('Environment').click()
+        self.driver.find_element_by_link_text('env2').click()
+
+        self.select_and_click_action_for_app('add', 'NAME')
+        self.create_iis_service('IISService')
+
+        self.go_to_submenu('Environments')
+        self.env_to_service('env2')
+        self.assertTrue(self.check_element_on_page(by.By.LINK_TEXT,
+                                                   'IISService'))
