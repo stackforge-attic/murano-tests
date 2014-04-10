@@ -51,6 +51,15 @@ expect "@murano"
 send -- "bash setup.sh install > old.log\n"
 expect "@murano"
 
+send -- "sed -i \"s/DEBUG = False/DEBUG = True/\" /etc/openstack-dashboard/local_settings.py\n" 
+expect -- "@murano" 
+send -- "sed -i \"s/OPENSTACK_HOST = \"127.0.0.1\"/OPENSTACK_HOST = \""
+send -- [lindex $argv 4]
+send -- "\"\n"
+expect -- "@murano"
+send -- "service apache2 restart\n" 
+expect "@murano"
+
 send -- "service openstack-"
 send -- [lindex $argv 3]
 send -- " restart\n"
