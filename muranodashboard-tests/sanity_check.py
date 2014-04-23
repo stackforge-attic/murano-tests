@@ -879,8 +879,8 @@ class UISanityTests(UITestCase):
         self.driver.find_element_by_xpath(
             self.elements.get('button', 'InputSubmit')).click()
 
-        self.navigate_to('Deployment')
-        self.go_to_submenu('Application Catalog')
+        self.navigate_to('Application_Catalog')
+        self.go_to_submenu('Applications')
 
         self.check_element_on_page(
             "XPATH_OF_NAME",
@@ -907,8 +907,8 @@ class UISanityTests(UITestCase):
 
         app_id = self.get_element_id('NAME')
 
-        self.navigate_to('Deployment')
-        self.go_to_submenu('Application Catalog')
+        self.navigate_to('Application_Catalog')
+        self.go_to_submenu('Applications')
         self.select_and_click_action_for_app('details', app_id)
         self.check_element_on_page(
             'XPATH_OF_AREA',
@@ -999,13 +999,13 @@ class UISanityTests(UITestCase):
 
     def test_032_check_application_catalog_panel(self):
         """
-        Test checks that 'Application Catalog' panel is operable
+        Test checks that 'Applications' panel is operable
 
         Scenario:
             1. Create environment
-            2. Navigate to 'Application Catalog' panel
+            2. Navigate to 'Application Catalog > Applications' panel
         """
-        self.go_to_submenu('Application Catalog')
+        self.go_to_submenu('Applications')
         self.assertTrue(self.check_element_on_page(
             by.By.XPATH, ".//*[@id='content_body']/div[2]/h3[1]"))
 
@@ -1017,19 +1017,19 @@ class UISanityTests(UITestCase):
         environment should start after clicking 'Add to environment' button
 
         Scenario:
-            1. Navigate to 'Application Catalog' panel
+            1. Navigate to 'Application Catalog > Applications' panel
             2. Click on 'Add to environment' button for some application
             3. Create new environment
             4. Add application in created environment
         """
-        self.go_to_submenu('Application Catalog')
+        self.go_to_submenu('Applications')
         self.driver.find_element_by_link_text('Add to environment').click()
 
         self.fill_field(by.By.ID, 'id_name', 'test_033')
         self.driver.find_element_by_xpath(
             self.elements.get('button', 'InputSubmit')).click()
 
-        self.navigate_to('Deployment')
+        self.navigate_to('Application_Catalog')
         self.go_to_submenu('Environments')
         self.driver.find_element_by_link_text('test_033').click()
         self.assertTrue(
@@ -1041,11 +1041,11 @@ class UISanityTests(UITestCase):
         Test checks that information about app is available and truly.
 
         Scenario:
-            1. Navigate to 'Application Catalog' panel
+            1. Navigate to 'Application Catalog > Applications' panel
             2. Choose some application and click on 'More info'
             3. Verify info about application
         """
-        self.go_to_submenu('Application Catalog')
+        self.go_to_submenu('Applications')
         self.select_and_click_action_for_app('details', 'NAME')
 
         self.assertIn('DESCRIPTION', self.driver.page_source)
@@ -1057,12 +1057,12 @@ class UISanityTests(UITestCase):
         Test checks that 'Search' option is operable.
 
         Scenario:
-            1. Navigate to 'Application Catalog' panel
+            1. Navigate to 'Application Catalog > Applications' panel
             2. Click on 'Search' panel
             3. Type name of service that should be founded
             3. Click on 'Go' and check result
         """
-        self.go_to_submenu('Application Catalog')
+        self.go_to_submenu('Applications')
         self.driver.find_element_by_id('MuranoSearchPanelToggle').click()
         self.fill_field(by.By.XPATH, ".//*[@name='search']", 'PARAM')
         self.driver.find_element_by_xpath(
@@ -1086,8 +1086,8 @@ class UISanityTests(UITestCase):
         package_category1 = self.get_element_id('PACKAGE_CATEGORY1')
         package_category2 = self.get_element_id('PACKAGE_CATEGORY2')
 
-        self.navigate_to('Deployment')
-        self.go_to_submenu('Application Catalog')
+        self.navigate_to('Application_Catalog')
+        self.go_to_submenu('Applications')
         self.driver.find_element_by_id('MuranoCategoriesPanelToggle').click()
         self.driver.find_element_by_link_text('CATEGORY1').click()
 
@@ -1108,21 +1108,21 @@ class UISanityTests(UITestCase):
         Test checks ability to switch environment and to add app in other env
 
         Scenario:
-            1. Navigate to 'Deployment>Environments' panel
+            1. Navigate to 'Application Catalog>Environments' panel
             2. Create environment 'env1'
             3. Create environment 'env2'
-            4. Navigate to 'Deployment>Application Catalog'
+            4. Navigate to 'Application Catalog>Application Catalog'
             5. Click on 'Environment' panel
             6. Switch to env2
             7. Add application in env2
-            8. Navigate to 'Deployment>Environments' and go to the env2
+            8. Navigate to 'Application Catalog>Environments' and go to the env2
             9. Check that added application is here
         """
         self.go_to_submenu('Environments')
         self.create_environment('env1')
         self.create_environment('env2')
-        self.navigate_to('Manage')
-        self.go_to_submenu('Application Catalog')
+        self.navigate_to('Application_Catlog')
+        self.go_to_submenu('Applications')
         self.driver.find_element_by_link_text('Environment').click()
         self.driver.find_element_by_link_text('env2').click()
 
