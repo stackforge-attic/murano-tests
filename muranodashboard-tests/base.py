@@ -1,10 +1,12 @@
 import datetime
 import os
 import random
+import sys
 
 import ConfigParser
 import json
 import logging
+import requests
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 import selenium.webdriver.common.by as by
@@ -12,6 +14,7 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.support.ui import WebDriverWait
 import testtools
 import time
+import zipfile
 
 from keystoneclient.v2_0 import client as ksclient
 from muranoclient.client import Client as mclient
@@ -21,6 +24,17 @@ import config.config as cfg
 log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
 log.addHandler(logging.StreamHandler())
+
+if sys.version_info >= (2, 7):
+    class BaseDeps(testtools.TestCase):
+        pass
+else:
+    # Define asserts for python26
+    import unittest2
+
+    class BaseDeps(testtools.TestCase,
+                   unittest2.TestCase):
+        pass
 
 
 class ImageException(Exception):
@@ -34,13 +48,11 @@ class ImageException(Exception):
         return self._error_string
 
 
-class UITestCase(testtools.TestCase):
+class UITestCase(BaseDeps):
 
     @classmethod
     def setUpClass(cls):
-
         super(UITestCase, cls).setUpClass()
-
         keystone_client = ksclient.Client(username=cfg.common.user,
                                           password=cfg.common.password,
                                           tenant_name=cfg.common.tenant,
@@ -53,6 +65,8 @@ class UITestCase(testtools.TestCase):
             service_type='image', endpoint_type='publicURL')
         glance = gclient('1', endpoint=glance_endpoint,
                          token=keystone_client.auth_token)
+
+        cls.headers = {'X-Auth-Token': keystone_client.auth_token}
 
         image_list = []
         for i in glance.images.list():
@@ -68,6 +82,42 @@ class UITestCase(testtools.TestCase):
         cls.elements = ConfigParser.RawConfigParser()
         cls.elements.read('common.ini')
         cls.logger = logging.getLogger(__name__)
+
+        cls.location = os.path.realpath(
+            os.path.join(os.getcwd(), os.path.dirname(__file__)))
+
+        def archive_app(app_name):
+            __folderpath__ = os.path.join(cls.location, "{0}".format(app_name))
+            __rootlen__ = len(__folderpath__) + 1
+            with zipfile.ZipFile(os.path.join(
+                    cls.location,
+                    "{0}.zip".format(app_name)), "w") as zf:
+                for dirname, _, files in os.walk(__folderpath__):
+                    for filename in files:
+                        fn = os.path.join(dirname, filename)
+                        zf.write(fn, fn[__rootlen__:])
+
+        archive_app('PostgreSQL')
+        archive_app('AppForUploadTest')
+
+        def upload_package(package_name, body):
+
+            files = {'%s' % package_name: open(
+                os.path.join(cls.location, 'PostgreSQL.zip'), 'rb')}
+
+            post_body = {'JsonString': json.dumps(body)}
+            request_url = '{endpoint}{url}'.format(
+                endpoint=cfg.common.murano_url,
+                url='/v1/catalog/packages')
+
+            return requests.post(request_url,
+                                 files=files,
+                                 data=post_body,
+                                 headers=cls.headers).json()['id']
+
+        cls.postgre_id = upload_package(
+            'PostgreSQL',
+            {"categories": ["Web"], "tags": ["tag"]})
 
     def setUp(self):
         super(UITestCase, self).setUp()
@@ -87,6 +137,18 @@ class UITestCase(testtools.TestCase):
 
         for env in self.murano_client.environments.list():
             self.murano_client.environments.delete(env.id)
+
+    @classmethod
+    def tearDownClass(cls):
+        super(UITestCase, cls).tearDownClass()
+
+        os.remove(os.path.join(cls.location, 'PostgreSQL.zip'))
+        os.remove(os.path.join(cls.location, 'AppForUploadTest.zip'))
+
+        request_url = '{endpoint}{url}'.format(
+                endpoint=cfg.common.murano_url,
+                url='/v1/catalog/packages/{0}'.format(cls.postgre_id))
+        requests.delete(request_url, headers=cls.headers)
 
     def take_screenshot(self, test_name):
         screenshot_dir = './screenshots'
@@ -173,7 +235,7 @@ class UITestCase(testtools.TestCase):
             return False
         return True
 
-    def env_to_service(self, env_name):
+    def env_to_components_list(self, env_name):
         element_id = self.get_element_id(env_name)
         self.driver.find_element_by_id(
             "murano__row_{0}__action_show".format(element_id)).click()
@@ -364,11 +426,10 @@ class UITestCase(testtools.TestCase):
         self.driver.find_element_by_xpath(
             self.elements.get('button', 'InputSubmit')).click()
 
-    def create_postgreSQL_service(self, service_name):
+    def create_postgreSQL_service(self, app_name):
         self.driver.find_element_by_xpath(
             self.elements.get('apps', 'postgreSQL')).click()
-
-        self.fill_field(by.By.ID, 'id_0-name', service_name)
+        self.fill_field(by.By.ID, 'id_0-name', app_name)
         self.fill_field(by.By.ID, 'id_0-database', 'psql-base')
         self.fill_field(by.By.ID, 'id_0-username', 'admin')
         self.fill_field(by.By.ID, 'id_0-password', 'P@ssw0rd')
@@ -387,11 +448,24 @@ class UITestCase(testtools.TestCase):
             ".//*[@data-display='{0}']".format(el_name)).get_attribute("id")
         return path.split('__')[-1]
 
-    def delete_service(self, service_name):
-        service_id = self.get_element_id(service_name)
+    def click_to_add_to_env(self, app_name):
+        self.navigate_to('Manage')
+        self.go_to_submenu('Package Definitions')
+        app_id = self.get_element_id(app_name)
+        self.navigate_to('Application_Catalog')
+        self.go_to_submenu('Applications')
+        print self.driver.find_element_by_xpath(
+            ".//*[@href='/horizon/murano/catalog/quick-add/{0}']".
+            format(app_id)).parent
+        print self.driver.find_element_by_xpath(
+            ".//*[@href='/horizon/murano/catalog/quick-add/{0}']".
+            format(app_id)).location
+
+    def delete_component(self, component_name):
+        component_id = self.get_element_id(component_name)
         self.driver.find_element_by_id(
-            'services__row_{0}__action_delete'.format(service_id)).click()
-        self.driver.find_element_by_link_text('Delete Service').click()
+            'services__row_{0}__action_delete'.format(component_id)).click()
+        self.driver.find_element_by_link_text('Delete Component').click()
 
     def get_env_subnet(self):
         help_text = self.driver.find_element_by_xpath(

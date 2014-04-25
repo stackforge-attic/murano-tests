@@ -1,0 +1,31 @@
+Namespaces:
+  =: io.murano.apps.AppForUploadTest
+  std: io.murano
+  res: io.murano.resources
+
+
+Name: AppForUploadTest
+
+Extends: std:Application
+
+Properties:
+  name:
+    Contract: $.string().notNull()
+
+  instance:
+    Contract: $.class(res:Instance).notNull()
+
+  username:
+    Contract: $.string().notNull()
+
+  password:
+    Contract: $.string().notNull()
+
+  database:
+    Contract: $.string().notNull()
+
+Workflow:
+  deploy:
+    Body:
+      - $.instance.deploy()
+      - $resources: new('io.murano.system.Resources')
