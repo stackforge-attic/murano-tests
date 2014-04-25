@@ -94,8 +94,32 @@ class UISanityTests(UITestCase):
         self.assertFalse(self.check_element_on_page(by.By.LINK_TEXT,
                                                     'TestImageForDeletion'))
 
+    def test_005_check_image_info(self):
+        """
+        Test check ability to view image details
+
+        Scenario:
+            1. Navigate to Images page
+            2. Create test image
+            3. Click on the name of selected image, check image info
+        """
+        self.navigate_to('Manage')
+        self.go_to_submenu('Images')
+        self.driver.find_element_by_id(
+            'marked_images__action_mark_image').click()
+
+        self.select_from_list('image', 'TestImageForDeletion')
+        self.fill_field(by.By.ID, 'id_title', 'TestImage')
+        self.select_from_list('type', ' Windows Server 2012')
+
+        self.select_and_click_element('Mark')
+
+        self.driver.find_element_by_link_text('TestImageForDeletion').click()
+        self.assertIn('{"type": "windows.2012", "title": "TestImage"}',
+                      self.driver.page_source)
+
     @testtools.skip("New UI in progress")
-    def test_005_create_and_delete_demo_service(self):
+    def test_006_create_and_delete_demo_service(self):
         """
         Test check ability to create and delete demo service
 
@@ -108,22 +132,22 @@ class UISanityTests(UITestCase):
         """
         self.go_to_submenu('Environments')
         self.create_environment('test')
-        self.env_to_service('test')
+        self.env_to_components_list('test')
 
         self.driver.find_element_by_link_text('Add Application').click()
         self.create_demo_service('DemoService')
 
         self.go_to_submenu('Environments')
-        self.env_to_service('test')
+        self.env_to_components_list('test')
         self.assertTrue(self.check_element_on_page(by.By.LINK_TEXT,
                                                    'DemoService'))
 
-        self.delete_service('DemoService')
+        self.delete_component('DemoService')
         self.assertFalse(self.check_element_on_page(by.By.LINK_TEXT,
                                                     'DemoService'))
 
     @testtools.skip("New UI in progress")
-    def test_006_create_and_delete_linux_telnet(self):
+    def test_007_create_and_delete_linux_telnet(self):
         """
         Test check ability to create and delete linux telnet service
 
@@ -136,22 +160,22 @@ class UISanityTests(UITestCase):
         """
         self.go_to_submenu('Environments')
         self.create_environment('test')
-        self.env_to_service('test')
+        self.env_to_components_list('test')
 
         self.driver.find_element_by_link_text('Add Application').click()
         self.create_linux_telnet('linuxtelnet')
 
         self.go_to_submenu('Environments')
-        self.env_to_service('test')
+        self.env_to_components_list('test')
         self.assertTrue(self.check_element_on_page(by.By.LINK_TEXT,
                                                    'linuxtelnet'))
 
-        self.delete_service('linuxtelnet')
+        self.delete_component('linuxtelnet')
         self.assertFalse(self.check_element_on_page(by.By.LINK_TEXT,
                                                     'linuxtelnet'))
 
     @testtools.skip("New UI in progress")
-    def test_007_create_and_delete_linux_apache(self):
+    def test_008_create_and_delete_linux_apache(self):
         """
         Test check ability to create and delete linux apache service
 
@@ -164,22 +188,22 @@ class UISanityTests(UITestCase):
         """
         self.go_to_submenu('Environments')
         self.create_environment('test')
-        self.env_to_service('test')
+        self.env_to_components_list('test')
 
-        self.driver.find_element_by_link_text('Add Application').click()
+        self.driver.find_element_by_link_text('Add Component').click()
         self.create_linux_apache('linuxapache')
 
         self.go_to_submenu('Environments')
-        self.env_to_service('test')
+        self.env_to_components_list('test')
         self.assertTrue(self.check_element_on_page(by.By.LINK_TEXT,
                                                    'linuxapache'))
 
-        self.delete_service('linuxapache')
+        self.delete_component('linuxapache')
         self.assertFalse(self.check_element_on_page(by.By.LINK_TEXT,
                                                     'linuxapache'))
 
     @testtools.skip("New UI in progress")
-    def test_008_create_and_delete_ad_service(self):
+    def test_009_create_and_delete_ad_service(self):
         """
         Test check ability to create and delete active directory service
 
@@ -192,24 +216,24 @@ class UISanityTests(UITestCase):
         """
         self.go_to_submenu('Environments')
         self.create_environment('test')
-        self.env_to_service('test')
+        self.env_to_components_list('test')
 
-        self.driver.find_element_by_link_text('Add Application').click()
+        self.driver.find_element_by_link_text('Add Component').click()
         self.driver.find_element_by_xpath(
             self.elements.get('apps', 'AD')).click()
         self.create_ad_service('muranotest.domain')
 
         self.go_to_submenu('Environments')
-        self.env_to_service('test')
+        self.env_to_components_list('test')
         self.assertTrue(self.check_element_on_page(by.By.LINK_TEXT,
                                                    'muranotest.domain'))
 
-        self.delete_service('muranotest.domain')
+        self.delete_component('muranotest.domain')
         self.assertFalse(self.check_element_on_page(by.By.LINK_TEXT,
                                                     'muranotest.domain'))
 
     @testtools.skip("New UI in progress")
-    def test_009_create_and_delete_iis_service(self):
+    def test_010_create_and_delete_iis_service(self):
         """
         Test check ability to create and delete IIS service
 
@@ -222,21 +246,21 @@ class UISanityTests(UITestCase):
         """
         self.go_to_submenu('Environments')
         self.create_environment('test')
-        self.env_to_service('test')
+        self.env_to_components_list('test')
 
-        self.driver.find_element_by_link_text('Add Application').click()
+        self.driver.find_element_by_link_text('Add Component').click()
         self.create_iis_service('IISService')
 
         self.go_to_submenu('Environments')
-        self.env_to_service('test')
+        self.env_to_components_list('test')
         self.assertTrue(self.check_element_on_page(by.By.LINK_TEXT,
                                                    'IISService'))
-        self.delete_service('IISService')
+        self.delete_component('IISService')
         self.assertFalse(self.check_element_on_page(by.By.LINK_TEXT,
                                                     'IISService'))
 
     @testtools.skip("New UI in progress")
-    def test_010_create_and_delete_asp_service(self):
+    def test_011_create_and_delete_asp_service(self):
         """
         Test check ability to create and delete ASP.Net service
 
@@ -249,22 +273,22 @@ class UISanityTests(UITestCase):
         """
         self.go_to_submenu('Environments')
         self.create_environment('test')
-        self.env_to_service('test')
+        self.env_to_components_list('test')
 
-        self.driver.find_element_by_link_text('Add Application').click()
+        self.driver.find_element_by_link_text('Add Component').click()
         self.create_asp_service('ASPService')
 
         self.go_to_submenu('Environments')
-        self.env_to_service('test')
+        self.env_to_components_list('test')
         self.assertTrue(self.check_element_on_page(by.By.LINK_TEXT,
                                                    'ASPService'))
 
-        self.delete_service('ASPService')
+        self.delete_component('ASPService')
         self.assertFalse(self.check_element_on_page(by.By.LINK_TEXT,
                                                     'ASPService'))
 
     @testtools.skip("New UI in progress")
-    def test_011_create_and_delete_iisfarm_service(self):
+    def test_012_create_and_delete_iisfarm_service(self):
         """
         Test check ability to create and delete IIS Farm service
 
@@ -277,22 +301,22 @@ class UISanityTests(UITestCase):
         """
         self.go_to_submenu('Environments')
         self.create_environment('test')
-        self.env_to_service('test')
+        self.env_to_components_list('test')
 
-        self.driver.find_element_by_link_text('Add Application').click()
+        self.driver.find_element_by_link_text('Add Component').click()
         self.create_iisfarm_service('IISFarmService')
 
         self.go_to_submenu('Environments')
-        self.env_to_service('test')
+        self.env_to_components_list('test')
         self.assertTrue(self.check_element_on_page(by.By.LINK_TEXT,
                                                    'IISFarmService'))
 
-        self.delete_service('IISFarmService')
+        self.delete_component('IISFarmService')
         self.assertFalse(self.check_element_on_page(by.By.LINK_TEXT,
                                                     'IISFarmService'))
 
     @testtools.skip("New UI in progress")
-    def test_012_create_and_delete_aspfarm_service(self):
+    def test_013_create_and_delete_aspfarm_service(self):
         """
         Test check ability to create and delete ASP.Net Farm service
 
@@ -305,22 +329,22 @@ class UISanityTests(UITestCase):
         """
         self.go_to_submenu('Environments')
         self.create_environment('test')
-        self.env_to_service('test')
+        self.env_to_components_list('test')
 
-        self.driver.find_element_by_link_text('Add Application').click()
+        self.driver.find_element_by_link_text('Add Component').click()
         self.create_aspfarm_service('ASPFarmService')
 
         self.go_to_submenu('Environments')
-        self.env_to_service('test')
+        self.env_to_components_list('test')
         self.assertTrue(self.check_element_on_page(by.By.LINK_TEXT,
                                                    'ASPFarmService'))
 
-        self.delete_service('ASPFarmService')
+        self.delete_component('ASPFarmService')
         self.assertFalse(self.check_element_on_page(by.By.LINK_TEXT,
                                                     'ASPFarmService'))
 
     @testtools.skip("New UI in progress")
-    def test_013_create_and_delete_mssql_service(self):
+    def test_014_create_and_delete_mssql_service(self):
         """
         Test check ability to create and delete MSSQL service
 
@@ -333,22 +357,22 @@ class UISanityTests(UITestCase):
         """
         self.go_to_submenu('Environments')
         self.create_environment('test')
-        self.env_to_service('test')
+        self.env_to_components_list('test')
 
-        self.driver.find_element_by_link_text('Add Application').click()
+        self.driver.find_element_by_link_text('Add Component').click()
         self.create_mssql_service('MSSQLService')
 
         self.go_to_submenu('Environments')
-        self.env_to_service('test')
+        self.env_to_components_list('test')
         self.assertTrue(self.check_element_on_page(by.By.LINK_TEXT,
                                                    'MSSQLService'))
 
-        self.delete_service('MSSQLService')
+        self.delete_component('MSSQLService')
         self.assertFalse(self.check_element_on_page(by.By.LINK_TEXT,
                                                     'MSSQLService'))
 
     @testtools.skip("New UI in progress")
-    def test_014_create_and_delete_sql_cluster_service(self):
+    def test_015_create_and_delete_sql_cluster_service(self):
         """
         Test check ability to create and delete MSSQL cluster service
 
@@ -361,9 +385,9 @@ class UISanityTests(UITestCase):
         """
         self.go_to_submenu('Environments')
         self.create_environment('test')
-        self.env_to_service('test')
+        self.env_to_components_list('test')
 
-        self.driver.find_element_by_link_text('Add Application').click()
+        self.driver.find_element_by_link_text('Add Component').click()
         self.create_ad_service('activeDirectory.mssql')
         self.assertTrue(self.check_element_on_page(by.By.LINK_TEXT,
                                                    'activeDirectory.mssql'))
@@ -373,12 +397,12 @@ class UISanityTests(UITestCase):
         self.assertTrue(self.check_element_on_page(by.By.LINK_TEXT,
                                                    'SQLCluster'))
 
-        self.delete_service('SQLCluster')
+        self.delete_component('SQLCluster')
         self.assertFalse(self.check_element_on_page(by.By.LINK_TEXT,
                                                     'SQLCluster'))
 
     @testtools.skip("New UI in progress")
-    def test_015_create_and_delete_tomcat_service(self):
+    def test_016_create_and_delete_tomcat_service(self):
         """
         Test check ability to create and delete tomcat service
 
@@ -391,9 +415,9 @@ class UISanityTests(UITestCase):
         """
         self.go_to_submenu('Environments')
         self.create_environment('test')
-        self.env_to_service('test')
+        self.env_to_components_list('test')
 
-        self.driver.find_element_by_link_text('Add Application').click()
+        self.driver.find_element_by_link_text('Add Component').click()
         self.create_postgreSQL_service('posrgreSQL')
         self.assertTrue(self.check_element_on_page(by.By.LINK_TEXT,
                                                    'posrgreSQL'))
@@ -403,12 +427,12 @@ class UISanityTests(UITestCase):
         self.assertTrue(self.check_element_on_page(by.By.LINK_TEXT,
                                                    'tomcat-serv'))
 
-        self.delete_service('tomcat-serv')
+        self.delete_component('tomcat-serv')
         self.assertFalse(self.check_element_on_page(by.By.LINK_TEXT,
                                                     'tomcat-serv'))
 
     @testtools.skip("New UI in progress")
-    def test_016_create_and_delete_postgreSQL_service(self):
+    def test_017_create_and_delete_postgreSQL_service(self):
         """
         Test check ability to create and delete postgreSQL service
 
@@ -421,19 +445,19 @@ class UISanityTests(UITestCase):
         """
         self.go_to_submenu('Environments')
         self.create_environment('test')
-        self.env_to_service('test')
+        self.env_to_components_list('test')
 
-        self.driver.find_element_by_link_text('Add Application').click()
-        self.create_postgreSQL_service('postgreSQL-serv')
+        self.driver.find_element_by_link_text('Add Component').click()
+        self.create_postgreSQL_service('PostgreSQL')
         self.assertTrue(self.check_element_on_page(by.By.LINK_TEXT,
-                                                   'postgreSQL-serv'))
+                                                   'PostgreSQL'))
 
-        self.delete_service('postgreSQL-serv')
+        self.delete_component('PostgreSQL')
         self.assertFalse(self.check_element_on_page(by.By.LINK_TEXT,
-                                                    'postgreSQL-serv'))
+                                                    'PostgreSQL'))
 
     @testtools.skip("New UI in progress")
-    def test_017_check_regex_expression_for_ad_name(self):
+    def test_018_check_regex_expression_for_ad_name(self):
         """
         Test check that validation of domain name field work and appropriate
         error message is appeared after entering incorrect domain name
@@ -461,9 +485,9 @@ class UISanityTests(UITestCase):
         """
         self.go_to_submenu('Environments')
         self.create_environment('test')
-        self.env_to_service('test')
+        self.env_to_components_list('test')
 
-        self.driver.find_element_by_link_text('Add Application').click()
+        self.driver.find_element_by_link_text('Add Component').click()
         self.driver.find_element_by_xpath(
             self.elements.get('apps', 'AD')).click()
 
@@ -514,7 +538,7 @@ class UISanityTests(UITestCase):
             'they are used to delimit the components of domain style names', 1))
 
     @testtools.skip("New UI in progress")
-    def test_018_check_regex_expression_for_iis_name(self):
+    def test_019_check_regex_expression_for_iis_name(self):
         """
         Test check that validation of iis name field work and appropriate
         error message is appeared after entering incorrect name
@@ -531,9 +555,9 @@ class UISanityTests(UITestCase):
         """
         self.go_to_submenu('Environments')
         self.create_environment('test')
-        self.env_to_service('test')
+        self.env_to_components_list('test')
 
-        self.driver.find_element_by_link_text('Add Application').click()
+        self.driver.find_element_by_link_text('Add Component').click()
         self.driver.find_element_by_xpath(
             self.elements.get('apps', 'IIS')).click()
 
@@ -554,7 +578,7 @@ class UISanityTests(UITestCase):
             'Just letters, numbers, underscores and hyphens are allowed.', 1))
 
     @testtools.skip("New UI in progress")
-    def test_019_check_regex_expression_for_git_repo_field(self):
+    def test_020_check_regex_expression_for_git_repo_field(self):
         """
         Test check that validation of git repository field work and appropriate
         error message is appeared after entering incorrect url
@@ -567,9 +591,9 @@ class UISanityTests(UITestCase):
         """
         self.go_to_submenu('Environments')
         self.create_environment('test')
-        self.env_to_service('test')
+        self.env_to_components_list('test')
 
-        self.driver.find_element_by_link_text('Add Application').click()
+        self.driver.find_element_by_link_text('Add Component').click()
         self.driver.find_element_by_xpath(
             self.elements.get('apps', 'ASP')).click()
 
@@ -582,7 +606,7 @@ class UISanityTests(UITestCase):
             'Enter correct git repository url', 4))
 
     @testtools.skip("New UI in progress")
-    def test_020_check_validation_for_hostname_template_field(self):
+    def test_021_check_validation_for_hostname_template_field(self):
         """
         Test check that validation of hostname template field work and
         appropriate error message is appeared after entering incorrect name
@@ -596,9 +620,9 @@ class UISanityTests(UITestCase):
         """
         self.go_to_submenu('Environments')
         self.create_environment('test')
-        self.env_to_service('test')
+        self.env_to_components_list('test')
 
-        self.driver.find_element_by_link_text('Add Application').click()
+        self.driver.find_element_by_link_text('Add Component').click()
         self.driver.find_element_by_xpath(
             self.elements.get('apps', 'Demo')).click()
 
@@ -619,7 +643,7 @@ class UISanityTests(UITestCase):
             by.By.ID, '1-osImage').is_displayed())
 
     @testtools.skip("New UI in progress")
-    def test_021_check_bool_field_validation(self):
+    def test_022_check_bool_field_validation(self):
         """
         Test check that validation of bool field work
 
@@ -632,7 +656,7 @@ class UISanityTests(UITestCase):
         """
         self.go_to_submenu('Environments')
         self.create_environment('test')
-        self.env_to_service('test')
+        self.env_to_components_list('test')
 
         self.driver.find_element_by_id('services__action_CreateService').click()
 
@@ -679,7 +703,7 @@ class UISanityTests(UITestCase):
             'This field is required.', 1))
 
     @testtools.skip("New UI in progress")
-    def test_022_positive_scenario_1_for_the_MS_SQL_Cluster_Form(self):
+    def test_023_positive_scenario_1_for_the_MS_SQL_Cluster_Form(self):
         """
         Test check one possible scenario of creation mssql cluster
 
@@ -691,7 +715,7 @@ class UISanityTests(UITestCase):
         """
         self.go_to_submenu('Environments')
         self.create_environment('scenario_1')
-        self.env_to_service('scenario_1')
+        self.env_to_components_list('scenario_1')
 
         self.create_ad_service('activeDirectory.mssql')
         self.assertTrue(self.check_element_on_page(by.By.LINK_TEXT,
@@ -725,7 +749,7 @@ class UISanityTests(UITestCase):
             by.By.ID, 'id_msSqlClusterServer-1-clusterIp'))
 
     @testtools.skip("New UI in progress")
-    def test_023_positive_scenario_2_for_the_MS_SQL_Cluster_Form(self):
+    def test_024_positive_scenario_2_for_the_MS_SQL_Cluster_Form(self):
         """
         Test check one possible scenario of creation mssql cluster
 
@@ -738,7 +762,7 @@ class UISanityTests(UITestCase):
         """
         self.go_to_submenu('Environments')
         self.create_environment('scenario_2')
-        self.env_to_service('scenario_2')
+        self.env_to_components_list('scenario_2')
 
         self.driver.find_element_by_link_text('Create Service').click()
 
@@ -777,7 +801,7 @@ class UISanityTests(UITestCase):
             by.By.ID, 'id_msSqlClusterServer-1-clusterIp'))
 
     @testtools.skip("New UI in progress")
-    def test_024_positive_scenario_3_for_the_MS_SQL_Cluster_Form(self):
+    def test_025_positive_scenario_3_for_the_MS_SQL_Cluster_Form(self):
         """
         Test check one possible scenario of creation mssql cluster
 
@@ -789,7 +813,7 @@ class UISanityTests(UITestCase):
         """
         self.go_to_submenu('Environments')
         self.create_environment('scenario_3')
-        self.env_to_service('scenario_3')
+        self.env_to_components_list('scenario_3')
 
         self.driver.find_element_by_link_text('Create Service').click()
 
@@ -830,8 +854,7 @@ class UISanityTests(UITestCase):
         self.assertTrue(self.check_element_on_page(
             by.By.ID, 'id_msSqlClusterServer-1-clusterIp'))
 
-    @testtools.skip("There are no default packages in Murano")
-    def test_025_modify_package_name(self):
+    def test_026_modify_package_name(self):
         """
         Test check ability to change name of the package
 
@@ -842,26 +865,25 @@ class UISanityTests(UITestCase):
         """
         self.navigate_to('Manage')
         self.go_to_submenu('Package Definitions')
-        self.select_action_for_package('NAME',
+        self.select_action_for_package('PostgreSQL',
                                        'modify_package')
-        self.fill_field(by.By.ID, 'id_name', 'NAME-modified')
+        self.fill_field(by.By.ID, 'id_name', 'PostgreSQL-modified')
         self.driver.find_element_by_xpath(
             self.elements.get('button', 'InputSubmit')).click()
 
         self.assertTrue(self.check_element_on_page(
-            by.By.XPATH, './/*[@data-display="NAME-modified"]'))
+            by.By.XPATH, './/*[@data-display="PostgreSQL-modified"]'))
 
-        self.select_action_for_package('NAME-modified',
+        self.select_action_for_package('PostgreSQL-modified',
                                        'modify_package')
-        self.fill_field(by.By.ID, 'id_name', 'NAME')
+        self.fill_field(by.By.ID, 'id_name', 'PostgreSQL')
         self.driver.find_element_by_xpath(
             self.elements.get('button', 'InputSubmit')).click()
 
         self.assertTrue(self.check_element_on_page(
-            by.By.XPATH, './/*[@data-display="NAME"]'))
+            by.By.XPATH, './/*[@data-display="PostgreSQL"]'))
 
-    @testtools.skip("There are no default packages in Murano")
-    def test_026_modify_description(self):
+    def test_027_modify_description(self):
         """
         Test check ability to change description of the package
 
@@ -872,7 +894,7 @@ class UISanityTests(UITestCase):
         """
         self.navigate_to('Manage')
         self.go_to_submenu('Package Definitions')
-        self.select_action_for_package('NAME',
+        self.select_action_for_package('PostgreSQL',
                                        'modify_package')
 
         self.fill_field(by.By.ID, 'id_description', 'New Description')
@@ -883,11 +905,10 @@ class UISanityTests(UITestCase):
         self.go_to_submenu('Applications')
 
         self.check_element_on_page(
-            "XPATH_OF_NAME",
+            ".//*[@class='app-description']",
             'New Description')
 
-    @testtools.skip("There are no default packages in Murano")
-    def test_027_modify_package_add_tag(self):
+    def test_028_modify_package_add_tag(self):
         """
         Test check ability to add file in composed service
 
@@ -898,39 +919,38 @@ class UISanityTests(UITestCase):
         """
         self.navigate_to('Manage')
         self.go_to_submenu('Package Definitions')
-        self.select_action_for_package('NAME',
+        self.select_action_for_package('PostgreSQL',
                                        'modify_package')
 
         self.fill_field(by.By.ID, 'id_tags', 'TEST_TAG')
         self.driver.find_element_by_xpath(
             self.elements.get('button', 'InputSubmit')).click()
 
-        app_id = self.get_element_id('NAME')
+        app_id = self.get_element_id('PostgreSQL')
 
         self.navigate_to('Application_Catalog')
         self.go_to_submenu('Applications')
         self.select_and_click_action_for_app('details', app_id)
         self.check_element_on_page(
-            'XPATH_OF_AREA',
+            ".//*[@id='content_body']/div[2]/div/div/div[2]/div[2]/ul/li[6]",
             'TEST_TAG')
 
-    @testtools.skip("There are no default packages in Murano")
-    def test_028_download_package(self):
+    def test_029_download_package(self):
         """
-        Test check ability to download service from repository
+        Test check ability to download package from repository
 
         Scenario:
             1. Navigate to 'Package Definitions' page
-            2. Select Demo service and click on "More>Download"
+            2. Select PostgreSQL package and click on "More>Download Package"
         """
         self.navigate_to('Manage')
         self.go_to_submenu('Package Definitions')
 
-        self.select_action_for_package('demoService', 'more')
-        self.select_action_for_package('demoService', 'download_service')
+        self.select_action_for_package('PostgreSQL', 'more')
+        self.select_action_for_package('PostgreSQL', 'download_package')
 
-    @testtools.skip("There are no default packages in Murano")
-    def test_029_upload_package_add_to_env(self):
+    @testtools.skip("Work in progress")
+    def test_030_upload_package_add_to_env(self):
         """
         Test check ability to upload package to repository
 
@@ -943,16 +963,15 @@ class UISanityTests(UITestCase):
         self.go_to_submenu('Package Definitions')
 
         self.click_on_package_action('upload_package')
-        self.choose_and_upload_files('PACKAGE.zip')
-        self.select_from_list('categories', 'CATEGORY')
+        self.choose_and_upload_files('AppForUploadTest.zip')
+        self.select_from_list('categories', 'Web')
         self.driver.find_element_by_xpath(
             self.elements.get('button', 'InputSubmit')).click()
 
         self.assertTrue(self.check_element_on_page(
-            by.By.XPATH, './/*[@data-display="PACKAGE_NAME"]'))
+            by.By.XPATH, './/*[@data-display="AppForUploadTest"]'))
 
-    @testtools.skip("There are no default packages in Murano")
-    def test_030_check_opportunity_to_toggle_service(self):
+    def test_031_check_opportunity_to_toggle_package(self):
         """
         Test check ability to make package active or inactive
 
@@ -966,18 +985,19 @@ class UISanityTests(UITestCase):
         self.navigate_to('Manage')
         self.go_to_submenu('Package Definitions')
 
-        self.select_action_for_package('NAME', 'more')
-        self.select_action_for_package('NAME', 'toggle_enabled')
+        self.select_action_for_package('PostgreSQL', 'more')
+        self.select_action_for_package('PostgreSQL', 'toggle_enabled')
 
-        self.assertTrue(self.check_package_parameter('NAME', '3', 'False'))
+        self.assertTrue(self.check_package_parameter(
+            'PostgreSQL', '3', 'False'))
 
-        self.select_action_for_package('NAME', 'more')
-        self.select_action_for_package('NAME', 'toggle_enabled')
+        self.select_action_for_package('PostgreSQL', 'more')
+        self.select_action_for_package('PostgreSQL', 'toggle_enabled')
 
-        self.assertTrue(self.check_package_parameter('NAME', '3', 'True'))
+        self.assertTrue(self.check_package_parameter(
+            'PostgreSQL', '3', 'True'))
 
-    @testtools.skip("There are no default packages in Murano")
-    def test_031_check_opportunity_to_delete_package(self):
+    def test_032_check_opportunity_to_delete_package(self):
         """
         Test check ability to delete package from database
 
@@ -989,15 +1009,15 @@ class UISanityTests(UITestCase):
         self.navigate_to('Manage')
         self.go_to_submenu('Package Definitions')
 
-        package = self.get_element_id('NAME')
+        package = self.get_element_id('PostgreSQL')
         self.select_and_click_element(package)
 
         self.click_on_package_action('delete_package')
         self.confirm_deletion()
         self.assertFalse(self.check_element_on_page(
-            by.By.XPATH, './/*[@data-display="NAME"]'))
+            by.By.XPATH, './/*[@data-display="PostgreSQL"]'))
 
-    def test_032_check_application_catalog_panel(self):
+    def test_033_check_application_catalog_panel(self):
         """
         Test checks that 'Applications' panel is operable
 
@@ -1007,10 +1027,10 @@ class UISanityTests(UITestCase):
         """
         self.go_to_submenu('Applications')
         self.assertTrue(self.check_element_on_page(
-            by.By.XPATH, ".//*[@id='content_body']/div[2]/h3[1]"))
+            by.By.XPATH, ".//*[@id='content_body']/div[1]/h2"))
 
     @testtools.skip("There are no default apps in Murano")
-    def test_033_env_creation_form_app_catalog_page(self):
+    def test_034_env_creation_form_app_catalog_page(self):
         """
         Test checks that app's option 'Add to environment' is operable
         when there is no previously created env. In this case creation of the
@@ -1035,8 +1055,7 @@ class UISanityTests(UITestCase):
         self.assertTrue(
             self.driver.find_element_by_id('services__action_AddApplication'))
 
-    @testtools.skip("There are no default apps in Murano")
-    def test_034_check_info_about_app(self):
+    def test_035_check_info_about_app(self):
         """
         Test checks that information about app is available and truly.
 
@@ -1046,13 +1065,13 @@ class UISanityTests(UITestCase):
             3. Verify info about application
         """
         self.go_to_submenu('Applications')
-        self.select_and_click_action_for_app('details', 'NAME')
+        self.select_and_click_action_for_app('details', 'PostgreSQL')
 
-        self.assertIn('DESCRIPTION', self.driver.page_source)
+        self.assertIn('PostgreSQL is a powerful', self.driver.page_source)
         self.driver.find_element_by_link_text('Requirements').click()
         self.driver.find_element_by_link_text('License').click()
 
-    def test_035_check_search_option(self):
+    def test_036_check_search_option(self):
         """
         Test checks that 'Search' option is operable.
 
@@ -1069,7 +1088,7 @@ class UISanityTests(UITestCase):
             ".//*[@id='MuranoSearchPanel']/form/button").click()
 
     @testtools.skip("There are no default apps in Murano")
-    def test_036_filter_by_category(self):
+    def test_037_filter_by_category(self):
         """
         Test checks ability to filter applications by category
         in Application Catalog page
@@ -1103,7 +1122,7 @@ class UISanityTests(UITestCase):
             format(package_category2)))
 
     @testtools.skip("There are no default apps in Murano")
-    def test_037_check_option_switch_env(self):
+    def test_038_check_option_switch_env(self):
         """
         Test checks ability to switch environment and to add app in other env
 
@@ -1121,15 +1140,26 @@ class UISanityTests(UITestCase):
         self.go_to_submenu('Environments')
         self.create_environment('env1')
         self.create_environment('env2')
-        self.navigate_to('Application_Catalog')
         self.go_to_submenu('Applications')
         self.driver.find_element_by_link_text('Environment').click()
         self.driver.find_element_by_link_text('env2').click()
 
-        self.select_and_click_action_for_app('add', 'NAME')
+        self.select_and_click_action_for_app('add', 'PostgreSQL')
         self.create_iis_service('IISService')
 
         self.go_to_submenu('Environments')
-        self.env_to_service('env2')
+        self.env_to_components_list('env2')
         self.assertTrue(self.check_element_on_page(by.By.LINK_TEXT,
-                                                   'IISService'))
+                                                   'PostgreSQL'))
+
+    @testtools.skip("Wait for https://review.openstack.org/#/c/90249/")
+    def test_039_check_statistics_panel(self):
+        """
+        Test checks that 'Statictics' panel is operable
+
+        Scenario:
+            1. Navigate to 'Application Catalog > Statistics' panel
+        """
+        self.go_to_submenu('Statistics')
+        self.driver.find_element_by_link_text('Murano Engine Servers').click()
+        self.driver.find_element_by_link_text('Murano API Servers').click()

@@ -1,0 +1,10 @@
+Format: 1.0
+Type: Application
+FullName: io.murano.apps.AppForUploadTest
+Name: AppForUploadTest
+Description: |
+ This is test package.
+Author: 'Mirantis, Inc'
+Tags: [test_tag]
+Classes:
+ io.murano.apps.AppForUploadTest: AppForUploadTest.yaml
