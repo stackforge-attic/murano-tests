@@ -122,9 +122,7 @@ class UITestCase(BaseDeps):
     def setUp(self):
         super(UITestCase, self).setUp()
 
-        self.driver = webdriver.Remote(
-            command_executor=cfg.common.selenium_server,
-            desired_capabilities=DesiredCapabilities.FIREFOX)
+        self.driver = webdriver.Firefox()
 
         self.driver.get(cfg.common.horizon_url + '/')
         self.driver.implicitly_wait(30)
