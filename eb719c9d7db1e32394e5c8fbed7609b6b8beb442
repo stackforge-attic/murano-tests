@@ -1,0 +1,13 @@
+Verified+2: Jenkins
+Code-Review+1: Timur Nurlygayanov <tnurlygayanov@mirantis.com>
+Code-Review+1: Ekaterina Fedorova <efedorova@mirantis.com>
+Code-Review+1: Sergey Kolekonov <skolekonov@mirantis.com>
+Code-Review+2: Timur Sufiev <tsufiev@mirantis.com>
+Code-Review+2: Alexander Tivelkov <ativelkov@mirantis.com>
+Workflow+1: Alexander Tivelkov <ativelkov@mirantis.com>
+Code-Review+1: Sergey Murashov <smurashov@mirantis.com>
+Submitted-by: Jenkins
+Submitted-at: Tue, 29 Apr 2014 14:09:54 +0000
+Reviewed-on: https://review.openstack.org/90986
+Project: stackforge/murano-tests
+Branch: refs/heads/master
