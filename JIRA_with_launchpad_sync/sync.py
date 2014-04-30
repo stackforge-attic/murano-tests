@@ -16,13 +16,20 @@
 import re
 import sys
 import httplib2
+import os
 import ConfigParser
 from dateutil import parser
 from jira.client import JIRA
 from launchpadlib.launchpad import Launchpad
+from launchpadlib.launchpad import uris
 
 
 httplib2.debuglevel = 0
+
+lp_cache_dir = os.path.expanduser(
+    os.environ.get('LAUNCHPAD_CACHE_DIR', '~/.launchpadlib/cache'))
+lp_creds_filename = os.path.expanduser(
+    os.environ.get('LAUNCHPAD_CREDS_FILENAME', '~/.launchpadlib/creds'))
 
 
 def update_status_of_jira_issue(jira, issue, new_status):
@@ -134,7 +141,10 @@ def get_jira_bugs(url, user, password, project,
 
 def get_launchpad_bugs(project):
     project = project.lower()
-    launchpad = Launchpad.login_with(project, 'production')
+    launchpad = Launchpad.login_with(project.lower(),
+                                     uris.LPNET_SERVICE_ROOT,
+                                     lp_cache_dir,
+                                     credentials_file=lp_creds_filename)
     project = launchpad.projects[project]
     launchpad_bugs = project.searchTasks(status=["New", "Fix Committed",
                                                  "Invalid", "Won't Fix",
@@ -262,7 +272,10 @@ def sync_jira_with_launchpad(url, user, password, project, project_key):
     launchpad_bugs = get_launchpad_bugs(project)
 
     jira = JIRA(basic_auth=(user, password), options={'server': url})
-    launchpad = Launchpad.login_with(project, 'production')
+    launchpad = Launchpad.login_with(project.lower(),
+                                     uris.LPNET_SERVICE_ROOT,
+                                     lp_cache_dir,
+                                     credentials_file=lp_creds_filename)
 
     # Sync already created tasks
     for Jbug in jira_bugs:
