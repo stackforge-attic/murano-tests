@@ -135,7 +135,7 @@ class UITestCase(BaseDeps):
 
         for env in self.murano_client.environments.list():
             self.murano_client.environments.delete(env.id)
-
+        
     @classmethod
     def tearDownClass(cls):
         super(UITestCase, cls).tearDownClass()
@@ -574,4 +574,11 @@ class UITestCase(BaseDeps):
 
     def select_and_click_action_for_app(self, action, app):
         self.driver.find_element_by_xpath(
-            "//*[@href='/murano/catalog/{0}/{1}']".format(action, app)).click()
+            "//*[@href='/horizon/murano/catalog/{0}/{1}']"
+            .format(action, app)).click()
+
+    def modify_package(self, param, value):
+        self.fill_field(by.By.ID, 'id_{0}'.format(param), value)
+        self.driver.find_element_by_xpath(
+            self.elements.get('button', 'InputSubmit')).click()
+        self.driver.refresh()
