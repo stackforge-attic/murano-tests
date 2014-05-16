@@ -883,7 +883,7 @@ class UISanityTests(UITestCase):
         self.assertTrue(self.check_element_on_page(
             by.By.XPATH, './/*[@data-display="PostgreSQL"]'))
 
-    def test_027_modify_description(self):
+    def test_041_modify_description(self):
         """
         Test check ability to change description of the package
 
@@ -897,13 +897,10 @@ class UISanityTests(UITestCase):
         self.select_action_for_package('PostgreSQL',
                                        'modify_package')
 
-        self.fill_field(by.By.ID, 'id_description', 'New Description')
-        self.driver.find_element_by_xpath(
-            self.elements.get('button', 'InputSubmit')).click()
+        self.modify_package('description', 'New Description')
 
         self.navigate_to('Application_Catalog')
         self.go_to_submenu('Applications')
-
         self.check_element_on_page(
             ".//*[@class='app-description']",
             'New Description')
@@ -923,8 +920,7 @@ class UISanityTests(UITestCase):
                                        'modify_package')
 
         self.fill_field(by.By.ID, 'id_tags', 'TEST_TAG')
-        self.driver.find_element_by_xpath(
-            self.elements.get('button', 'InputSubmit')).click()
+        self.modify_package('tags', 'TEST_TAG')
 
         app_id = self.get_element_id('PostgreSQL')
 
@@ -997,7 +993,7 @@ class UISanityTests(UITestCase):
         self.assertTrue(self.check_package_parameter(
             'PostgreSQL', '3', 'True'))
 
-    def test_032_check_opportunity_to_delete_package(self):
+    def test_040_check_opportunity_to_delete_package(self):
         """
         Test check ability to delete package from database
 
@@ -1064,8 +1060,14 @@ class UISanityTests(UITestCase):
             2. Choose some application and click on 'More info'
             3. Verify info about application
         """
+        self.navigate_to('Manage')
+        self.go_to_submenu('Package Definitions')
+
+        app_id = self.get_element_id('PostgreSQL')
+
+        self.navigate_to('Application_Catalog')
         self.go_to_submenu('Applications')
-        self.select_and_click_action_for_app('details', 'PostgreSQL')
+        self.select_and_click_action_for_app('details', app_id)
 
         self.assertIn('PostgreSQL is a powerful', self.driver.page_source)
         self.driver.find_element_by_link_text('Requirements').click()
@@ -1152,7 +1154,6 @@ class UISanityTests(UITestCase):
         self.assertTrue(self.check_element_on_page(by.By.LINK_TEXT,
                                                    'PostgreSQL'))
 
-    @testtools.skip("Wait for https://review.openstack.org/#/c/90249/")
     def test_039_check_statistics_panel(self):
         """
         Test checks that 'Statictics' panel is operable
@@ -1161,5 +1162,6 @@ class UISanityTests(UITestCase):
             1. Navigate to 'Application Catalog > Statistics' panel
         """
         self.go_to_submenu('Statistics')
-        self.driver.find_element_by_link_text('Murano Engine Servers').click()
         self.driver.find_element_by_link_text('Murano API Servers').click()
+        self.driver.find_element_by_link_text(
+            'Murano Instance Statistics').click()
