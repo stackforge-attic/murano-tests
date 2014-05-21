@@ -10,11 +10,9 @@ import requests
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 import selenium.webdriver.common.by as by
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.support.ui import WebDriverWait
 import testtools
 import time
-import zipfile
 
 from keystoneclient.v2_0 import client as ksclient
 from muranoclient.client import Client as mclient
@@ -86,24 +84,11 @@ class UITestCase(BaseDeps):
         cls.location = os.path.realpath(
             os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
-        def archive_app(app_name):
-            __folderpath__ = os.path.join(cls.location, "{0}".format(app_name))
-            __rootlen__ = len(__folderpath__) + 1
-            with zipfile.ZipFile(os.path.join(
-                    cls.location,
-                    "{0}.zip".format(app_name)), "w") as zf:
-                for dirname, _, files in os.walk(__folderpath__):
-                    for filename in files:
-                        fn = os.path.join(dirname, filename)
-                        zf.write(fn, fn[__rootlen__:])
 
-        archive_app('PostgreSQL')
-        archive_app('AppForUploadTest')
-
-        def upload_package(package_name, body):
+        def upload_package(package_name, body, app):
 
             files = {'%s' % package_name: open(
-                os.path.join(cls.location, 'PostgreSQL.zip'), 'rb')}
+                os.path.join(cls.location, app), 'rb')}
 
             post_body = {'JsonString': json.dumps(body)}
             request_url = '{endpoint}{url}'.format(
@@ -117,7 +102,24 @@ class UITestCase(BaseDeps):
 
         cls.postgre_id = upload_package(
             'PostgreSQL',
-            {"categories": ["Web"], "tags": ["tag"]})
+            {"categories": ["Databases"], "tags": ["tag"]},
+            'murano-app-incubator/io.murano.apps.PostgreSql.zip')
+        cls.apache_id = upload_package(
+            'Apache',
+            {"categories": ["Application Servers"], "tags": ["tag"]},
+            'murano-app-incubator/io.murano.apps.apache.Apache.zip')
+        cls.tomcat_id = upload_package(
+            'Tomcat',
+            {"categories": ["Application Servers"], "tags": ["tag"]},
+            'murano-app-incubator/io.murano.apps.apache.Tomcat.zip')
+        cls.telnet_id = upload_package(
+            'Telnet',
+            {"categories": ["Web"], "tags": ["tag"]},
+            'murano-app-incubator/io.murano.apps.linux.Telnet.zip')
+        cls.ad_id = upload_package(
+            'Active Directory',
+            {"categories": ["Microsoft Services"], "tags": ["tag"]},
+            'murano-app-incubator/io.murano.windows.ActiveDirectory.zip')
 
     def setUp(self):
         super(UITestCase, self).setUp()
@@ -140,13 +142,17 @@ class UITestCase(BaseDeps):
     def tearDownClass(cls):
         super(UITestCase, cls).tearDownClass()
 
-        os.remove(os.path.join(cls.location, 'PostgreSQL.zip'))
-        os.remove(os.path.join(cls.location, 'AppForUploadTest.zip'))
+        def delete_package(package_id):
+            request_url = '{endpoint}{url}'.format(
+                    endpoint=cfg.common.murano_url,
+                    url='/v1/catalog/packages/{0}'.format(package_id))
+            requests.delete(request_url, headers=cls.headers)
 
-        request_url = '{endpoint}{url}'.format(
-                endpoint=cfg.common.murano_url,
-                url='/v1/catalog/packages/{0}'.format(cls.postgre_id))
-        requests.delete(request_url, headers=cls.headers)
+        delete_package(cls.postgre_id)
+        delete_package(cls.apache_id)
+        delete_package(cls.tomcat_id)
+        delete_package(cls.telnet_id)
+        delete_package(cls.ad_id)
 
     def take_screenshot(self, test_name):
         screenshot_dir = './screenshots'
@@ -238,11 +244,11 @@ class UITestCase(BaseDeps):
         self.driver.find_element_by_id(
             "murano__row_{0}__action_show".format(element_id)).click()
 
-    def create_demo_service(self, service_name):
+    def create_demo_service(self, app_name):
         self.driver.find_element_by_xpath(
             self.elements.get('apps', 'Demo')).click()
 
-        self.fill_field(by.By.ID, 'id_0-name', service_name)
+        self.fill_field(by.By.ID, 'id_0-name', app_name)
         self.driver.find_element_by_xpath(
             self.elements.get('button', 'ButtonSubmit')).click()
 
@@ -250,33 +256,29 @@ class UITestCase(BaseDeps):
         self.driver.find_element_by_xpath(
             self.elements.get('button', 'ButtonSubmit')).click()
 
-    def create_linux_telnet(self, service_name):
-        self.driver.find_element_by_xpath(
-            self.elements.get('apps', 'Telnet')).click()
+    def create_linux_telnet(self, app_name, app_id):
+        self.select_and_click_action_for_app('quick-add', app_id)
 
-        self.fill_field(by.By.ID, 'id_0-name', service_name)
+        self.fill_field(by.By.ID, 'id_0-name', app_name)
         self.driver.find_element_by_xpath(
             self.elements.get('button', 'ButtonSubmit')).click()
 
         self.select_from_list('1-osImage', self.linux_image)
-        self.select_from_list('1-keyPair', self.keypair)
         self.driver.find_element_by_xpath(
             self.elements.get('button', 'InputSubmit')).click()
 
-    def create_linux_apache(self, service_name):
-        self.driver.find_element_by_xpath(
-            self.elements.get('apps', 'Apache')).click()
+    def create_linux_apache(self, app_name, app_id):
+        self.select_and_click_action_for_app('quick-add', app_id)
 
-        self.fill_field(by.By.ID, 'id_0-name', service_name)
+        self.fill_field(by.By.ID, 'id_0-name', app_name)
         self.driver.find_element_by_xpath(
             self.elements.get('button', 'ButtonSubmit')).click()
         self.select_from_list('1-osImage', self.linux_image)
-        self.select_from_list('1-keyPair', self.keypair)
         self.driver.find_element_by_xpath(
             self.elements.get('button', 'InputSubmit')).click()
 
-    def create_ad_service(self, service_name):
-        self.fill_field(by.By.ID, 'id_0-name', service_name)
+    def create_ad_service(self, app_name):
+        self.fill_field(by.By.ID, 'id_0-name', app_name)
         self.fill_field(by.By.ID, 'id_0-adminPassword', 'P@ssw0rd')
         self.fill_field(by.By.ID, 'id_0-adminPassword-clone', 'P@ssw0rd')
         self.fill_field(by.By.ID, 'id_0-recoveryPassword', 'P@ssw0rd')
@@ -288,11 +290,11 @@ class UITestCase(BaseDeps):
         next_button = self.elements.get('button', 'InputSubmit')
         self.driver.find_element_by_xpath(next_button).click()
 
-    def create_iis_service(self, service_name):
+    def create_iis_service(self, app_name):
         self.driver.find_element_by_xpath(
             self.elements.get('apps', 'IIS')).click()
 
-        self.fill_field(by.By.ID, 'id_0-name', service_name)
+        self.fill_field(by.By.ID, 'id_0-name', app_name)
         self.fill_field(by.By.ID, 'id_0-adminPassword', 'P@ssw0rd')
         self.fill_field(by.By.ID, 'id_0-adminPassword-clone', 'P@ssw0rd')
         self.driver.find_element_by_xpath(
@@ -302,11 +304,11 @@ class UITestCase(BaseDeps):
         self.driver.find_element_by_xpath(
             self.elements.get('button', 'InputSubmit')).click()
 
-    def create_asp_service(self, service_name):
+    def create_asp_service(self, app_name):
         self.driver.find_element_by_xpath(
             self.elements.get('apps', 'ASP')).click()
 
-        self.fill_field(by.By.ID, 'id_0-name', service_name)
+        self.fill_field(by.By.ID, 'id_0-name', app_name)
         self.fill_field(by.By.ID, 'id_0-adminPassword', 'P@ssw0rd')
         self.fill_field(by.By.ID, 'id_0-adminPassword-clone', 'P@ssw0rd')
         self.fill_field(by.By.ID, 'id_0-repository', self.asp_git_repository)
@@ -318,11 +320,11 @@ class UITestCase(BaseDeps):
         self.driver.find_element_by_xpath(
             self.elements.get('button', 'InputSubmit')).click()
 
-    def create_iisfarm_service(self, service_name):
+    def create_iisfarm_service(self, app_name):
         self.driver.find_element_by_xpath(
             self.elements.get('apps', 'IISFarm')).click()
 
-        self.fill_field(by.By.ID, 'id_0-name', service_name)
+        self.fill_field(by.By.ID, 'id_0-name', app_name)
         self.fill_field(by.By.ID, 'id_0-adminPassword', 'P@ssw0rd')
         self.fill_field(by.By.ID, 'id_0-adminPassword-clone', 'P@ssw0rd')
 
@@ -333,11 +335,11 @@ class UITestCase(BaseDeps):
         self.driver.find_element_by_xpath(
             self.elements.get('button', 'InputSubmit')).click()
 
-    def create_aspfarm_service(self, service_name):
+    def create_aspfarm_service(self, app_name):
         self.driver.find_element_by_xpath(
             self.elements.get('apps', 'ASPFarm')).click()
 
-        self.fill_field(by.By.ID, 'id_0-name', service_name)
+        self.fill_field(by.By.ID, 'id_0-name', app_name)
         self.fill_field(by.By.ID, 'id_0-adminPassword', 'P@ssw0rd')
         self.fill_field(by.By.ID, 'id_0-adminPassword-clone', 'P@ssw0rd')
         self.fill_field(by.By.ID, 'id_0-repository', self.asp_git_repository)
@@ -349,11 +351,11 @@ class UITestCase(BaseDeps):
         self.driver.find_element_by_xpath(
             self.elements.get('button', 'InputSubmit')).click()
 
-    def create_mssql_service(self, service_name):
+    def create_mssql_service(self, app_name):
         self.driver.find_element_by_xpath(
             self.elements.get('apps', 'MSSQL')).click()
 
-        self.fill_field(by.By.ID, 'id_0-name', service_name)
+        self.fill_field(by.By.ID, 'id_0-name', app_name)
         self.fill_field(by.By.ID, 'id_0-adminPassword', 'P@ssw0rd')
         self.fill_field(by.By.ID, 'id_0-adminPassword-clone', 'P@ssw0rd')
         self.fill_field(by.By.ID, 'id_0-saPassword', 'P@ssw0rd')
@@ -366,11 +368,11 @@ class UITestCase(BaseDeps):
         self.driver.find_element_by_xpath(
             self.elements.get('button', 'InputSubmit')).click()
 
-    def create_sql_cluster_service(self, service_name, domain_name):
+    def create_sql_cluster_service(self, app_name, domain_name):
         self.driver.find_element_by_xpath(
             self.elements.get('apps', 'SQL_cluster')).click()
 
-        self.fill_field(by.By.ID, 'id_0-name', service_name)
+        self.fill_field(by.By.ID, 'id_0-name', app_name)
         self.fill_field(by.By.ID, 'id_0-adminPassword', 'P@ssw0rd')
         self.fill_field(by.By.ID, 'id_0-adminPassword-clone', 'P@ssw0rd')
 
@@ -407,14 +409,10 @@ class UITestCase(BaseDeps):
         self.driver.find_element_by_xpath(
             self.elements.get('button', 'ButtonSubmit')).click()
 
-    def create_tomcat_service(self, service_name, database):
-        self.driver.find_element_by_xpath(
-            self.elements.get('apps', 'Tomcat')).click()
-
-        self.fill_field(by.By.ID, 'id_0-name', service_name)
+    def create_tomcat_service(self, app_name, database):
+        self.fill_field(by.By.ID, 'id_0-name', app_name)
+        self.select_from_list('0-database', database)
         self.fill_field(by.By.ID, 'id_0-repository', self.tomcat_repository)
-
-        self.select_from_list('id_0-psqlDatabase', database)
 
         self.driver.find_element_by_xpath(
             self.elements.get('button', 'ButtonSubmit')).click()
@@ -423,10 +421,10 @@ class UITestCase(BaseDeps):
 
         self.driver.find_element_by_xpath(
             self.elements.get('button', 'InputSubmit')).click()
+        self.driver.find_element_by_xpath(
+            self.elements.get('button', 'InputSubmit')).click()
 
     def create_postgreSQL_service(self, app_name):
-        self.driver.find_element_by_xpath(
-            self.elements.get('apps', 'postgreSQL')).click()
         self.fill_field(by.By.ID, 'id_0-name', app_name)
         self.fill_field(by.By.ID, 'id_0-database', 'psql-base')
         self.fill_field(by.By.ID, 'id_0-username', 'admin')
@@ -446,13 +444,6 @@ class UITestCase(BaseDeps):
             ".//*[@data-display='{0}']".format(el_name)).get_attribute("id")
         return path.split('__')[-1]
 
-    def click_to_add_to_env(self, app_name):
-        self.navigate_to('Manage')
-        self.go_to_submenu('Package Definitions')
-        app_id = self.get_element_id(app_name)
-        self.navigate_to('Application_Catalog')
-        self.go_to_submenu('Applications')
-
     def delete_component(self, component_name):
         component_id = self.get_element_id(component_name)
         self.driver.find_element_by_id(
@@ -471,7 +462,7 @@ class UITestCase(BaseDeps):
             self.elements.get('button', 'ButtonSubmit')).click()
         time.sleep(3)
         appeared_text = self.driver.find_element_by_xpath(
-            "(.//div[@class = 'control-group form-field clearfix error'][%d])"
+            ".//div[@class = 'control-group form-field clearfix error'][%d]"
             % num).text
         index = appeared_text.find(error_message)
 

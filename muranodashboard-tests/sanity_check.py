@@ -118,7 +118,7 @@ class UISanityTests(UITestCase):
         self.assertIn('{"type": "windows.2012", "title": "TestImage"}',
                       self.driver.page_source)
 
-    @testtools.skip("New UI in progress")
+    @testtools.skip("App is not in incubator")
     def test_006_create_and_delete_demo_service(self):
         """
         Test check ability to create and delete demo service
@@ -146,85 +146,76 @@ class UISanityTests(UITestCase):
         self.assertFalse(self.check_element_on_page(by.By.LINK_TEXT,
                                                     'DemoService'))
 
-    @testtools.skip("New UI in progress")
     def test_007_create_and_delete_linux_telnet(self):
         """
-        Test check ability to create and delete linux telnet service
+        Test check ability to create and delete Linux Telnet service
 
         Scenario:
-            1. Navigate to Environments page
-            2. Create environment
-            3. Create linux telnet service in this environment by filling
-            the creation form
-            4. Delete linux telnet service from environment
+            1. Navigate to 'Application Catalog'
+            2. Click on 'Quick Deploy' for Telnet application
+            3. Create Linux Telnet app by filling the creation form
+            4. Delete Linux Telnet app from environment
         """
-        self.go_to_submenu('Environments')
-        self.create_environment('test')
-        self.env_to_components_list('test')
+        self.navigate_to('Manage')
+        self.go_to_submenu('Package Definitions')
+        telnet_id = self.get_element_id('Telnet')
 
-        self.driver.find_element_by_link_text('Add Application').click()
-        self.create_linux_telnet('linuxtelnet')
+        self.navigate_to('Application_Catalog')
+        self.go_to_submenu('Applications')
 
-        self.go_to_submenu('Environments')
-        self.env_to_components_list('test')
+        self.create_linux_telnet('linuxtelnet', telnet_id)
+
         self.assertTrue(self.check_element_on_page(by.By.LINK_TEXT,
                                                    'linuxtelnet'))
-
         self.delete_component('linuxtelnet')
         self.assertFalse(self.check_element_on_page(by.By.LINK_TEXT,
                                                     'linuxtelnet'))
 
-    @testtools.skip("New UI in progress")
     def test_008_create_and_delete_linux_apache(self):
         """
-        Test check ability to create and delete linux apache service
+        Test check ability to create and delete Linux Apache service
 
         Scenario:
-            1. Navigate to Environments page
-            2. Create environment
-            3. Create linux apache service in this environment by filling
-            the creation form
-            4. Delete linux apache service from environment
+            1. Navigate to 'Application Catalog'
+            2. Click on 'Quick Deploy' for Apache application
+            3. Create Linux Apache app by filling the creation form
+            4. Delete Linux Apache app from environment
         """
-        self.go_to_submenu('Environments')
-        self.create_environment('test')
-        self.env_to_components_list('test')
+        self.navigate_to('Manage')
+        self.go_to_submenu('Package Definitions')
+        apache_id = self.get_element_id('Apache HTTP Server')
 
-        self.driver.find_element_by_link_text('Add Component').click()
-        self.create_linux_apache('linuxapache')
+        self.navigate_to('Application_Catalog')
+        self.go_to_submenu('Applications')
 
-        self.go_to_submenu('Environments')
-        self.env_to_components_list('test')
+        self.create_linux_apache('linuxapache', apache_id)
+
         self.assertTrue(self.check_element_on_page(by.By.LINK_TEXT,
                                                    'linuxapache'))
-
         self.delete_component('linuxapache')
         self.assertFalse(self.check_element_on_page(by.By.LINK_TEXT,
                                                     'linuxapache'))
 
-    @testtools.skip("New UI in progress")
     def test_009_create_and_delete_ad_service(self):
         """
-        Test check ability to create and delete active directory service
+        Test check ability to create and delete Active Directory service
 
         Scenario:
-            1. Navigate to Environments page
-            2. Create environment
-            3. Create active directory service in this environment by filling
-            the creation form
-            4. Delete active directory service from environment
+            1. Navigate to 'Application Catalog'
+            2. Click on 'Quick Deploy' for Active Directory application
+            3. Create Active Directory app by filling the creation form
+            4. Delete Active Directory app from environment
         """
-        self.go_to_submenu('Environments')
-        self.create_environment('test')
-        self.env_to_components_list('test')
+        self.navigate_to('Manage')
+        self.go_to_submenu('Package Definitions')
+        ad_id = self.get_element_id('Active Directory')
 
-        self.driver.find_element_by_link_text('Add Component').click()
-        self.driver.find_element_by_xpath(
-            self.elements.get('apps', 'AD')).click()
+        self.navigate_to('Application_Catalog')
+        self.go_to_submenu('Applications')
+
+        self.select_and_click_action_for_app('quick-add', ad_id)
         self.create_ad_service('muranotest.domain')
 
-        self.go_to_submenu('Environments')
-        self.env_to_components_list('test')
         self.assertTrue(self.check_element_on_page(by.By.LINK_TEXT,
                                                    'muranotest.domain'))
 
@@ -232,7 +223,7 @@ class UISanityTests(UITestCase):
         self.assertFalse(self.check_element_on_page(by.By.LINK_TEXT,
                                                     'muranotest.domain'))
 
-    @testtools.skip("New UI in progress")
+    @testtools.skip("App is not in incubator")
     def test_010_create_and_delete_iis_service(self):
         """
         Test check ability to create and delete IIS service
@@ -259,7 +250,7 @@ class UISanityTests(UITestCase):
         self.assertFalse(self.check_element_on_page(by.By.LINK_TEXT,
                                                     'IISService'))
 
-    @testtools.skip("New UI in progress")
+    @testtools.skip("App is not in incubator")
     def test_011_create_and_delete_asp_service(self):
         """
         Test check ability to create and delete ASP.Net service
@@ -287,7 +278,7 @@ class UISanityTests(UITestCase):
         self.assertFalse(self.check_element_on_page(by.By.LINK_TEXT,
                                                     'ASPService'))
 
-    @testtools.skip("New UI in progress")
+    @testtools.skip("App is not in incubator")
     def test_012_create_and_delete_iisfarm_service(self):
         """
         Test check ability to create and delete IIS Farm service
@@ -315,7 +306,7 @@ class UISanityTests(UITestCase):
         self.assertFalse(self.check_element_on_page(by.By.LINK_TEXT,
                                                     'IISFarmService'))
 
-    @testtools.skip("New UI in progress")
+    @testtools.skip("App is not in incubator")
     def test_013_create_and_delete_aspfarm_service(self):
         """
         Test check ability to create and delete ASP.Net Farm service
@@ -343,7 +334,7 @@ class UISanityTests(UITestCase):
         self.assertFalse(self.check_element_on_page(by.By.LINK_TEXT,
                                                     'ASPFarmService'))
 
-    @testtools.skip("New UI in progress")
+    @testtools.skip("App is not in incubator")
     def test_014_create_and_delete_mssql_service(self):
         """
         Test check ability to create and delete MSSQL service
@@ -371,7 +362,7 @@ class UISanityTests(UITestCase):
         self.assertFalse(self.check_element_on_page(by.By.LINK_TEXT,
                                                     'MSSQLService'))
 
-    @testtools.skip("New UI in progress")
+    @testtools.skip("App is not in incubator")
     def test_015_create_and_delete_sql_cluster_service(self):
         """
         Test check ability to create and delete MSSQL cluster service
@@ -401,53 +392,67 @@ class UISanityTests(UITestCase):
         self.assertFalse(self.check_element_on_page(by.By.LINK_TEXT,
                                                     'SQLCluster'))
 
-    @testtools.skip("New UI in progress")
     def test_016_create_and_delete_tomcat_service(self):
         """
-        Test check ability to create and delete tomcat service
+        Test check ability to create and delete Tomcat service
 
         Scenario:
-            1. Navigate to Environments page
-            2. Create environment
-            3. Create tomcat service in this environment by filling
-            the creation form
-            4. Delete tomcat service from environment
+            1. Navigate to 'Application Catalog'
+            2. Click on 'Quick Deploy' for Tomcat application
+            3. Firstly, create PostgreSQL app by filling the creation form
+            4. Create Tomcat app, in case of database select created
+            early PostgreSQL
+            5. Delete Tomcat app from environment
         """
+        self.navigate_to('Manage')
+        self.go_to_submenu('Package Definitions')
+        tomcat_id = self.get_element_id('Apache Tomcat')
+        postgre_id = self.get_element_id('PostgreSQL')
+
+        self.navigate_to('Application_Catalog')
         self.go_to_submenu('Environments')
         self.create_environment('test')
+        env_id = self.get_element_id('test')
         self.env_to_components_list('test')
 
         self.driver.find_element_by_link_text('Add Component').click()
-        self.create_postgreSQL_service('posrgreSQL')
+        self.select_and_click_action_for_app('add/{0}'.format(env_id),
+                                             postgre_id)
+        self.create_postgreSQL_service('PostgreSQL')
+        self.driver.find_element_by_xpath(
+            self.elements.get('button', 'InputSubmit')).click()
         self.assertTrue(self.check_element_on_page(by.By.LINK_TEXT,
-                                                   'posrgreSQL'))
+                                                   'PostgreSQL'))
 
-        self.driver.find_element_by_link_text('Create Service').click()
-        self.create_tomcat_service('tomcat-serv', 'posrgreSQL')
+        self.driver.find_element_by_link_text('Add Component').click()
+        self.select_and_click_action_for_app('add/{0}'.format(env_id),
+                                             tomcat_id)
+
+        self.create_tomcat_service('tomcat-serv', 'PostgreSQL')
         self.assertTrue(self.check_element_on_page(by.By.LINK_TEXT,
                                                    'tomcat-serv'))
-
         self.delete_component('tomcat-serv')
         self.assertFalse(self.check_element_on_page(by.By.LINK_TEXT,
                                                     'tomcat-serv'))
 
-    @testtools.skip("New UI in progress")
     def test_017_create_and_delete_postgreSQL_service(self):
         """
-        Test check ability to create and delete postgreSQL service
+        Test check ability to create and delete PostgreSQL service
 
         Scenario:
-            1. Navigate to Environments page
-            2. Create environment
-            3. Create postgreSQL service in this environment by filling
-            the creation form
-            4. Delete postgreSQL service from environment
+            1. Navigate to 'Application Catalog'
+            2. Click on 'Quick Deploy' for PostgreSQL application
+            3. Create PostgreSQL app by filling the creation form
+            4. Delete PostgreSQL app from environment
         """
-        self.go_to_submenu('Environments')
-        self.create_environment('test')
-        self.env_to_components_list('test')
+        self.navigate_to('Manage')
+        self.go_to_submenu('Package Definitions')
+        postgresql_id = self.get_element_id('PostgreSQL')
 
-        self.driver.find_element_by_link_text('Add Component').click()
+        self.navigate_to('Application_Catalog')
+        self.go_to_submenu('Applications')
+
+        self.select_and_click_action_for_app('quick-add', postgresql_id)
         self.create_postgreSQL_service('PostgreSQL')
         self.assertTrue(self.check_element_on_page(by.By.LINK_TEXT,
                                                    'PostgreSQL'))
@@ -456,7 +461,7 @@ class UISanityTests(UITestCase):
         self.assertFalse(self.check_element_on_page(by.By.LINK_TEXT,
                                                     'PostgreSQL'))
 
-    @testtools.skip("New UI in progress")
+    @testtools.skip("https://bugs.launchpad.net/murano/+bug/1321690")
     def test_018_check_regex_expression_for_ad_name(self):
         """
         Test check that validation of domain name field work and appropriate
@@ -483,13 +488,14 @@ class UISanityTests(UITestCase):
             12. Set "domain.local" as a domain name and check that
             error message didn't appear
         """
-        self.go_to_submenu('Environments')
-        self.create_environment('test')
-        self.env_to_components_list('test')
+        self.navigate_to('Manage')
+        self.go_to_submenu('Package Definitions')
+        ad_id = self.get_element_id('Active Directory')
 
-        self.driver.find_element_by_link_text('Add Component').click()
-        self.driver.find_element_by_xpath(
-            self.elements.get('apps', 'AD')).click()
+        self.navigate_to('Application_Catalog')
+        self.go_to_submenu('Applications')
+
+        self.select_and_click_action_for_app('quick-add', ad_id)
 
         self.fill_field(by.By.ID, field='id_0-name', value='a')
         self.assertTrue(self.check_that_error_message_is_correct(
@@ -537,7 +543,7 @@ class UISanityTests(UITestCase):
             'Period characters are allowed only when '
             'they are used to delimit the components of domain style names', 1))
 
-    @testtools.skip("New UI in progress")
+    @testtools.skip("App is not in incubator")
     def test_019_check_regex_expression_for_iis_name(self):
         """
         Test check that validation of iis name field work and appropriate
@@ -577,70 +583,67 @@ class UISanityTests(UITestCase):
         self.assertFalse(self.check_that_error_message_is_correct(
             'Just letters, numbers, underscores and hyphens are allowed.', 1))
 
-    @testtools.skip("New UI in progress")
     def test_020_check_regex_expression_for_git_repo_field(self):
         """
         Test check that validation of git repository field work and appropriate
         error message is appeared after entering incorrect url
 
         Scenario:
-            1. Navigate to Environments page
-            2. Create environment and start to create ASP.Net service
+            1. Navigate to Application Catalog > Applications
+            2. Start to create Tomcat service
             3. Set "a" as a git repository url and verify error message
             4. Set "://@:" as a git repository url and verify error message
         """
-        self.go_to_submenu('Environments')
-        self.create_environment('test')
-        self.env_to_components_list('test')
+        self.navigate_to('Manage')
+        self.go_to_submenu('Package Definitions')
+        tomcat_id = self.get_element_id('Apache Tomcat')
 
-        self.driver.find_element_by_link_text('Add Component').click()
-        self.driver.find_element_by_xpath(
-            self.elements.get('apps', 'ASP')).click()
+        self.navigate_to('Application_Catalog')
+        self.go_to_submenu('Applications')
+        self.select_and_click_action_for_app('quick-add', tomcat_id)
 
         self.fill_field(by.By.ID, field='id_0-repository', value='a')
         self.assertTrue(self.check_that_error_message_is_correct(
-            'Enter correct git repository url', 4))
+            'Enter a correct git repository URL', 3))
 
         self.fill_field(by.By.ID, field='id_0-repository', value='://@:')
         self.assertTrue(self.check_that_error_message_is_correct(
-            'Enter correct git repository url', 4))
+            'Enter a correct git repository URL', 3))
 
-    @testtools.skip("New UI in progress")
     def test_021_check_validation_for_hostname_template_field(self):
         """
         Test check that validation of hostname template field work and
         appropriate error message is appeared after entering incorrect name
 
         Scenario:
-            1. Navigate to Environments page
-            2. Create environment and start to create demo service
-            3. Set "demo" as a hostname template name a and verify error message
-            4. Set "demo" as a hostname template name and change number of
-            instances from 2 to 1 and check that there is no error message
+            1. Navigate to Application Catalog > Applications
+            2. Start to create Telnet service
+            3. Set "`qwe`" as a hostname template name a and verify error message
+            4. Set "host" as a hostname template name and
+            check that there is no error message
         """
-        self.go_to_submenu('Environments')
-        self.create_environment('test')
-        self.env_to_components_list('test')
+        self.navigate_to('Manage')
+        self.go_to_submenu('Package Definitions')
+        telnet_id = self.get_element_id('Telnet')
 
-        self.driver.find_element_by_link_text('Add Component').click()
-        self.driver.find_element_by_xpath(
-            self.elements.get('apps', 'Demo')).click()
+        self.navigate_to('Application_Catalog')
+        self.go_to_submenu('Applications')
 
-        self.fill_field(by.By.ID, 'id_0-name', 'demo')
-        self.fill_field(by.By.ID, 'id_0-unitNamingPattern', 'demo')
-
-        xpath = ".//*[@id='create_service_form']/div[1]/div[1]/fieldset/div[1]"
+        self.select_and_click_action_for_app('quick-add', telnet_id)
+        self.fill_field(by.By.ID, 'id_0-name', 'name')
+        self.fill_field(by.By.ID, 'id_0-unitNamingPattern', '`qwe`')
 
         self.driver.find_element_by_xpath(
             self.elements.get('button', 'ButtonSubmit')).click()
-        self.assertTrue(self.check_element_on_page(by.By.XPATH, xpath))
+        self.assertTrue(self.check_that_error_message_is_correct(
+            'Enter a valid value.', 1))
 
-        self.fill_field(by.By.ID, 'id_0-dcInstances', value='1')
+        self.fill_field(by.By.ID, 'id_0-unitNamingPattern', 'host')
         self.driver.find_element_by_xpath(
             self.elements.get('button', 'ButtonSubmit')).click()
 
         WebDriverWait(self.driver, 10).until(lambda s: s.find_element(
-            by.By.ID, '1-osImage').is_displayed())
+            by.By.ID, 'id_1-osImage').is_displayed())
 
     @testtools.skip("New UI in progress")
     def test_022_check_bool_field_validation(self):
@@ -702,7 +705,7 @@ class UISanityTests(UITestCase):
         self.assertTrue(self.check_that_error_message_is_correct(
             'This field is required.', 1))
 
-    @testtools.skip("New UI in progress")
+    @testtools.skip("App is not in incubator")
     def test_023_positive_scenario_1_for_the_MS_SQL_Cluster_Form(self):
         """
         Test check one possible scenario of creation mssql cluster
@@ -748,7 +751,7 @@ class UISanityTests(UITestCase):
         self.assertTrue(self.check_element_on_page(
             by.By.ID, 'id_msSqlClusterServer-1-clusterIp'))
 
-    @testtools.skip("New UI in progress")
+    @testtools.skip("App is not in incubator")
     def test_024_positive_scenario_2_for_the_MS_SQL_Cluster_Form(self):
         """
         Test check one possible scenario of creation mssql cluster
@@ -800,7 +803,7 @@ class UISanityTests(UITestCase):
         self.assertTrue(self.check_element_on_page(
             by.By.ID, 'id_msSqlClusterServer-1-clusterIp'))
 
-    @testtools.skip("New UI in progress")
+    @testtools.skip("App is not in incubator")
     def test_025_positive_scenario_3_for_the_MS_SQL_Cluster_Form(self):
         """
         Test check one possible scenario of creation mssql cluster
@@ -883,7 +886,7 @@ class UISanityTests(UITestCase):
         self.assertTrue(self.check_element_on_page(
             by.By.XPATH, './/*[@data-display="PostgreSQL"]'))
 
-    def test_041_modify_description(self):
+    def test_040_modify_description(self):
         """
         Test check ability to change description of the package
 
@@ -993,7 +996,7 @@ class UISanityTests(UITestCase):
         self.assertTrue(self.check_package_parameter(
             'PostgreSQL', '3', 'True'))
 
-    def test_040_check_opportunity_to_delete_package(self):
+    def test_041_check_opportunity_to_delete_package(self):
         """
         Test check ability to delete package from database
 
@@ -1025,7 +1028,6 @@ class UISanityTests(UITestCase):
         self.assertTrue(self.check_element_on_page(
             by.By.XPATH, ".//*[@id='content_body']/div[1]/h2"))
 
-    @testtools.skip("There are no default apps in Murano")
     def test_034_env_creation_form_app_catalog_page(self):
         """
         Test checks that app's option 'Add to environment' is operable
@@ -1039,15 +1041,15 @@ class UISanityTests(UITestCase):
             4. Add application in created environment
         """
         self.go_to_submenu('Applications')
-        self.driver.find_element_by_link_text('Add to environment').click()
+        self.driver.find_element_by_xpath(
+            self.elements.get('button', 'AddToEnv')).click()
 
-        self.fill_field(by.By.ID, 'id_name', 'test_033')
+        self.fill_field(by.By.ID, 'id_name', 'test_env')
         self.driver.find_element_by_xpath(
             self.elements.get('button', 'InputSubmit')).click()
 
-        self.navigate_to('Application_Catalog')
         self.go_to_submenu('Environments')
-        self.driver.find_element_by_link_text('test_033').click()
+        self.driver.find_element_by_link_text('test_env').click()
         self.assertTrue(
             self.driver.find_element_by_id('services__action_AddApplication'))
 
@@ -1089,7 +1091,6 @@ class UISanityTests(UITestCase):
         self.driver.find_element_by_xpath(
             ".//*[@id='MuranoSearchPanel']/form/button").click()
 
-    @testtools.skip("There are no default apps in Murano")
     def test_037_filter_by_category(self):
         """
         Test checks ability to filter applications by category
@@ -1102,28 +1103,28 @@ class UISanityTests(UITestCase):
             4. Verify result
         """
         self.navigate_to('Manage')
-        self.go_to_submenu('Package Definition')
+        self.go_to_submenu('Package Definitions')
 
-        package_category1 = self.get_element_id('PACKAGE_CATEGORY1')
-        package_category2 = self.get_element_id('PACKAGE_CATEGORY2')
+        package_category1 = self.get_element_id('PostgreSQL')
+        package_category2 = self.get_element_id('Active Directory')
 
         self.navigate_to('Application_Catalog')
         self.go_to_submenu('Applications')
         self.driver.find_element_by_id('MuranoCategoriesPanelToggle').click()
-        self.driver.find_element_by_link_text('CATEGORY1').click()
+        self.driver.find_element_by_link_text('Databases').click()
 
         self.assertTrue(self.check_element_on_page(
-            by.By.XPATH, "//*[@href='/murano/catalog/details/{1}']".
+            by.By.XPATH, ".//*[@href='/horizon/murano/catalog/details/{0}']".
             format(package_category1)))
 
         self.driver.find_element_by_id('MuranoCategoriesPanelToggle').click()
-        self.driver.find_element_by_link_text('CATEGORY2').click()
+        self.driver.find_element_by_link_text('Microsoft Services').click()
 
         self.assertTrue(self.check_element_on_page(
-            by.By.XPATH, "//*[@href='/murano/catalog/details/{1}']".
+            by.By.XPATH, ".//*[@href='/horizon/murano/catalog/details/{0}']".
             format(package_category2)))
 
-    @testtools.skip("There are no default apps in Murano")
+    @testtools.skip("Work in progress")
     def test_038_check_option_switch_env(self):
         """
         Test checks ability to switch environment and to add app in other env
@@ -1139,20 +1140,31 @@ class UISanityTests(UITestCase):
             8. Navigate to 'Application Catalog>Environments' and go to the env2
             9. Check that added application is here
         """
+        self.navigate_to('Manage')
+        self.go_to_submenu('Package Definitions')
+
+        app_id = self.get_element_id('Telnet')
+
+        self.navigate_to('Application_Catalog')
         self.go_to_submenu('Environments')
         self.create_environment('env1')
+        self.assertTrue(self.check_element_on_page(by.By.LINK_TEXT,
+                                                   'env1'))
         self.create_environment('env2')
+        self.assertTrue(self.check_element_on_page(by.By.LINK_TEXT,
+                                                   'env1'))
         self.go_to_submenu('Applications')
-        self.driver.find_element_by_link_text('Environment').click()
-        self.driver.find_element_by_link_text('env2').click()
+        self.driver.find_element_by_id('MuranoDefaultEnvPanelToggle').click()
+        self.driver.find_element_by_id('environment_switcher').click()
+        self.driver.find_element_by_xpath(
+            ".//*[@id='environment_list']/li[2]/a").click()
 
-        self.select_and_click_action_for_app('add', 'PostgreSQL')
-        self.create_iis_service('IISService')
+        self.create_linux_telnet('linuxtelnet', app_id)
 
         self.go_to_submenu('Environments')
-        self.env_to_components_list('env2')
+        self.env_to_components_list('env1')
         self.assertTrue(self.check_element_on_page(by.By.LINK_TEXT,
-                                                   'PostgreSQL'))
+                                                   'linuxtelnet'))
 
     def test_039_check_statistics_panel(self):
         """
